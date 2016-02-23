@@ -21,10 +21,21 @@ namespace ptpchat
 
         private void btn_Register_Click(object sender, EventArgs e)
         {
-            var request = (HttpWebRequest)WebRequest.Create("http://1.2.3.4:9001/msg");
+            var enteredUsername = txt_Username.Text;
 
-            var postData = "msg_type=hello";
-            var data = Encoding.ASCII.GetBytes(postData);
+            if (string.IsNullOrWhiteSpace(enteredUsername)) //+ any other validation, will need a validator class
+            {
+                //invalid username
+                //error mesages
+                return;
+            }
+
+            var request = (HttpWebRequest)WebRequest.Create("http://37.139.19.21:9001/msg");
+
+            //var registerJson = "{\"msg_type\":\"hello\"}";
+            var registerJson = "{ " + $@"""msg_type"":""register"",""username"":""{enteredUsername}""" + " }";
+
+            var data = Encoding.ASCII.GetBytes(registerJson);
 
             request.Method = "POST";
             request.ContentType = "application/json";
