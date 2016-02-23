@@ -1,6 +1,6 @@
 ﻿namespace ptpchat
 {
-	partial class Form1
+	partial class PTPChatForm
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -41,14 +41,14 @@
             this.btn_Register.UseVisualStyleBackColor = true;
             this.btn_Register.Click += new System.EventHandler(this.btn_Register_Click);
             // 
-            // Form1
+            // PTPChat
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(593, 444);
             this.Controls.Add(this.btn_Register);
-            this.Name = "Form1";
-            this.Text = "Form1";
+            this.Name = "PTPChat";
+            this.Text = "PTP Chat";
             this.ResumeLayout(false);
 
 		}

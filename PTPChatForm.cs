@@ -12,9 +12,9 @@ using System.Windows.Forms;
 
 namespace ptpchat
 {
-	public partial class Form1 : Form
+	public partial class PTPChatForm : Form
 	{
-		public Form1()
+		public PTPChatForm()
 		{
 			InitializeComponent();
 		}
@@ -27,6 +27,7 @@ namespace ptpchat
             var data = Encoding.ASCII.GetBytes(postData);
 
             request.Method = "POST";
+            request.ContentType = "application/json";
             request.ContentLength = data.Length;
 
             try
