@@ -23,20 +23,17 @@ namespace ptpchat
         {
             var enteredUsername = txt_Username.Text;
 
-            if (string.IsNullOrWhiteSpace(enteredUsername)) //+ any other validation, will need a validator class
+            if (string.IsNullOrWhiteSpace(enteredUsername)) //will need a register validator class
             {
-                //invalid username
-                //error mesages
+                //invalid => error mesages
                 return;
             }
 
-            var request = (HttpWebRequest)WebRequest.Create("http://37.139.19.21:9001/msg");
-
             //var registerJson = "{\"msg_type\":\"hello\"}";
             var registerJson = "{ " + $@"""msg_type"":""register"",""username"":""{enteredUsername}""" + " }";
-
             var data = Encoding.ASCII.GetBytes(registerJson);
 
+            var request = (HttpWebRequest)WebRequest.Create("http://37.139.19.21:9001/msg");
             request.Method = "POST";
             request.ContentType = "application/json";
             request.ContentLength = data.Length;
@@ -46,6 +43,7 @@ namespace ptpchat
                 using (var stream = request.GetRequestStream())
                 {
                     stream.Write(data, 0, data.Length);
+                    stream.Close();
                 }
             }
             catch
@@ -55,7 +53,6 @@ namespace ptpchat
             }
 
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-
             var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
 
             //read response and do stuff with it
