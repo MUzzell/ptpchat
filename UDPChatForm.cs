@@ -20,36 +20,47 @@ namespace ptpchat
 
     public partial class UDPChatForm : Form
     {
+        private IPEndPoint endPoint;
+        private readonly UdpClient udpClient;
+
         public UDPChatForm()
         {
             InitializeComponent();
+
+            this.endPoint = new IPEndPoint(IPAddress.Any, new Random().Next(10000, 65535));
+            this.udpClient = new UdpClient(this.endPoint);
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void btn_Register_Click(object sender, EventArgs e)
         {
-            var msg = Encoding.ASCII.GetBytes("{\"msg_type\":\"HELLO\"}");
-            UdpClient udpClient = new UdpClient();
+            var username = this.txt_MessageBox.Text;
+
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                //not valid
+                return;
+            }
+
+            var registerJson = "{" + "\"msg_type\":\"HELLO\", \"msg_data\":{\"username\":\"" + username + "\"" + "}}";
+            var msg = Encoding.ASCII.GetBytes(registerJson);
 
             try
             {
-                udpClient.Send(msg, msg.Length, "37.139.19.21", 9001);
+                this.udpClient.Send(msg, msg.Length, "37.139.19.21", 9001);
             }
             catch (Exception ex)
             {
                 //broke!
                 var err = ex.ToString();
-                return;
             }
-
-            var endPoint = new IPEndPoint(IPAddress.Any, new Random().Next(10000, 65535));
 
             var responseStrings = new List<string>();
 
             try
             {
-                byte[] bytes = udpClient.Receive(ref endPoint);
+                byte[] bytes = this.udpClient.Receive(ref this.endPoint);
 
-                responseStrings.Add($"Received message from {endPoint.ToString()} :\n {Encoding.ASCII.GetString(bytes, 0, bytes.Length)}\n");
+                responseStrings.Add($"Received message from {this.endPoint.ToString()} :\n {Encoding.ASCII.GetString(bytes, 0, bytes.Length)}\n");
             }
             catch (Exception ex)
             {
@@ -57,11 +68,10 @@ namespace ptpchat
             }
             finally
             {
-                udpClient.Close();
+                this.udpClient.Close();
             }
 
             int a = 1;
-
             // CommunicationMessage message = JsonConvert.DeserializeObject<CommunicationMessage>(responseString);
         }
     }

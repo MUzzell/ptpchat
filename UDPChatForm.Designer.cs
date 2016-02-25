@@ -28,33 +28,44 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-            this.button1 = new System.Windows.Forms.Button();
+            this.btn_Register = new System.Windows.Forms.Button();
+            this.txt_MessageBox = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
-            // button1
+            // btn_Register
             // 
-            this.button1.Location = new System.Drawing.Point(99, 56);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.btn_Register.Location = new System.Drawing.Point(182, 12);
+            this.btn_Register.Name = "btn_Register";
+            this.btn_Register.Size = new System.Drawing.Size(75, 23);
+            this.btn_Register.TabIndex = 0;
+            this.btn_Register.Text = "Register User";
+            this.btn_Register.UseVisualStyleBackColor = true;
+            this.btn_Register.Click += new System.EventHandler(this.btn_Register_Click);
+            // 
+            // txt_MessageBox
+            // 
+            this.txt_MessageBox.Location = new System.Drawing.Point(12, 12);
+            this.txt_MessageBox.Name = "txt_MessageBox";
+            this.txt_MessageBox.Size = new System.Drawing.Size(164, 20);
+            this.txt_MessageBox.TabIndex = 1;
             // 
             // UDPChatForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 261);
-            this.Controls.Add(this.button1);
+            this.ClientSize = new System.Drawing.Size(423, 363);
+            this.Controls.Add(this.txt_MessageBox);
+            this.Controls.Add(this.btn_Register);
             this.Name = "UDPChatForm";
             this.Text = "UDPChatForm";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
 		}
 
         #endregion
 
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btn_Register;
+        private System.Windows.Forms.TextBox txt_MessageBox;
     }
 }
