@@ -69,6 +69,7 @@
             this.Controls.Add(this.btn_Register);
             this.Name = "PTPChatForm";
             this.Text = "PTP Chat";
+            this.Load += new System.EventHandler(this.PTPChatForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
