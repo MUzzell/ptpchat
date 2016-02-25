@@ -30,7 +30,7 @@ namespace ptpchat
             }
 
             //var registerJson = "{\"msg_type\":\"hello\"}";
-            var registerJson = "{ " + $@"""msg_type"":""register"",""username"":""{enteredUsername}""" + " }";
+            var registerJson = "{ " + @"""msg_type"":""register"",""username"":""{enteredUsername}""" + " }";
             var data = Encoding.ASCII.GetBytes(registerJson);
 
             var request = (HttpWebRequest)WebRequest.Create("http://37.139.19.21:9001/msg");

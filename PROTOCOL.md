@@ -2,7 +2,7 @@
 
 Most of the protocol is loosely based upon P2P CHAT, A peer-to-peer chat protocol, which can be found [here][1].
 
-All of this is subject to change at any time, as this project is very much in the testing phase.
+All of this is subject to change at any time, as this project is very much in the testing/prototyping phase.
 
 ###Message Format 
 
@@ -20,18 +20,22 @@ Example:
 
 ###Verbs
 
-1. HELLO
- * This is the initial message that is sent when the client becomes active to the target broker server. Its purpose is to notify the broker that it is online and available for communication. 
-2. ACK
+*. HELLO
+ * This is the initial message that is sent when the client becomes active to the target machine. Its purpose is to notify the target that it is online and available for communication. This message should be sent periodically to other known machines that it is still active. 
+*. ACK
  * Sent after all messages, used to notify that a message has been received correctly.
-4. JOIN
-5. CHANNEL
-6. LEAVE
-7. GETCERTIFICATE
-8. CERTIFICATE
-9. GETKEY
-10. KEY
-11. MESSAGE
+*. JOIN
+ * Sent to a target machine to join a channel 
+*. CHANNEL
+ * (might remove)
+*. LEAVE
+ * Sent to all mebers of a channel that the sending user is leaving the channel
+*. GETCERTIFICATE
+*. CERTIFICATE
+*. GETKEY
+*. KEY
+*. MESSAGE
+*. RELAY
 
 
 [1]: https://tools.ietf.org/html/draft-strauss-p2p-chat-08

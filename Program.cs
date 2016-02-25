@@ -16,7 +16,7 @@ namespace ptpchat
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			Application.Run(new PTPChatForm());
+			Application.Run(new UDPChatForm());
 		}
 	}
 }
