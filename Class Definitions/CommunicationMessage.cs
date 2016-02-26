@@ -8,8 +8,9 @@ namespace ptpchat.Class_Definitions
 {
     class CommunicationMessage : ICommunicationMessage
     {
-        public string msg_type { get; set; }
+        public CommunicationMessage(){ }
 
-        public Dictionary<string, object> msg_data { get; set; }
+        public string msg_type { get; set; }
+        public Dictionary<string, List<User>> msg_data { get; set; }
     }
 }
