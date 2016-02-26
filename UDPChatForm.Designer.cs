@@ -30,6 +30,7 @@
 		{
             this.btn_Register = new System.Windows.Forms.Button();
             this.txt_MessageBox = new System.Windows.Forms.TextBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btn_Register
@@ -49,11 +50,22 @@
             this.txt_MessageBox.Size = new System.Drawing.Size(164, 20);
             this.txt_MessageBox.TabIndex = 1;
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(56, 119);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 2;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // UDPChatForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(423, 363);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.txt_MessageBox);
             this.Controls.Add(this.btn_Register);
             this.Name = "UDPChatForm";
@@ -67,5 +79,6 @@
 
         private System.Windows.Forms.Button btn_Register;
         private System.Windows.Forms.TextBox txt_MessageBox;
+        private System.Windows.Forms.Button button1;
     }
 }

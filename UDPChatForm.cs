@@ -20,15 +20,18 @@ namespace ptpchat
 
     public partial class UDPChatForm : Form
     {
-        private readonly IPEndPoint endPoint;
+        private IPEndPoint endPoint;
         private readonly UdpClient udpClient;
+
+        private List<User> knownUsers { get; set; }
 
         public UDPChatForm()
         {
             InitializeComponent();
 
-            this.endPoint = new IPEndPoint(IPAddress.Any, new Random().Next(10000, 65535));
-            this.udpClient = new UdpClient(this.endPoint);
+            endPoint = new IPEndPoint(IPAddress.Any, new Random().Next(10000, 65535));
+            udpClient = new UdpClient(this.endPoint);
+            knownUsers = new List<User>();
         }
 
         private void btn_Register_Click(object sender, EventArgs e)
@@ -54,11 +57,9 @@ namespace ptpchat
                 var err = ex.ToString();
             }
 
-            UdpState udpstate = new UdpState() { endpoint = this.endPoint, udpclient = this.udpClient};
-
             try
             {
-                this.udpClient.BeginReceive(new AsyncCallback(ReceiveCallback) , udpstate);
+                this.udpClient.BeginReceive(new AsyncCallback(RecieveHelloCallback), null);
             }
             catch (Exception ex)
             {
@@ -66,34 +67,34 @@ namespace ptpchat
             }
         }
 
-        private static void ReceiveCallback(IAsyncResult asyncResult)
+
+        private void RecieveHelloCallback(IAsyncResult asyncResult)
         {
-            UdpClient _udpclient = (UdpClient)((UdpState)(asyncResult.AsyncState)).udpclient;
-            IPEndPoint _endpoint = (IPEndPoint)((UdpState)(asyncResult.AsyncState)).endpoint;
             CommunicationMessage message = new CommunicationMessage();
 
             try
             {
-                Byte[] receiveBytes = _udpclient.EndReceive(asyncResult, ref _endpoint);
+                Byte[] receiveBytes = this.udpClient.EndReceive(asyncResult, ref this.endPoint);
                 string receiveString = Encoding.ASCII.GetString(receiveBytes);
 
                 message = JsonConvert.DeserializeObject<CommunicationMessage>(receiveString);
             }
-            catch
+            catch (Exception ex)
             {
                 //is the server alive?
+                var err = ex.ToString();
             }
 
-            //hopefully use message.stuff !
-            var users = message.msg_data.Values;
+            this.knownUsers = message.msg_data.Values.First();
+        }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            var a = this.knownUsers;
+            //do known users stuff here and wherever else o
         }
     }
 
-    public class UdpState
-    {
-        public IPEndPoint endpoint;
-        public UdpClient udpclient;
-    }
+
 
 }
