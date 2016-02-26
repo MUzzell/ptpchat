@@ -8,11 +8,11 @@ namespace ptpchat.Class_Definitions
 {
     class User
     {
-        public string Username { get; set; }
+        public string username { get; set; }
 
-        public string Address { get; set; }
+        public string address { get; set; }
 
-        public int Port { get; set; }
+        public int port { get; set; }
 
     }
 }
