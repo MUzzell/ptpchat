@@ -21,7 +21,7 @@ Example:
 ###Verbs
 
 *. HELLO
- * This is the initial message that is sent when the client becomes active to the target machine. Its purpose is to notify the target that it is online and available for communication. This message should be sent periodically to other known machines that it is still active. 
+ * This is the initial message that is sent when the node becomes active to a target node. Its purpose is to notify the target that it is online and available for communication. This message should be sent periodically to other known machines that it is still active. 
 *. ACK
  * Sent after all messages, used to notify that a message has been received correctly.
 *. JOIN
@@ -36,6 +36,10 @@ Example:
 *. KEY
 *. MESSAGE
 *. RELAY
+*. CONNECT
+ * Used to open a path between two nodes, whom have been made aware of each other through another node. This is used to allow nodes that are present behind NAT devices to directly communicate with eachother. 
+*. ROUTING
+ * A periodic message sent by a node to neighbouring nodes that it can communicate to. 
 
 
 [1]: https://tools.ietf.org/html/draft-strauss-p2p-chat-08
