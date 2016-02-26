@@ -20,7 +20,7 @@ namespace ptpchat
 
     public partial class UDPChatForm : Form
     {
-        private IPEndPoint endPoint;
+        private readonly IPEndPoint endPoint;
         private readonly UdpClient udpClient;
 
         public UDPChatForm()
@@ -54,25 +54,46 @@ namespace ptpchat
                 var err = ex.ToString();
             }
 
-            var responseStrings = new List<string>();
+            UdpState udpstate = new UdpState() { endpoint = this.endPoint, udpclient = this.udpClient};
 
             try
             {
-                byte[] bytes = this.udpClient.Receive(ref this.endPoint);
-
-                responseStrings.Add($"Received message from {this.endPoint.ToString()} :\n {Encoding.ASCII.GetString(bytes, 0, bytes.Length)}\n");
+                this.udpClient.BeginReceive(new AsyncCallback(ReceiveCallback) , udpstate);
             }
             catch (Exception ex)
             {
                 var err = ex.ToString();
             }
-            finally
+        }
+
+        private static void ReceiveCallback(IAsyncResult asyncResult)
+        {
+            UdpClient _udpclient = (UdpClient)((UdpState)(asyncResult.AsyncState)).udpclient;
+            IPEndPoint _endpoint = (IPEndPoint)((UdpState)(asyncResult.AsyncState)).endpoint;
+            CommunicationMessage message = new CommunicationMessage();
+
+            try
             {
-                this.udpClient.Close();
+                Byte[] receiveBytes = _udpclient.EndReceive(asyncResult, ref _endpoint);
+                string receiveString = Encoding.ASCII.GetString(receiveBytes);
+
+                message = JsonConvert.DeserializeObject<CommunicationMessage>(receiveString);
+            }
+            catch
+            {
+                //is the server alive?
             }
 
-            int a = 1;
-            // CommunicationMessage message = JsonConvert.DeserializeObject<CommunicationMessage>(responseString);
+            //hopefully use message.stuff !
+            var users = message.msg_data.Values;
+
         }
     }
+
+    public class UdpState
+    {
+        public IPEndPoint endpoint;
+        public UdpClient udpclient;
+    }
+
 }
