@@ -6,7 +6,7 @@ All of this is subject to change at any time, as this project is very much in th
 
 ###Message Format 
 
-Messages will be transferred in JSON. At the head, a message will contain one or two keys, dependent on the verb being sent. Other keys in the head should be ignored. These two keys are:
+Messages will be transferred in JSON. At the head, a message will contain one or two keys, dependent on the verb being sent. `msg_type` is required for all messges, `msg_data` is not required for all messages. Should a recieved JSON message not contain a `msg_data` element, it should be treated as null (or None). All other elements in the head should be ignored. These two keys are:
 
 1. `msg_type`, containing the verb.
 2. `msg_data`, containing a JSON object holding the data relevant to the message being sent. 
@@ -21,11 +21,11 @@ Example:
 ###Verbs
 
 *. HELLO
- * This is the initial message that is sent when the node becomes active to a target node. Its purpose is to notify the target that it is online and available for communication. This message should be sent periodically to other known machines that it is still active. 
+ * This is a periodic message that is sent between nodes. Its purpose is to notify the target that it is online and available for communication. This message should be sent to known machines at an interval of between 0.5 to 2 seconds. The HELLO message does not include a msg_data attribute (or its value is set to none).
 *. ACK
- * Sent after all messages, used to notify that a message has been received correctly.
+ * Sent after GETCERTIFICATE, CERTIFICATE, GETKEY, KEY, MESSAGE messages, used to notify that a message has been received correctly by the immediate recipient.
 *. JOIN
- * Sent to a target machine to join a channel 
+ * Sent to a target machine to join a channel.
 *. CHANNEL
  * (might remove)
 *. LEAVE
@@ -37,7 +37,7 @@ Example:
 *. MESSAGE
 *. RELAY
 *. CONNECT
- * Used to open a path between two nodes, whom have been made aware of each other through another node. This is used to allow nodes that are present behind NAT devices to directly communicate with eachother. 
+ * Used to open a path between two nodes, whom have been made aware of each other through another node, but cannot communicate directly. This is used to allow nodes that are present behind NAT devices to directly communicate with eachother. A client would need to respond to this message in a very specific order to facillicate a successful operation. As an example, two nodes, A and B, want to talk to eachother and will use node S to achieve it.  
 *. ROUTING
  * A periodic message sent by a node to neighbouring nodes that it can communicate to. 
 
