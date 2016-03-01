@@ -39,19 +39,19 @@ Example:
 * CONNECT
     * Used to open a path between two nodes, whom have been made aware of each other through another node, but cannot communicate directly. This is used to allow nodes that are present behind NAT devices to directly communicate with each other. A client would need to respond to this message in a very specific order to facilitate a successful operation. As an example, two nodes, A and B, want to talk to each other and will use node S to achieve it. 
         1. *A* opens an available socket and sends the following to *S*:
-            ```json
+            * ```
             {"msg_type":"CONNECT", "msg_data":{"dst":"<B's IP>", "src":"<A's Port>"}
             ```
         2. *S* forwards the message to *B*, applying *A's* IP and swapping the addresses arround:
-            ```json
+            * ```
             {"msg_type":"CONNECT", "msg_data":{"dst":"<A's IP>:<A's Port>", "src":"<B's IP>"}
             ```
         3. *B* opens an available socket for communication, and returns the message to *S* **replacing** its IP with the newly opened port (at this time, *B* should start trying to communicate with *A*, to begin getting through the NAT):
-            ```json
+            * ```json
             {"msg_type":"CONNECT", "msg_data":{"dst":"<A's IP>:<A's Port>", "src":"<B's Port>"}
             ```
         4. *S* forwards the message, adding *B's* IP to the packet and swappin them arround:
-            ```json
+            * ```json
             {"msg_type":"CONNECT", "msg_data":{"dst":"<B's IP>:<B's Port>", "src":"<A's IP>:<A's Port>"}
             ```
         5. *A* now has a full **CONNECT** message and can now start communicating with B. 
