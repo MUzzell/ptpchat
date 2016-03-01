@@ -22,20 +22,20 @@ Messages will be transferred in JSON. At the head, a message will contain one or
 
 ###Verbs
 
-####HELLO
+#####HELLO
 
 `msg_data` is not required and should be ignored.
 
 This is a periodic message that is sent between nodes. Its purpose is to notify the target that it is online and available for communication. This message should be sent to known machines at an interval of between 0.5 to 2 seconds. The HELLO message does not include a msg_data attribute (or its value is set to none), and does not require a response. Nodes upon receiving a HELLO message should now start sending HELLO messages in the same periodic fashion to the original node to maintain communication.
 
-####ACK
+#####ACK
 
 ```json
 {
     "msg_type":"ACK", 
     "msg_data": 
     { 
-        "msg_id" : <msg_id> 
+        "msg_id" : "<msg_id>" 
     }
 }
 ```
@@ -44,20 +44,20 @@ This is a periodic message that is sent between nodes. Its purpose is to notify 
 
 Sent after GETCERTIFICATE, CERTIFICATE, GETKEY, KEY, MESSAGE messages, used to notify that a message has been received correctly by the immediate recipient. An ACK message *MUST* include the message ID of the received message. 
 
-####JOIN
+#####JOIN
 
-    ```json
-    {
-        "msg_type":"JOIN", 
-        "msg_data": 
-        { 
-            "msg_id" : <msg_id>, 
-            "node_id" : <node_id>,
-            "channel" : <channel>,
-            "channel_id" : <channel_id> 
-        }
+```json
+{
+    "msg_type":"JOIN", 
+    "msg_data": 
+    { 
+        "msg_id" : "<msg_id>", 
+        "node_id" : "<node_id>",
+        "channel" : "<channel>",
+        "channel_id" : "<channel_id>" 
     }
-    ```
+}
+```
     
 * `msg_id` : identifies this message.
 * `node_id` : contains the sending node id.
@@ -68,19 +68,19 @@ JOIN Messages are sent to notify other user of a channel that a new node is join
 * Once a node is joining an available channel (a channel in which this node has been made aware of)
 * When a node is already subscribed to a channel for which a *CHANNEL* message is received which did not include this node in its listing.
 
-####CHANNEL
+#####CHANNEL
 
 ```json
 {
     "msg_type" : "CHANNEL", 
     "msg_data" : 
     { 
-        "msg_id" : <msg_id>, 
-        "node_id" : <node_id>, 
-        "channel" : <channel>,  
-        "channel_id" : <channel_id>,
-        "members" : [ {"node_id" : <node_id> } ],
-        ("closed" : <closed:FALSE>)?
+        "msg_id" : "<msg_id>", 
+        "node_id" : "<node_id>", 
+        "channel" : "<channel>",  
+        "channel_id" : "<channel_id>",
+        "members" : [ {"node_id" : "<node_id>" } ],
+        "closed" : "<closed:FALSE>?"
     }
 }
 ```
@@ -97,17 +97,17 @@ CHANNEL messages are used to maintain available channels between nodes. A CHANNE
 * To maintain channels by periodically sending a CHANNEL message if this node has not received/sent a CHANNEL message for a channel this node is subscribed to. 
 * Optionally, a node may send CHANNEL messages may be sent to newly connected nodes.
 
-####LEAVE
+#####LEAVE
 
 ```json
 {
     "msg_type":"JOIN", 
     "msg_data": 
     { 
-        "msg_id" : <msg_id>, 
-        "node_id" : <node_id>,
-        "channel" : <channel>,
-        "channel_id" : <channel_id> 
+        "msg_id" : "<msg_id>", 
+        "node_id" : "<node_id>",
+        "channel" : "<channel>",
+        "channel_id" : "<channel_id>" 
     }
 }
 ```
@@ -121,15 +121,15 @@ Sent to all members of a channel that the sending user is leaving the channel. A
 * Once a node leaves a channel it is subscribed to.
 * When a node received a CHANNEL message which list this node which this node is not part of. 
 
-####GETCERTIFICATE
+#####GETCERTIFICATE
 
 ```json
 {
     "msg_type":"GETCERTIFICATE",
     "msg_data":
     {
-        "msg_id" : <msg_id>,
-        "node_id" : <node_id>
+        "msg_id" : "<msg_id>",
+        "node_id" : "<node_id>"
     }
 }
 ```
@@ -139,17 +139,17 @@ Sent to all members of a channel that the sending user is leaving the channel. A
 
 This message is used to request the certificate of the recipient, as to identify this node. The `msg_id` should also be the same in any responsive CERTIFICATE messages. Nodes *should* keep a record of certs against `node_id's` and store them locally if possible for future reference. 
 
-####CERTIFICATE
+#####CERTIFICATE
 
 ```json
 {
     "msg_type" : "CERTIFICATE",
     "msg_data" :
     {
-        "msg_id" : <msg_id>,
-        "node_id" : <msg_id>,
-        "recipient_id" : <recipient_id>,
-        "certificate" : <certificate>
+        "msg_id" : "<msg_id>",
+        "node_id" : "<msg_id>",
+        "recipient_id" : "<recipient_id>",
+        "certificate" : "<certificate>"
     }
 }
 ```
@@ -162,17 +162,17 @@ This message contains the certificate for a given node, used to identify this ce
 * In advance of a GETCERTIFICATE message when this node has joined an encrypted channel. 
 Nodes *should* keep a record of certs against `node_id's` and store them locally if possible for future reference. 
 
-####GETKEY
+#####GETKEY
 
 ```json
 {
     "msg_type" : "GETKEY",
     "msg_data" : 
     {
-        "msg_id" : <msg_id>
-        "node_id" : <node_id>,
-        "channel" : <channel>,
-        "channel_id" : <channel_id>,
+        "msg_id" : "<msg_id>",
+        "node_id" : "<node_id>",
+        "channel" : "<channel>",
+        "channel_id" : "<channel_id>",
     }
 }
 ```
@@ -184,20 +184,20 @@ Nodes *should* keep a record of certs against `node_id's` and store them locally
 
 This message is sent to request a key to a closed channel.
 
-####KEY
+#####KEY
 
 ```json
 {
     "msg_type" : "KEY",
     "msg_data" : 
     {
-        "msg_id" : <msg_id>,
-        "node_id" : <node_id>,
-        "recipient_id" : <recipient_id>,
-        "channel" : <channel>,
-        "channel_id" : <channel_id>,
-        "cipher" : <cipher>,
-        "key" : <key>
+        "msg_id" : "<msg_id>",
+        "node_id" : "<node_id>",
+        "recipient_id" : "<recipient_id>",
+        "channel" : "<channel>",
+        "channel_id" : "<channel_id>",
+        "cipher" : "<cipher>",
+        "key" : "<key>"
     }
 }
 ```
@@ -211,21 +211,21 @@ This message is sent to request a key to a closed channel.
 
 This message transmits the key to the target node. The key **must** be encrypted with the target's public key (which means that the sending node already has the recipient node's certificate). Whether to send a KEY message is at the discretion of the sender, and holds the responsibility to determine if the recipient should receive the key.
 
-####MESSAGE
+#####MESSAGE
 
 ```json
 {
     "msg_type" : "MESSAGE",
     "msg_data" : 
     {
-        "msg_id" : <msg_id>,
-        "node_id" : <msg_id>,
-        "recipient" : [ { "node_id" : <node_id> } ],
-        "timestamp" : <timestamp>,
-        "channel" : <channel>,
-        "channel_id" : <channel_id>,
-        "message" : "message"
-        "attachment" : [ { "attachment" : <attachment>, "attachment_type" : <attachment_type> } ]
+        "msg_id" : "<msg_id>",
+        "node_id" : "<msg_id>",
+        "recipient" : [ { "node_id" : "<node_id>" } ],
+        "timestamp" : "<timestamp>",
+        "channel" : "<channel>",
+        "channel_id" : "<channel_id>",
+        "message" : "<message>"
+        "attachment" : [ { "attachment" : "<attachment>", "attachment_type" : "<attachment_type>" } ]
     }
 }
 ```
@@ -241,15 +241,15 @@ This message transmits the key to the target node. The key **must** be encrypted
 
 This message is the actual text message to be sent between nodes. The `message` element **must** be signed by the sender's private key, to be verified by recipient node's using the senders public key (which they may or may not have, which may trigger GETCERTIFICATE messages to be sent).
 
-####CONNECT
+#####CONNECT
 
 ```json
 {
     "msg_type" : "CONNECT",
     "msg_data" : 
     {
-        "dst" : <dst>,
-        "src" : <src>
+        "dst" : "<dst>",
+        "src" : "<src>"
     }
 }
 ```
@@ -271,14 +271,14 @@ As an example, two nodes, *A* and *B*, want to talk to each other and will use n
     `{"msg_type":"CONNECT", "msg_data":{"dst":"<B's IP>:<B's Port>", "src":"<A's IP>:<A's Port>"}`
 5. *A* now has a full CONNECT message and can now start communicating with B. 
     
-####ROUTING
+#####ROUTING
 
 ```json
 {
     "msg_type" : "ROUTING",
     "msg_data" : 
     {
-        "nodes" : [ { "node_id" : <node_id>, "address" : <address> } ]
+        "nodes" : [ { "node_id" : "<node_id>", "address" : "<address>" } ]
     }
 }
 ```
@@ -287,7 +287,7 @@ As an example, two nodes, *A* and *B*, want to talk to each other and will use n
 
 A periodic message sent by a node to neighbouring nodes which lists nodes it can communicate to. ROUTING Messages should be sent to all nodes that this node can communicate with directly, but a node may chose to omit results or to not send this message should it chose to. 
 
-####RELAY
+#####RELAY
 
 *to be, well, figured out*
 
