@@ -94,7 +94,7 @@ namespace ptpchat
             var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
 
             //read response and hopefully, mnessage now has the json values
-            CommunicationMessage message = JsonConvert.DeserializeObject<CommunicationMessage>(responseString);
+            RoutingMessage message = JsonConvert.DeserializeObject<RoutingMessage>(responseString);
 
         }
     }

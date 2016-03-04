@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 
 namespace ptpchat.Class_Definitions
 {
-    class CommunicationMessage : ICommunicationMessage
+    class RoutingMessage :BaseMessage
     {
-        public CommunicationMessage(){ }
+        public RoutingMessage(){ }
 
         public string msg_type { get; set; }
-        public Dictionary<string, List<User>> msg_data { get; set; }
+
+        public List<Dictionary<string, string>> msg_data { get; set; }
+
     }
 }
