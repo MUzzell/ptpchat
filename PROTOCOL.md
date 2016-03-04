@@ -24,9 +24,21 @@ Messages will be transferred in JSON. At the head, a message will contain one or
 
 #####HELLO
 
-`msg_data` is not required and should be ignored.
+```json
+{
+    "msg_type":"HELLO",
+    "msg_data":
+    {
+        "node_id" : "<node_id>",
+        "version" : "<version>?",
+    }
+}
+```
 
-This is a periodic message that is sent between nodes. Its purpose is to notify the target that it is online and available for communication. This message should be sent to known machines at an interval of between 0.5 to 2 seconds. The HELLO message does not include a msg_data attribute (or its value is set to none), and does not require a response. Nodes upon receiving a HELLO message should now start sending HELLO messages in the same periodic fashion to the original node to maintain communication.
+* `node_id` : Identifies the sending node.
+* `version` : A short string to identify the software and version using this protocol.
+
+This is a periodic message that is sent between nodes. Its purpose is to notify the target that it is online and available for communication. This message should be sent to known machines at an interval of between 0.5 to 2 seconds. The HELLO message does not require a response. Nodes upon receiving a HELLO message should now start sending HELLO messages in the same periodic fashion to the original node to maintain communication.
 
 #####ACK
 
@@ -224,7 +236,7 @@ This message transmits the key to the target node. The key **must** be encrypted
         "timestamp" : "<timestamp>",
         "channel" : "<channel>",
         "channel_id" : "<channel_id>",
-        "message" : "<message>"
+        "message" : "<message>",
         "attachment" : [ { "attachment" : "<attachment>", "attachment_type" : "<attachment_type>" } ]
     }
 }
@@ -285,7 +297,7 @@ As an example, two nodes, *A* and *B*, want to talk to each other and will use n
 
 * `nodes` : A list of available nodes that this node is aware of.
 
-A periodic message sent by a node to neighbouring nodes which lists nodes it can communicate to. ROUTING Messages should be sent to all nodes that this node can communicate with directly, but a node may chose to omit results or to not send this message should it chose to. 
+A periodic message sent by a node to neighbouring nodes which lists nodes it can communicate to. ROUTING Messages should be sent to all nodes that this node can communicate with directly, but a node may chose to omit results or to not send this message should it decide to. 
 
 #####RELAY
 
