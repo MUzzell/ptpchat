@@ -63,9 +63,9 @@
         {
             try
             {
-                if (socketManager == null)
+                if (socketManager == null || socketManager.NodeId == this.ThisNodeId)
                 {
-                    //send a hello directly via IP instead of this
+                    //dont hello ourselves
                     return false;
                 }
 
