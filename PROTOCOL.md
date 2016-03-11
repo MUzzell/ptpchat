@@ -14,10 +14,26 @@ All of this is subject to change at any time, as this project is very much in th
 
 ###Message Format 
 
-Messages will be transferred in JSON. At the head, a message will contain one or two keys, dependent on the verb being sent. `msg_type` is required for all messges, `msg_data` is not required for all messages. Should a recieved JSON message not contain a `msg_data` element, it should be treated as null (or None). All other elements in the head should be ignored. These two keys are:
+Messages will be transferred in JSON. At the head, a message will contain one or two keys, dependent on the verb being sent. `msg_type` is required for all messages, `msg_data` is not required for all messages. Should a received JSON message not contain a `msg_data` element, it should be treated as null (or None). All other elements in the head should be ignored. These two keys are:
 
 1. `msg_type`, containing the verb.
 2. `msg_data`, containing a JSON object holding the data relevant to the message being sent. 
+
+Both keys, and all verb-specific keys inside `msg_data`, must be in lower-case.
+
+###Data Types
+
+####*node_id*
+
+The `node_id` attribute is used in multiple messages and acts as the identifier of nodes (and 'should' be unique). `node_id` is single GUID identifier and must remain the same throughout the node's lifetime. Whilst this identifies the node in question, it does not validate the node. 
+
+####*version*
+
+The `version` attribute is used in the **HELLO** message and is an optional string to identify the software that the node is running. There is no specific format for this, and is purely informational. 
+
+####*address*
+
+The `address` attribute used in some messages specifies a socket to be used for connecting to nodes. The contents will be in the standard socket notation of <HOST>:<PORT>.
 
 
 ###Verbs
@@ -36,7 +52,7 @@ Messages will be transferred in JSON. At the head, a message will contain one or
 ```
 
 * `node_id` : Identifies the sending node.
-* `version` : A short string to identify the software and version using this protocol.
+* `version` : An optional, short string to identify the software and version of this node.
 
 This is a periodic message that is sent between nodes. Its purpose is to notify the target that it is online and available for communication. This message should be sent to known machines at an interval of between 0.5 to 2 seconds. The HELLO message does not require a response. Nodes upon receiving a HELLO message should now start sending HELLO messages in the same periodic fashion to the original node to maintain communication.
 
