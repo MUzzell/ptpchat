@@ -53,9 +53,9 @@
                                     };
             }
 
-            this.SendHello(ref socketManager);
+            var sendSuccessful = this.SendHello(ref socketManager);
 
-            return socketManager;
+            return sendSuccessful ? socketManager : null;
         }
 
         //send a hello using an existing socketManager
@@ -122,9 +122,9 @@
                                     verbHandlerForMessage.ParseBaseMessage(messageJson);
 
                                     //and call the handle method on the verb handler, passing in the things it will need to do stuff
-                                    verbHandlerForMessage.HandleMessage(ref socketManager, ref this.ServerSocketManagers, ref this.ClientSocketManagers);
+                                    var doReturn = verbHandlerForMessage.HandleMessage(ref socketManager, ref this.ServerSocketManagers, ref this.ClientSocketManagers);
 
-                                    //need some way to break out of this loop based on what the message has done
+                                    if (doReturn) break;
                                 }
                                 catch (Exception ex)
                                 {

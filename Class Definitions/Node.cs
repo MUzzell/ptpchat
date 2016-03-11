@@ -1,10 +1,11 @@
 ﻿namespace ptpchat.Class_Definitions
 {
+    using System;
     using System.Net;
 
     internal class Node
     {
-        public int NodeId { get; set; }
+        public Guid NodeId { get; set; }
 
         public IPAddress IpAddress { get; set; }
 

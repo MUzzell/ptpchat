@@ -34,13 +34,13 @@
             this.listBox_ErrorLog = new System.Windows.Forms.ListBox();
             this.lbl_log = new System.Windows.Forms.Label();
             this.grid_Servers = new System.Windows.Forms.DataGridView();
-            this.socketManagerBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.lbl_Clients = new System.Windows.Forms.Label();
             this.servers_NodeIdCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.servers_IpAddressCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.server_PortCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.servers_LastHelloCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.servers_IsListeningCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.socketManagerBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.lbl_Clients = new System.Windows.Forms.Label();
             this.grid_Clients = new System.Windows.Forms.DataGridView();
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -64,15 +64,15 @@
             // listBox_ErrorLog
             // 
             this.listBox_ErrorLog.FormattingEnabled = true;
-            this.listBox_ErrorLog.Location = new System.Drawing.Point(757, 29);
+            this.listBox_ErrorLog.Location = new System.Drawing.Point(734, 25);
             this.listBox_ErrorLog.Name = "listBox_ErrorLog";
-            this.listBox_ErrorLog.Size = new System.Drawing.Size(282, 472);
+            this.listBox_ErrorLog.Size = new System.Drawing.Size(616, 472);
             this.listBox_ErrorLog.TabIndex = 4;
             // 
             // lbl_log
             // 
             this.lbl_log.AutoSize = true;
-            this.lbl_log.Location = new System.Drawing.Point(754, 13);
+            this.lbl_log.Location = new System.Drawing.Point(731, 9);
             this.lbl_log.Name = "lbl_log";
             this.lbl_log.Size = new System.Drawing.Size(28, 13);
             this.lbl_log.TabIndex = 5;
@@ -92,17 +92,8 @@
             this.grid_Servers.Location = new System.Drawing.Point(40, 151);
             this.grid_Servers.Name = "grid_Servers";
             this.grid_Servers.ReadOnly = true;
-            this.grid_Servers.Size = new System.Drawing.Size(650, 150);
+            this.grid_Servers.Size = new System.Drawing.Size(661, 150);
             this.grid_Servers.TabIndex = 6;
-            // 
-            // lbl_Clients
-            // 
-            this.lbl_Clients.AutoSize = true;
-            this.lbl_Clients.Location = new System.Drawing.Point(37, 335);
-            this.lbl_Clients.Name = "lbl_Clients";
-            this.lbl_Clients.Size = new System.Drawing.Size(41, 13);
-            this.lbl_Clients.TabIndex = 7;
-            this.lbl_Clients.Text = "Clients:";
             // 
             // servers_NodeIdCol
             // 
@@ -140,6 +131,15 @@
             this.servers_IsListeningCol.Name = "servers_IsListeningCol";
             this.servers_IsListeningCol.ReadOnly = true;
             // 
+            // lbl_Clients
+            // 
+            this.lbl_Clients.AutoSize = true;
+            this.lbl_Clients.Location = new System.Drawing.Point(37, 335);
+            this.lbl_Clients.Name = "lbl_Clients";
+            this.lbl_Clients.Size = new System.Drawing.Size(41, 13);
+            this.lbl_Clients.TabIndex = 7;
+            this.lbl_Clients.Text = "Clients:";
+            // 
             // grid_Clients
             // 
             this.grid_Clients.AllowUserToAddRows = false;
@@ -154,7 +154,7 @@
             this.grid_Clients.Location = new System.Drawing.Point(40, 351);
             this.grid_Clients.Name = "grid_Clients";
             this.grid_Clients.ReadOnly = true;
-            this.grid_Clients.Size = new System.Drawing.Size(650, 150);
+            this.grid_Clients.Size = new System.Drawing.Size(661, 150);
             this.grid_Clients.TabIndex = 8;
             // 
             // dataGridViewTextBoxColumn1
@@ -197,7 +197,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1051, 550);
+            this.ClientSize = new System.Drawing.Size(1365, 597);
             this.Controls.Add(this.grid_Clients);
             this.Controls.Add(this.lbl_Clients);
             this.Controls.Add(this.grid_Servers);

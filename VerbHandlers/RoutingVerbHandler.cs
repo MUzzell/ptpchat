@@ -40,7 +40,7 @@
 
                         var splitAddress = wholeAddress.Split(':');
 
-                        this.Nodes.Add(new Node { NodeId = int.Parse(nodeId), IpAddress = IPAddress.Parse(splitAddress[0]), Port = int.Parse(splitAddress[1]) });
+                        this.Nodes.Add(new Node { NodeId = Guid.Parse(nodeId), IpAddress = IPAddress.Parse(splitAddress[0]), Port = int.Parse(splitAddress[1]) });
                     });
         }
 
