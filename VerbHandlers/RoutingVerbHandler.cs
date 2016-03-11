@@ -18,29 +18,37 @@
 
         public void ParseBaseMessage(string messageJson)
         {
+
             this.Message = JsonConvert.DeserializeObject<RoutingMessage>(messageJson);
             this.Nodes = new List<Node>();
 
             this.Message.msg_data.nodes.ForEach(
                 node =>
                     {
-                        var nodeId = node.Where(p => p.Key == "node_id").Select(p => p.Value).FirstOrDefault();
-
-                        if (string.IsNullOrWhiteSpace(nodeId))
+                        try
                         {
-                            throw new Exception("ROUTING MESSAGE: missing node_id");
+                            var nodeId = node.Where(p => p.Key == "node_id").Select(p => p.Value).FirstOrDefault();
+
+                            if (string.IsNullOrWhiteSpace(nodeId))
+                            {
+                                throw new Exception("ROUTING MESSAGE: missing node_id");
+                            }
+
+                            var wholeAddress = node.Where(p => p.Key == "address").Select(p => p.Value).FirstOrDefault();
+
+                            if (string.IsNullOrWhiteSpace(wholeAddress))
+                            {
+                                throw new Exception("ROUTING MESSAGE: no address");
+                            }
+
+                            var splitAddress = wholeAddress.Split(':');
+
+                            this.Nodes.Add(new Node { NodeId = Guid.Parse(nodeId), IpAddress = IPAddress.Parse(splitAddress[0]), Port = int.Parse(splitAddress[1]) });
                         }
-
-                        var wholeAddress = node.Where(p => p.Key == "address").Select(p => p.Value).FirstOrDefault();
-
-                        if (string.IsNullOrWhiteSpace(wholeAddress))
+                        catch (Exception ex)
                         {
-                            throw new Exception("ROUTING MESSAGE: no address");
+
                         }
-
-                        var splitAddress = wholeAddress.Split(':');
-
-                        this.Nodes.Add(new Node { NodeId = Guid.Parse(nodeId), IpAddress = IPAddress.Parse(splitAddress[0]), Port = int.Parse(splitAddress[1]) });
                     });
         }
 
@@ -53,7 +61,13 @@
 
             foreach (var node in this.Nodes)
             {
-                clientSocketManagers.Add(new SocketManager(new IPEndPoint(node.IpAddress, node.Port), null));
+                var manager = new SocketManager
+                {
+                    NodeId = node.NodeId,
+                    LocalEndpoint = new IPEndPoint(node.IpAddress, node.Port)
+                };
+
+                clientSocketManagers.Add(manager);
             }
 
             //return 'dont stop listening' after message has been handled

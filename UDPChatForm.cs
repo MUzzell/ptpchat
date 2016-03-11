@@ -202,6 +202,38 @@
 
         private void ClientSocketManagers_OnAdd(object sender, SocketManager socketManager)
         {
+            UI.Invoke(
+                () =>
+                {
+                    try
+                    {
+                        var castList = this.grid_Clients.Rows.Cast<DataGridViewRow>().ToList();
+
+                        var rowToupdate = castList.FirstOrDefault(r => r.Cells["clients_NodeIdCol"].Value.Equals(socketManager.NodeId));
+
+                        if (rowToupdate == null)
+                        {
+                            this.grid_Clients.Rows.Add(
+                                socketManager.NodeId,
+                                socketManager?.DestinationEndpoint?.Address ?? socketManager?.LocalEndpoint?.Address,
+                                socketManager?.LocalEndpoint?.Port,
+                                socketManager.LastHelloRecieved.ToShortTimeString(),
+                                socketManager.IsSocketListening.ToString());
+                        }
+                        else
+                        {
+                            this.grid_Clients.Rows[rowToupdate.Index].Cells[0].Value = socketManager.NodeId;
+                            this.grid_Clients.Rows[rowToupdate.Index].Cells[1].Value = socketManager.DestinationEndpoint.Address ?? socketManager?.LocalEndpoint?.Address;
+                            this.grid_Clients.Rows[rowToupdate.Index].Cells[2].Value = socketManager.LocalEndpoint?.Port;
+                            this.grid_Clients.Rows[rowToupdate.Index].Cells[3].Value = socketManager.LastHelloRecieved.ToLocalTime();
+                            this.grid_Clients.Rows[rowToupdate.Index].Cells[4].Value = socketManager.IsSocketListening.ToString();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                    }
+                });
+
             //once we've added them to our clients list, we set up the onchange event
             //so the UI will update with any changes to the socket manager
             socketManager.PropertyChanged += this.ClientSocketManagers_PropertyChanged;

@@ -63,7 +63,7 @@
         {
             try
             {
-                if (socketManager == null || socketManager.NodeId == this.ThisNodeId)
+                if (socketManager == null)
                 {
                     //dont hello ourselves
                     return false;

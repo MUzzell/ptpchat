@@ -42,11 +42,11 @@
             this.socketManagerBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.lbl_Clients = new System.Windows.Forms.Label();
             this.grid_Clients = new System.Windows.Forms.DataGridView();
-            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.clients_NodeIdCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.clients_IPAddressCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.clients_PortCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.clients_LastHelloCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.clients_IsListeningCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.grid_Servers)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.socketManagerBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.grid_Clients)).BeginInit();
@@ -146,52 +146,52 @@
             this.grid_Clients.AllowUserToDeleteRows = false;
             this.grid_Clients.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.grid_Clients.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.dataGridViewTextBoxColumn1,
-            this.dataGridViewTextBoxColumn2,
-            this.dataGridViewTextBoxColumn3,
-            this.dataGridViewTextBoxColumn4,
-            this.dataGridViewTextBoxColumn5});
+            this.clients_NodeIdCol,
+            this.clients_IPAddressCol,
+            this.clients_PortCol,
+            this.clients_LastHelloCol,
+            this.clients_IsListeningCol});
             this.grid_Clients.Location = new System.Drawing.Point(40, 351);
             this.grid_Clients.Name = "grid_Clients";
             this.grid_Clients.ReadOnly = true;
             this.grid_Clients.Size = new System.Drawing.Size(661, 150);
             this.grid_Clients.TabIndex = 8;
             // 
-            // dataGridViewTextBoxColumn1
+            // clients_NodeIdCol
             // 
-            this.dataGridViewTextBoxColumn1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.dataGridViewTextBoxColumn1.HeaderText = "NodeID";
-            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
-            this.dataGridViewTextBoxColumn1.ReadOnly = true;
+            this.clients_NodeIdCol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.clients_NodeIdCol.HeaderText = "NodeID";
+            this.clients_NodeIdCol.Name = "clients_NodeIdCol";
+            this.clients_NodeIdCol.ReadOnly = true;
             // 
-            // dataGridViewTextBoxColumn2
+            // clients_IPAddressCol
             // 
-            this.dataGridViewTextBoxColumn2.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.dataGridViewTextBoxColumn2.HeaderText = "IP Address";
-            this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
-            this.dataGridViewTextBoxColumn2.ReadOnly = true;
+            this.clients_IPAddressCol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.clients_IPAddressCol.HeaderText = "IP Address";
+            this.clients_IPAddressCol.Name = "clients_IPAddressCol";
+            this.clients_IPAddressCol.ReadOnly = true;
             // 
-            // dataGridViewTextBoxColumn3
+            // clients_PortCol
             // 
-            this.dataGridViewTextBoxColumn3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.dataGridViewTextBoxColumn3.HeaderText = "Local Port";
-            this.dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
-            this.dataGridViewTextBoxColumn3.ReadOnly = true;
-            this.dataGridViewTextBoxColumn3.Width = 50;
+            this.clients_PortCol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.clients_PortCol.HeaderText = "Local Port";
+            this.clients_PortCol.Name = "clients_PortCol";
+            this.clients_PortCol.ReadOnly = true;
+            this.clients_PortCol.Width = 50;
             // 
-            // dataGridViewTextBoxColumn4
+            // clients_LastHelloCol
             // 
-            this.dataGridViewTextBoxColumn4.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.dataGridViewTextBoxColumn4.HeaderText = "Last Recieve time";
-            this.dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
-            this.dataGridViewTextBoxColumn4.ReadOnly = true;
-            this.dataGridViewTextBoxColumn4.Width = 150;
+            this.clients_LastHelloCol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.clients_LastHelloCol.HeaderText = "Last Recieve time";
+            this.clients_LastHelloCol.Name = "clients_LastHelloCol";
+            this.clients_LastHelloCol.ReadOnly = true;
+            this.clients_LastHelloCol.Width = 150;
             // 
-            // dataGridViewTextBoxColumn5
+            // clients_IsListeningCol
             // 
-            this.dataGridViewTextBoxColumn5.HeaderText = "Is Listening?";
-            this.dataGridViewTextBoxColumn5.Name = "dataGridViewTextBoxColumn5";
-            this.dataGridViewTextBoxColumn5.ReadOnly = true;
+            this.clients_IsListeningCol.HeaderText = "Is Listening?";
+            this.clients_IsListeningCol.Name = "clients_IsListeningCol";
+            this.clients_IsListeningCol.ReadOnly = true;
             // 
             // UDPChatForm
             // 
@@ -233,10 +233,10 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn servers_LastHelloCol;
         private System.Windows.Forms.DataGridViewTextBoxColumn servers_IsListeningCol;
         private System.Windows.Forms.DataGridView grid_Clients;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
+        private System.Windows.Forms.DataGridViewTextBoxColumn clients_NodeIdCol;
+        private System.Windows.Forms.DataGridViewTextBoxColumn clients_IPAddressCol;
+        private System.Windows.Forms.DataGridViewTextBoxColumn clients_PortCol;
+        private System.Windows.Forms.DataGridViewTextBoxColumn clients_LastHelloCol;
+        private System.Windows.Forms.DataGridViewTextBoxColumn clients_IsListeningCol;
     }
 }
