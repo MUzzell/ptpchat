@@ -1,31 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace ptpchat
+﻿namespace ptpchat
 {
+    using System;
+    using System.IO;
+    using System.Net;
+    using System.Text;
+    using System.Windows.Forms;
+
     using Newtonsoft.Json;
 
     using ptpchat.Class_Definitions;
 
     public partial class PTPChatForm : Form
-	{
-		public PTPChatForm()
-		{
-			InitializeComponent();
-		}
+    {
+        public PTPChatForm()
+        {
+            this.InitializeComponent();
+        }
 
         private void btn_Register_Click(object sender, EventArgs e)
         {
-            var enteredUsername = txt_Username.Text;
+            var enteredUsername = this.txt_Username.Text;
 
             if (string.IsNullOrWhiteSpace(enteredUsername)) //will need a register validator class
             {
@@ -56,7 +50,7 @@ namespace ptpchat
                 return;
             }
 
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            var response = (HttpWebResponse)request.GetResponse();
             var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
 
             //read response and do stuff with it
@@ -90,12 +84,11 @@ namespace ptpchat
             }
 
             //get the server response
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            var response = (HttpWebResponse)request.GetResponse();
             var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
 
             //read response and hopefully, mnessage now has the json values
-            RoutingMessage message = JsonConvert.DeserializeObject<RoutingMessage>(responseString);
-
+            var message = JsonConvert.DeserializeObject<RoutingMessage>(responseString);
         }
     }
 }

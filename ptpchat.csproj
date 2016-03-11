@@ -50,9 +50,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class Definitions\JSONDefinitions.cs" />
+    <Compile Include="Class Definitions\Node.cs" />
     <Compile Include="Class Definitions\SocketManager.cs" />
     <Compile Include="Client Class\PTPClient.cs" />
+    <Compile Include="Client Class\PTPList.cs" />
+    <Compile Include="Client Class\UI.cs" />
     <Compile Include="Communication Messages\BaseMessage.cs" />
+    <Compile Include="Communication Messages\HelloMessage.cs" />
     <Compile Include="Communication Messages\RoutingMessage.cs" />
     <Compile Include="PTPChatForm.cs">
       <SubType>Form</SubType>
@@ -68,6 +72,9 @@
     <Compile Include="UDPChatForm.Designer.cs">
       <DependentUpon>UDPChatForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="VerbHandlers\HelloVerbHandler.cs" />
+    <Compile Include="VerbHandlers\IVerbHandler.cs" />
+    <Compile Include="VerbHandlers\RoutingVerbHandler.cs" />
     <EmbeddedResource Include="PTPChatForm.resx">
       <DependentUpon>PTPChatForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -97,7 +104,9 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Properties\DataSources\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
