@@ -276,12 +276,16 @@ This message is the actual text message to be sent between nodes. The `message` 
     "msg_type" : "CONNECT",
     "msg_data" : 
     {
+        "src_node_id" : "<src_node_id>",
+        "dst_node_id" : "<dst_node_id>",
         "dst" : "<dst>",
         "src" : "<src>"
     }
 }
 ```
 
+* `src_node_id` : The node_id of the node initiating this connect process.
+* `dst_node_id` : The node_id of the target for this connect process. 
 * `dst` : The target of this CONNECT message, contains a full or partial socket.
 * `src` : The origin of this CONNECT message, contains a full or partial socket. 
 
@@ -290,13 +294,13 @@ Used to open a path between two nodes, whom have been made aware of each other t
 As an example, two nodes, *A* and *B*, want to talk to each other and will use node *S* to achieve it. 
     
 1. *A* opens an available socket and sends the following to *S*:
-    `{"msg_type":"CONNECT", "msg_data":{"dst":"<B's IP>", "src":"<A's Port>"}`
-2. *S* forwards the message to *B*, applying *A's* IP and swapping the addresses around:
-    `{"msg_type":"CONNECT", "msg_data":{"dst":"<A's IP>:<A's Port>", "src":"<B's IP>"}`
-3. *B* opens an available socket for communication, and returns the message to *S* **replacing** its IP with the newly opened port (at this time, *B* should start trying to communicate with *A*, to begin getting through the NAT):
-    `{"msg_type":"CONNECT", "msg_data":{"dst":"<A's IP>:<A's Port>", "src":"<B's Port>"}`
-4. *S* forwards the message, adding *B's* IP to the packet and swapping them around:
-    `{"msg_type":"CONNECT", "msg_data":{"dst":"<B's IP>:<B's Port>", "src":"<A's IP>:<A's Port>"}`
+    `{"msg_type":"CONNECT", "msg_data":{"src_node_id": "<src_node_id>", "dst_node_id": "<dst_node_id>", "dst":"<B's IP>", "src":"<A's Port>"}`
+2. *S* forwards the message to *B*, applying *A's* IP:
+    `{"msg_type":"CONNECT", "msg_data":{"src_node_id": "<src_node_id>", "dst_node_id": "<dst_node_id>", "dst":"<B's IP>", "src":"<A's IP>:<A's Port>"}`
+3. *B* opens an available socket for communication, and returns the message to *S* adding the newly opened port (at this time, *B* should start trying to communicate with *A*, to begin getting through the NAT):
+    `{"msg_type":"CONNECT", "msg_data":{"src_node_id": "<src_node_id>", "dst_node_id": "<dst_node_id", "dst":"<B's IP>:<B's Port>", "src":"<A's IP>:<A's Port>"}`
+4. *S* forwards the message, adding *B's* IP to the packet:
+    `{"msg_type":"CONNECT", "msg_data":{"src_node_id": "<src_node_id>", "dst_node_id": "<dst_node_id>", "dst":"<B's IP>:<B's Port>", "src":"<A's IP>:<A's Port>"}`
 5. *A* now has a full CONNECT message and can now start communicating with B. 
     
 #####ROUTING
@@ -306,11 +310,13 @@ As an example, two nodes, *A* and *B*, want to talk to each other and will use n
     "msg_type" : "ROUTING",
     "msg_data" : 
     {
+        "node_id" : "<node_id>",
         "nodes" : [ { "node_id" : "<node_id>", "address" : "<address>" } ]
     }
 }
 ```
 
+* `node_id` : contains the sending node id.
 * `nodes` : A list of available nodes that this node is aware of.
 
 A periodic message sent by a node to neighbouring nodes which lists nodes it can communicate to. ROUTING Messages should be sent to all nodes that this node can communicate with directly, but a node may chose to omit results or to not send this message should it decide to. 
