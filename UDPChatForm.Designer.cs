@@ -47,6 +47,7 @@
             this.clients_PortCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.clients_LastHelloCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.clients_IsListeningCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.btn_ClientConnect = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.grid_Servers)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.socketManagerBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.grid_Clients)).BeginInit();
@@ -64,15 +65,15 @@
             // listBox_ErrorLog
             // 
             this.listBox_ErrorLog.FormattingEnabled = true;
-            this.listBox_ErrorLog.Location = new System.Drawing.Point(734, 25);
+            this.listBox_ErrorLog.Location = new System.Drawing.Point(925, 25);
             this.listBox_ErrorLog.Name = "listBox_ErrorLog";
-            this.listBox_ErrorLog.Size = new System.Drawing.Size(616, 472);
+            this.listBox_ErrorLog.Size = new System.Drawing.Size(425, 472);
             this.listBox_ErrorLog.TabIndex = 4;
             // 
             // lbl_log
             // 
             this.lbl_log.AutoSize = true;
-            this.lbl_log.Location = new System.Drawing.Point(731, 9);
+            this.lbl_log.Location = new System.Drawing.Point(922, 9);
             this.lbl_log.Name = "lbl_log";
             this.lbl_log.Size = new System.Drawing.Size(28, 13);
             this.lbl_log.TabIndex = 5;
@@ -156,6 +157,7 @@
             this.grid_Clients.ReadOnly = true;
             this.grid_Clients.Size = new System.Drawing.Size(661, 150);
             this.grid_Clients.TabIndex = 8;
+            this.grid_Clients.SelectionChanged += new System.EventHandler(this.ClientSocketManagers_SelectionChanged);
             // 
             // clients_NodeIdCol
             // 
@@ -193,11 +195,22 @@
             this.clients_IsListeningCol.Name = "clients_IsListeningCol";
             this.clients_IsListeningCol.ReadOnly = true;
             // 
+            // btn_ClientConnect
+            // 
+            this.btn_ClientConnect.Location = new System.Drawing.Point(725, 351);
+            this.btn_ClientConnect.Name = "btn_ClientConnect";
+            this.btn_ClientConnect.Size = new System.Drawing.Size(182, 23);
+            this.btn_ClientConnect.TabIndex = 9;
+            this.btn_ClientConnect.Text = "Connect to client";
+            this.btn_ClientConnect.UseVisualStyleBackColor = true;
+            this.btn_ClientConnect.Visible = false;
+            // 
             // UDPChatForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1365, 597);
+            this.Controls.Add(this.btn_ClientConnect);
             this.Controls.Add(this.grid_Clients);
             this.Controls.Add(this.lbl_Clients);
             this.Controls.Add(this.grid_Servers);
@@ -238,5 +251,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn clients_PortCol;
         private System.Windows.Forms.DataGridViewTextBoxColumn clients_LastHelloCol;
         private System.Windows.Forms.DataGridViewTextBoxColumn clients_IsListeningCol;
+        private System.Windows.Forms.Button btn_ClientConnect;
     }
 }

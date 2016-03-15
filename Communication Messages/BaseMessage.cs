@@ -11,6 +11,8 @@
     {
         HELLO,
 
-        ROUTING
+        ROUTING,
+
+        CONNECT
     }
 }

@@ -18,7 +18,6 @@
 
         public void ParseBaseMessage(string messageJson)
         {
-
             this.Message = JsonConvert.DeserializeObject<RoutingMessage>(messageJson);
             this.Nodes = new List<Node>();
 
@@ -47,7 +46,6 @@
                         }
                         catch (Exception ex)
                         {
-
                         }
                     });
         }
@@ -61,11 +59,7 @@
 
             foreach (var node in this.Nodes)
             {
-                var manager = new SocketManager
-                {
-                    NodeId = node.NodeId,
-                    LocalEndpoint = new IPEndPoint(node.IpAddress, node.Port)
-                };
+                var manager = new SocketManager { NodeId = node.NodeId, LocalEndpoint = new IPEndPoint(node.IpAddress, node.Port) };
 
                 clientSocketManagers.Add(manager);
             }

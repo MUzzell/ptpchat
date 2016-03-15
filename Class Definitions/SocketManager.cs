@@ -10,6 +10,7 @@
         public SocketManager()
         {
         }
+
         public SocketManager(IPEndPoint localEndpoint, UdpClient updClient)
         {
             this.LocalEndpoint = localEndpoint;
@@ -17,16 +18,18 @@
         }
 
         private IPEndPoint destinationEndpoint;
-        private IPEndPoint localEndpoint;
 
         private bool isSocketListening;
 
         private DateTime lastHelloRecieved;
 
+        private IPEndPoint localEndpoint;
+
         //the node id of the guy we're connected to
         private Guid nodeId;
 
         public bool IsServerConnection { get; set; }
+
         public bool IsSocketListening
         {
             get { return this.isSocketListening; }
@@ -58,6 +61,7 @@
                 this.OnPropertyChanged(new PropertyChangedEventArgs("DestinationEndpoint"));
             }
         }
+
         public IPEndPoint LocalEndpoint
         {
             get { return this.localEndpoint; }
@@ -104,6 +108,7 @@
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
         private void OnPropertyChanged(PropertyChangedEventArgs e)
         {
             var handler = this.PropertyChanged;

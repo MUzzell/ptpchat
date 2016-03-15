@@ -56,6 +56,7 @@
     <Compile Include="Client Class\PTPList.cs" />
     <Compile Include="Client Class\UI.cs" />
     <Compile Include="Communication Messages\BaseMessage.cs" />
+    <Compile Include="Communication Messages\ConnectMessage.cs" />
     <Compile Include="Communication Messages\HelloMessage.cs" />
     <Compile Include="Communication Messages\RoutingMessage.cs" />
     <Compile Include="PTPChatForm.cs">

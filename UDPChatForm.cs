@@ -35,7 +35,6 @@
             hello.BeginInvoke(this.PtpClient, serverIps, true, this.StartPeriodicHelloTimer, null);
         }
 
-
         private readonly Timer periodicHelloTimer = new Timer { Interval = 10000 };
 
         private PTPClient PtpClient { get; }
@@ -60,15 +59,14 @@
 
                     var clients = this.PtpClient.ClientSocketManagers;
 
-
                     if (clients.Any())
                     {
                         clients.ForEach(
                             clientSocket =>
-                            {
-                                SendHelloBySocketManagerDelegate hello = ClientSendHello;
-                                var ar = hello.BeginInvoke(this.PtpClient, clientSocket, null, null);
-                            });
+                                {
+                                    SendHelloBySocketManagerDelegate hello = ClientSendHello;
+                                    var ar = hello.BeginInvoke(this.PtpClient, clientSocket, null, null);
+                                });
                     }
                 };
 
@@ -105,10 +103,10 @@
                         if (isServerIp && !socketManager.IsServerConnection)
                         {
                             socketManager.IsServerConnection = true;
-
-                            ptpClient.StartListening(socketManager);
-                            socketManager.IsSocketListening = true;
                         }
+
+                        ptpClient.StartListening(socketManager);
+                        socketManager.IsSocketListening = true;
 
                         if (socketManager.IsServerConnection)
                         {
@@ -138,6 +136,21 @@
             }
 
             var sendSuccessful = ptpClient.SendHello(ref socketManager);
+
+            if (!sendSuccessful)
+            {
+                //something went wrong with the hello
+            }
+        }
+
+        private static void ClientSendConnect(PTPClient ptpClient, SocketManager socketManager)
+        {
+            if (ptpClient == null) //no ptpclient, dont even try
+            {
+                return;
+            }
+
+            var sendSuccessful = ptpClient.SendConnect(ref socketManager);
 
             if (!sendSuccessful)
             {
@@ -199,40 +212,39 @@
             UI.Invoke(() => this.listBox_ErrorLog.Items.Add(error));
         }
 
-
         private void ClientSocketManagers_OnAdd(object sender, SocketManager socketManager)
         {
             UI.Invoke(
                 () =>
-                {
-                    try
                     {
-                        var castList = this.grid_Clients.Rows.Cast<DataGridViewRow>().ToList();
-
-                        var rowToupdate = castList.FirstOrDefault(r => r.Cells["clients_NodeIdCol"].Value.Equals(socketManager.NodeId));
-
-                        if (rowToupdate == null)
+                        try
                         {
-                            this.grid_Clients.Rows.Add(
-                                socketManager.NodeId,
-                                socketManager?.DestinationEndpoint?.Address ?? socketManager?.LocalEndpoint?.Address,
-                                socketManager?.LocalEndpoint?.Port,
-                                socketManager.LastHelloRecieved.ToShortTimeString(),
-                                socketManager.IsSocketListening.ToString());
+                            var castList = this.grid_Clients.Rows.Cast<DataGridViewRow>().ToList();
+
+                            var rowToupdate = castList.FirstOrDefault(r => r.Cells["clients_NodeIdCol"].Value.Equals(socketManager.NodeId));
+
+                            if (rowToupdate == null)
+                            {
+                                this.grid_Clients.Rows.Add(
+                                    socketManager.NodeId,
+                                    socketManager.DestinationEndpoint?.Address ?? socketManager.LocalEndpoint?.Address,
+                                    socketManager.LocalEndpoint?.Port,
+                                    socketManager.LastHelloRecieved.ToShortTimeString(),
+                                    socketManager.IsSocketListening.ToString());
+                            }
+                            else
+                            {
+                                this.grid_Clients.Rows[rowToupdate.Index].Cells[0].Value = socketManager.NodeId;
+                                this.grid_Clients.Rows[rowToupdate.Index].Cells[1].Value = socketManager.DestinationEndpoint?.Address ?? socketManager.LocalEndpoint?.Address;
+                                this.grid_Clients.Rows[rowToupdate.Index].Cells[2].Value = socketManager.LocalEndpoint?.Port;
+                                this.grid_Clients.Rows[rowToupdate.Index].Cells[3].Value = socketManager.LastHelloRecieved.ToLocalTime();
+                                this.grid_Clients.Rows[rowToupdate.Index].Cells[4].Value = socketManager.IsSocketListening.ToString();
+                            }
                         }
-                        else
+                        catch (Exception ex)
                         {
-                            this.grid_Clients.Rows[rowToupdate.Index].Cells[0].Value = socketManager.NodeId;
-                            this.grid_Clients.Rows[rowToupdate.Index].Cells[1].Value = socketManager.DestinationEndpoint.Address ?? socketManager?.LocalEndpoint?.Address;
-                            this.grid_Clients.Rows[rowToupdate.Index].Cells[2].Value = socketManager.LocalEndpoint?.Port;
-                            this.grid_Clients.Rows[rowToupdate.Index].Cells[3].Value = socketManager.LastHelloRecieved.ToLocalTime();
-                            this.grid_Clients.Rows[rowToupdate.Index].Cells[4].Value = socketManager.IsSocketListening.ToString();
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                    }
-                });
+                    });
 
             //once we've added them to our clients list, we set up the onchange event
             //so the UI will update with any changes to the socket manager
@@ -245,37 +257,41 @@
 
             UI.Invoke(
                 () =>
-                {
-                    try
                     {
-                        var castList = this.grid_Servers.Rows.Cast<DataGridViewRow>().ToList();
-
-                        var rowToupdate = castList.FirstOrDefault(r => r.Cells["servers_NodeIdCol"].Value.Equals(socketManager.NodeId));
-
-                        if (rowToupdate == null)
+                        try
                         {
-                            this.grid_Servers.Rows.Add(
-                                socketManager.NodeId,
-                                socketManager.DestinationEndpoint.Address,
-                                socketManager.LocalEndpoint.Port,
-                                socketManager.LastHelloRecieved.ToShortTimeString(),
-                                socketManager.IsSocketListening.ToString());
+                            var castList = this.grid_Servers.Rows.Cast<DataGridViewRow>().ToList();
+
+                            var rowToupdate = castList.FirstOrDefault(r => r.Cells["clients_NodeIdCol"].Value.Equals(socketManager.NodeId));
+
+                            if (rowToupdate == null)
+                            {
+                                this.grid_Servers.Rows.Add(
+                                    socketManager.NodeId,
+                                    socketManager.DestinationEndpoint.Address,
+                                    socketManager.LocalEndpoint.Port,
+                                    socketManager.LastHelloRecieved.ToShortTimeString(),
+                                    socketManager.IsSocketListening.ToString());
+                            }
+                            else
+                            {
+                                this.grid_Servers.Rows[rowToupdate.Index].Cells[0].Value = socketManager.NodeId;
+                                this.grid_Servers.Rows[rowToupdate.Index].Cells[1].Value = socketManager.DestinationEndpoint.Address;
+                                this.grid_Servers.Rows[rowToupdate.Index].Cells[2].Value = socketManager.LocalEndpoint.Port;
+                                this.grid_Servers.Rows[rowToupdate.Index].Cells[3].Value = socketManager.LastHelloRecieved.ToLocalTime();
+                                this.grid_Servers.Rows[rowToupdate.Index].Cells[4].Value = socketManager.IsSocketListening.ToString();
+                            }
                         }
-                        else
+                        catch (Exception ex)
                         {
-                            this.grid_Servers.Rows[rowToupdate.Index].Cells[0].Value = socketManager.NodeId;
-                            this.grid_Servers.Rows[rowToupdate.Index].Cells[1].Value = socketManager.DestinationEndpoint.Address;
-                            this.grid_Servers.Rows[rowToupdate.Index].Cells[2].Value = socketManager.LocalEndpoint.Port;
-                            this.grid_Servers.Rows[rowToupdate.Index].Cells[3].Value = socketManager.LastHelloRecieved.ToLocalTime();
-                            this.grid_Servers.Rows[rowToupdate.Index].Cells[4].Value = socketManager.IsSocketListening.ToString();
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                    }
-                });
+                    });
         }
 
+        private void ClientSocketManagers_SelectionChanged(object sender, EventArgs e)
+        {
+            //if client socket manager is selected, show connect button, else hide it
+        }
 
         private void ServerSocketManagers_OnAdd(object sender, SocketManager socketManager)
         {

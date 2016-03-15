@@ -10,6 +10,7 @@
     using Newtonsoft.Json;
 
     using ptpchat.Class_Definitions;
+    using ptpchat.Communication_Messages;
     using ptpchat.VerbHandlers;
 
     public class PTPClient
@@ -23,10 +24,11 @@
             this.ClientSocketManagers = new PtpList<SocketManager>();
         }
 
-        public Guid ThisNodeId;
-
         public PtpList<SocketManager> ClientSocketManagers;
+
         public PtpList<SocketManager> ServerSocketManagers;
+
+        public Guid ThisNodeId;
 
         public PtpList<string> ErrorMessages { get; }
 
@@ -124,7 +126,10 @@
                                     //and call the handle method on the verb handler, passing in the things it will need to do stuff
                                     var doReturn = verbHandlerForMessage.HandleMessage(ref socketManager, ref this.ServerSocketManagers, ref this.ClientSocketManagers);
 
-                                    if (doReturn) break;
+                                    if (doReturn)
+                                    {
+                                        break;
+                                    }
                                 }
                                 catch (Exception ex)
                                 {
@@ -134,6 +139,34 @@
                             }
                         }
                     });
+        }
+
+        //send a hello using an existing socketManager
+        public bool SendConnect(ref SocketManager socketManager)
+        {
+            try
+            {
+                if (socketManager?.UdpClient == null)
+                {
+                    //socket manager not set up properly
+                    return false;
+                }
+
+                var message = new ConnectMessage { msg_type = MessageType.CONNECT, msg_data = new ConnectData { dst_node_id = socketManager.NodeId, src_node_id = this.ThisNodeId } };
+
+                var connectJson = JsonConvert.SerializeObject(message);
+
+                var encodedConnectMsg = Encoding.ASCII.GetBytes(connectJson);
+
+                socketManager.UdpClient.SendAsync(encodedConnectMsg, encodedConnectMsg.Length, socketManager.DestinationEndpoint.Address.ToString(), 9001);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                this.ErrorMessages.Add(ex.ToString());
+                return false;
+            }
         }
 
         private IVerbHandler GetVerbHandlerForMessage(MessageType messageType)
