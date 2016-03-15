@@ -179,6 +179,9 @@
                 case MessageType.ROUTING:
                     return new RoutingVerbHandler();
 
+                case MessageType.CONNECT:
+                    return new ConnectVerbHandler();
+
                 default:
                     throw new Exception("No known verb handler");
             }
