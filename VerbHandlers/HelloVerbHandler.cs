@@ -1,6 +1,7 @@
 ﻿namespace ptpchat.VerbHandlers
 {
     using System;
+    using System.Linq;
 
     using Newtonsoft.Json;
 
@@ -18,11 +19,15 @@
             // { "msg_data": { "node_id": "5f715c17-4a41-482a-ab1f-45fa2cdd702b", "version": "ptpchat-server; 0.0"}, "msg_type": "HELLO"}
         }
 
-        public bool HandleMessage(ref SocketManager socketManager, ref PtpList<SocketManager> serverSocketManagers, ref PtpList<SocketManager> clientSocketManagers)
+        public bool HandleMessage(ref PtpList<SocketManager> serverSocketManagers, ref PtpList<SocketManager> clientSocketManagers)
         {
-            if (socketManager.NodeId != this.Message.msg_data.node_id)
+            var socketManager = serverSocketManagers.FirstOrDefault(a => a.DestinationNodeId == this.Message.msg_data.node_id)
+                                ?? clientSocketManagers.FirstOrDefault(a => a.DestinationNodeId == this.Message.msg_data.node_id);
+
+            if (socketManager == null)
             {
-                socketManager.NodeId = this.Message.msg_data.node_id;
+                //no socket manager for the message?
+                throw new Exception("Hello MESSAGE: no known socketmanager. Id = " + this.Message.msg_data.node_id);
             }
 
             socketManager.LastHelloRecieved = DateTime.Now;

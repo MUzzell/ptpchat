@@ -7,6 +7,6 @@
     {
         void ParseBaseMessage(string messageJson);
 
-        bool HandleMessage(ref SocketManager socketManager, ref PtpList<SocketManager> serverSocketManagers, ref PtpList<SocketManager> clientSocketManagers);
+        bool HandleMessage(ref PtpList<SocketManager> serverSocketManagers, ref PtpList<SocketManager> clientSocketManagers);
     }
 }

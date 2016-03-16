@@ -14,10 +14,13 @@
         public SocketManager(IPEndPoint localEndpoint, UdpClient updClient)
         {
             this.LocalEndpoint = localEndpoint;
-            this.UdpClient = updClient;
+            //this.UdpClient = updClient;
         }
 
         private IPEndPoint destinationEndpoint;
+
+        //the node id of the guy we're connected to
+        private Guid destinationNodeId;
 
         private bool isSocketListening;
 
@@ -25,8 +28,8 @@
 
         private IPEndPoint localEndpoint;
 
-        //the node id of the guy we're connected to
-        private Guid nodeId;
+        //our node id
+        private Guid localNodeId;
 
         public bool IsServerConnection { get; set; }
 
@@ -45,7 +48,7 @@
             }
         }
 
-        public UdpClient UdpClient { get; set; }
+        //public UdpClient UdpClient { get; set; }
 
         public IPEndPoint DestinationEndpoint
         {
@@ -92,18 +95,33 @@
             }
         }
 
-        public Guid NodeId
+        public Guid LocalNodeId
         {
-            get { return this.nodeId; }
+            get { return this.localNodeId; }
             set
             {
-                if (this.nodeId == value)
+                if (this.localNodeId == value)
                 {
                     return;
                 }
 
-                this.nodeId = value;
+                this.localNodeId = value;
                 this.OnPropertyChanged(new PropertyChangedEventArgs("NodeId"));
+            }
+        }
+
+        public Guid DestinationNodeId
+        {
+            get { return this.destinationNodeId; }
+            set
+            {
+                if (this.destinationNodeId == value)
+                {
+                    return;
+                }
+
+                this.destinationNodeId = value;
+                this.OnPropertyChanged(new PropertyChangedEventArgs("DestinationNodeId"));
             }
         }
 

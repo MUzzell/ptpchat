@@ -50,8 +50,17 @@
                     });
         }
 
-        public bool HandleMessage(ref SocketManager socketManager, ref PtpList<SocketManager> serverSocketManagers, ref PtpList<SocketManager> clientSocketManagers)
+        public bool HandleMessage(ref PtpList<SocketManager> serverSocketManagers, ref PtpList<SocketManager> clientSocketManagers)
         {
+            var socketManager = serverSocketManagers.FirstOrDefault(a => a.DestinationNodeId == this.Message.msg_data.node_id)
+                                ?? clientSocketManagers.FirstOrDefault(a => a.DestinationNodeId == this.Message.msg_data.node_id);
+
+            if (socketManager == null)
+            {
+                //no socket manager for the message?
+                throw new Exception("ROUTING MESSAGE: no known socketmanager");
+            }
+
             if (!this.Nodes.Any())
             {
                 throw new Exception("ROUTING MESSAGE: no nodes");
@@ -59,9 +68,23 @@
 
             foreach (var node in this.Nodes)
             {
-                var manager = new SocketManager { NodeId = node.NodeId, LocalEndpoint = new IPEndPoint(node.IpAddress, node.Port) };
+                var manager = new SocketManager
+                                  {
+                                      DestinationNodeId = node.NodeId,
+                                      DestinationEndpoint = new IPEndPoint(node.IpAddress, node.Port),
 
-                clientSocketManagers.Add(manager);
+                                      //using the server's socket manager to handle routing, so we can get our local info from there
+                                      LocalEndpoint = socketManager.LocalEndpoint,
+                                      LocalNodeId = socketManager.LocalNodeId,
+
+                                      //UdpClient = socketManager.UdpClient,
+                                      IsServerConnection = false
+                                  };
+
+                if (clientSocketManagers.All(a => a.DestinationNodeId != manager.LocalNodeId))
+                {
+                    clientSocketManagers.Add(manager);
+                }
             }
 
             //return 'dont stop listening' after message has been handled

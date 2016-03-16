@@ -20,6 +20,9 @@
             this.ErrorMessages = new PtpList<string>();
             this.ThisNodeId = Guid.NewGuid();
 
+            this.LocalEndpoint = new IPEndPoint(IPAddress.Any, new Random().Next(10000, 65535));
+            this.LocalUdpClient = new UdpClient(this.LocalEndpoint);
+
             this.ServerSocketManagers = new PtpList<SocketManager>();
             this.ClientSocketManagers = new PtpList<SocketManager>();
         }
@@ -28,13 +31,17 @@
 
         public PtpList<SocketManager> ServerSocketManagers;
 
-        public Guid ThisNodeId;
+        public Guid ThisNodeId { get; }
+
+        public IPEndPoint LocalEndpoint { get; }
+
+        public UdpClient LocalUdpClient { get; }
 
         public PtpList<string> ErrorMessages { get; }
 
         //send a hello to an ip address
         //create a new socket manager and send the hello, then return the socket manager
-        public SocketManager SendHello(IPAddress ip)
+        public SocketManager SendHello(IPAddress ip, int port, bool isServer)
         {
             SocketManager socketManager;
 
@@ -49,9 +56,13 @@
                 //else create the socket manager instance for this ip address as we've not seen it before
                 socketManager = new SocketManager
                                     {
-                                        NodeId = this.ThisNodeId,
-                                        DestinationEndpoint = new IPEndPoint(ip, 0),
-                                        LocalEndpoint = new IPEndPoint(IPAddress.Any, new Random().Next(10000, 65535))
+                                        LocalNodeId = this.ThisNodeId,
+                                        LocalEndpoint = this.LocalEndpoint,
+                                        DestinationNodeId = Guid.Empty,
+                                        DestinationEndpoint = new IPEndPoint(ip, port),
+
+                                        //UdpClient = this.LocalUdpClient,
+                                        IsServerConnection = isServer
                                     };
             }
 
@@ -65,16 +76,10 @@
         {
             try
             {
-                if (socketManager == null)
+                //check that we dont hello ourselves
+                if (socketManager?.DestinationEndpoint == null)
                 {
-                    //dont hello ourselves
                     return false;
-                }
-
-                if (socketManager.UdpClient == null)
-                {
-                    //bind the udp client to the (random) local endpoint created above
-                    socketManager.UdpClient = new UdpClient(socketManager.LocalEndpoint);
                 }
 
                 var helloJson = "{" + string.Format(JsonDefinitions.HelloJson, this.ThisNodeId, string.Empty) + "}";
@@ -83,7 +88,11 @@
                 var encodedHelloMsg = Encoding.ASCII.GetBytes(helloJson);
 
                 //send the hello msg to the server at the IP
-                socketManager.UdpClient.SendAsync(encodedHelloMsg, encodedHelloMsg.Length, socketManager.DestinationEndpoint.Address.ToString(), 9001);
+                this.LocalUdpClient.SendAsync(
+                    encodedHelloMsg,
+                    encodedHelloMsg.Length,
+                    socketManager.DestinationEndpoint.Address.ToString(),
+                    socketManager.DestinationEndpoint.Port > 0 ? socketManager.DestinationEndpoint.Port : 9001);
 
                 return true;
             }
@@ -95,18 +104,18 @@
         }
 
         //start listening on a socket in a while loop
-        public void StartListening(SocketManager socketManager)
+        public void StartListening()
         {
             Task.Run(
                 async () =>
                     {
-                        //the client for socket we want to listen on
-                        using (var udpClient = socketManager.UdpClient)
+                        try
                         {
-                            //constantly listen 
-                            while (true)
+                            //the client for socket we want to listen on
+                            using (var udpClient = this.LocalUdpClient)
                             {
-                                try
+                                //constantly listen 
+                                while (true)
                                 {
                                     //wait for an incoming message
                                     var asyncResult = await udpClient.ReceiveAsync();
@@ -124,19 +133,19 @@
                                     verbHandlerForMessage.ParseBaseMessage(messageJson);
 
                                     //and call the handle method on the verb handler, passing in the things it will need to do stuff
-                                    var doReturn = verbHandlerForMessage.HandleMessage(ref socketManager, ref this.ServerSocketManagers, ref this.ClientSocketManagers);
+                                    var doReturn = verbHandlerForMessage.HandleMessage(ref this.ServerSocketManagers, ref this.ClientSocketManagers);
 
                                     if (doReturn)
                                     {
                                         break;
                                     }
                                 }
-                                catch (Exception ex)
-                                {
-                                    //catch any exceptions, log the error, and discard the message
-                                    this.ErrorMessages.Add(ex.Message);
-                                }
                             }
+                        }
+                        catch (Exception ex)
+                        {
+                            //catch any exceptions, log the error, and discard the message
+                            this.ErrorMessages.Add(ex.Message);
                         }
                     });
         }
@@ -146,19 +155,13 @@
         {
             try
             {
-                if (socketManager?.UdpClient == null)
-                {
-                    //socket manager not set up properly
-                    return false;
-                }
-
-                var message = new ConnectMessage { msg_type = MessageType.CONNECT, msg_data = new ConnectData { dst_node_id = socketManager.NodeId, src_node_id = this.ThisNodeId } };
+                var message = new ConnectMessage { msg_type = MessageType.CONNECT, msg_data = new ConnectData { dst_node_id = socketManager.LocalNodeId, src_node_id = this.ThisNodeId } };
 
                 var connectJson = JsonConvert.SerializeObject(message);
 
                 var encodedConnectMsg = Encoding.ASCII.GetBytes(connectJson);
 
-                socketManager.UdpClient.SendAsync(encodedConnectMsg, encodedConnectMsg.Length, socketManager.DestinationEndpoint.Address.ToString(), 9001);
+                this.LocalUdpClient.SendAsync(encodedConnectMsg, encodedConnectMsg.Length, socketManager.DestinationEndpoint.Address.ToString(), 9001);
 
                 return true;
             }

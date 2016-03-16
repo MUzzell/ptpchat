@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ptpchat.VerbHandlers
+﻿namespace ptpchat.VerbHandlers
 {
+    using System;
+
     using ptpchat.Class_Definitions;
     using ptpchat.Client_Class;
     using ptpchat.Communication_Messages;
 
-    class ConnectVerbHandler : IVerbHandler
+    internal class ConnectVerbHandler : IVerbHandler
     {
         private ConnectMessage Message { get; set; }
 
@@ -19,7 +15,7 @@ namespace ptpchat.VerbHandlers
             throw new NotImplementedException();
         }
 
-        public bool HandleMessage(ref SocketManager socketManager, ref PtpList<SocketManager> serverSocketManagers, ref PtpList<SocketManager> clientSocketManagers)
+        public bool HandleMessage(ref PtpList<SocketManager> serverSocketManagers, ref PtpList<SocketManager> clientSocketManagers)
         {
             throw new NotImplementedException();
         }
