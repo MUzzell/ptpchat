@@ -109,10 +109,10 @@
             Task.Run(
                 async () =>
                     {
-                        try
+                        //constantly listen 
+                        while (true)
                         {
-                            //constantly listen 
-                            while (true)
+                            try
                             {
                                 //wait for an incoming message
                                 var asyncResult = await this.LocalUdpClient.ReceiveAsync();
@@ -138,11 +138,11 @@
                                 }
 
                             }
-                        }
-                        catch (Exception ex)
-                        {
-                            //catch any exceptions, log the error, and discard the message
-                            this.ErrorMessages.Add(ex.Message);
+                            catch (Exception ex)
+                            {
+                                //catch any exceptions, log the error, and discard the message
+                                this.ErrorMessages.Add(ex.Message);
+                            }
                         }
                     });
         }
