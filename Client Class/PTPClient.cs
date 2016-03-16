@@ -55,15 +55,15 @@
             {
                 //else create the socket manager instance for this ip address as we've not seen it before
                 socketManager = new SocketManager
-                                    {
-                                        LocalNodeId = this.ThisNodeId,
-                                        LocalEndpoint = this.LocalEndpoint,
-                                        DestinationNodeId = Guid.Empty,
-                                        DestinationEndpoint = new IPEndPoint(ip, port),
+                {
+                    LocalNodeId = this.ThisNodeId,
+                    LocalEndpoint = this.LocalEndpoint,
+                    DestinationNodeId = Guid.Empty,
+                    DestinationEndpoint = new IPEndPoint(ip, port),
 
-                                        //UdpClient = this.LocalUdpClient,
-                                        IsServerConnection = isServer
-                                    };
+                    //UdpClient = this.LocalUdpClient,
+                    IsServerConnection = isServer
+                };
             }
 
             var sendSuccessful = this.SendHello(ref socketManager);
@@ -111,35 +111,32 @@
                     {
                         try
                         {
-                            //the client for socket we want to listen on
-                            using (var udpClient = this.LocalUdpClient)
+                            //constantly listen 
+                            while (true)
                             {
-                                //constantly listen 
-                                while (true)
+                                //wait for an incoming message
+                                var asyncResult = await this.LocalUdpClient.ReceiveAsync();
+
+                                //read and parse the json
+                                var messageJson = Encoding.ASCII.GetString(asyncResult.Buffer);
+
+                                //cast the message to a BaseMessage so we can use the message type
+                                var baseMessage = JsonConvert.DeserializeObject<BaseMessage>(messageJson);
+
+                                //get a verb handler for the message
+                                var verbHandlerForMessage = this.GetVerbHandlerForMessage(baseMessage.msg_type);
+
+                                //pass the message to the verb handler, and have it parse the message
+                                verbHandlerForMessage.ParseBaseMessage(messageJson);
+
+                                //and call the handle method on the verb handler, passing in the things it will need to do stuff
+                                var doReturn = verbHandlerForMessage.HandleMessage(asyncResult.RemoteEndPoint, ref this.ServerSocketManagers, ref this.ClientSocketManagers);
+
+                                if (doReturn)
                                 {
-                                    //wait for an incoming message
-                                    var asyncResult = await udpClient.ReceiveAsync();
-
-                                    //read and parse the json
-                                    var messageJson = Encoding.ASCII.GetString(asyncResult.Buffer);
-
-                                    //cast the message to a BaseMessage so we can use the message type
-                                    var baseMessage = JsonConvert.DeserializeObject<BaseMessage>(messageJson);
-
-                                    //get a verb handler for the message
-                                    var verbHandlerForMessage = this.GetVerbHandlerForMessage(baseMessage.msg_type);
-
-                                    //pass the message to the verb handler, and have it parse the message
-                                    verbHandlerForMessage.ParseBaseMessage(messageJson);
-
-                                    //and call the handle method on the verb handler, passing in the things it will need to do stuff
-                                    var doReturn = verbHandlerForMessage.HandleMessage(ref this.ServerSocketManagers, ref this.ClientSocketManagers);
-
-                                    if (doReturn)
-                                    {
-                                        break;
-                                    }
+                                    break;
                                 }
+
                             }
                         }
                         catch (Exception ex)

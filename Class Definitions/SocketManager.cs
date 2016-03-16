@@ -11,27 +11,24 @@
         {
         }
 
-        public SocketManager(IPEndPoint localEndpoint, UdpClient updClient)
+        public SocketManager(IPEndPoint localEndpoint)
         {
             this.LocalEndpoint = localEndpoint;
-            //this.UdpClient = updClient;
         }
-
-        private IPEndPoint destinationEndpoint;
 
         //the node id of the guy we're connected to
         private Guid destinationNodeId;
-
-        private bool isSocketListening;
-
-        private DateTime lastHelloRecieved;
-
-        private IPEndPoint localEndpoint;
+        private IPEndPoint destinationEndpoint;
 
         //our node id
         private Guid localNodeId;
+        private IPEndPoint localEndpoint;
+
+        private bool isSocketListening;
 
         public bool IsServerConnection { get; set; }
+
+        private DateTime lastHelloRecieved;
 
         public bool IsSocketListening
         {
@@ -47,9 +44,6 @@
                 this.OnPropertyChanged(new PropertyChangedEventArgs("IsSocketListening"));
             }
         }
-
-        //public UdpClient UdpClient { get; set; }
-
         public IPEndPoint DestinationEndpoint
         {
             get { return this.destinationEndpoint; }
@@ -64,7 +58,6 @@
                 this.OnPropertyChanged(new PropertyChangedEventArgs("DestinationEndpoint"));
             }
         }
-
         public IPEndPoint LocalEndpoint
         {
             get { return this.localEndpoint; }
@@ -95,21 +88,6 @@
             }
         }
 
-        public Guid LocalNodeId
-        {
-            get { return this.localNodeId; }
-            set
-            {
-                if (this.localNodeId == value)
-                {
-                    return;
-                }
-
-                this.localNodeId = value;
-                this.OnPropertyChanged(new PropertyChangedEventArgs("NodeId"));
-            }
-        }
-
         public Guid DestinationNodeId
         {
             get { return this.destinationNodeId; }
@@ -122,6 +100,21 @@
 
                 this.destinationNodeId = value;
                 this.OnPropertyChanged(new PropertyChangedEventArgs("DestinationNodeId"));
+            }
+        }
+
+        public Guid LocalNodeId
+        {
+            get { return this.localNodeId; }
+            set
+            {
+                if (this.localNodeId == value)
+                {
+                    return;
+                }
+
+                this.localNodeId = value;
+                this.OnPropertyChanged(new PropertyChangedEventArgs("NodeId"));
             }
         }
 

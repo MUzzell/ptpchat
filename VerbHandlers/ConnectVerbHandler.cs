@@ -1,6 +1,7 @@
 ﻿namespace ptpchat.VerbHandlers
 {
     using System;
+    using System.Net;
 
     using ptpchat.Class_Definitions;
     using ptpchat.Client_Class;
@@ -15,7 +16,7 @@
             throw new NotImplementedException();
         }
 
-        public bool HandleMessage(ref PtpList<SocketManager> serverSocketManagers, ref PtpList<SocketManager> clientSocketManagers)
+        public bool HandleMessage(IPEndPoint senderEndpoint, ref PtpList<SocketManager> serverSocketManagers, ref PtpList<SocketManager> clientSocketManagers)
         {
             throw new NotImplementedException();
         }

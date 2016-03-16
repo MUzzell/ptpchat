@@ -1,5 +1,7 @@
 ﻿namespace ptpchat.VerbHandlers
 {
+    using System.Net;
+
     using ptpchat.Class_Definitions;
     using ptpchat.Client_Class;
 
@@ -7,6 +9,6 @@
     {
         void ParseBaseMessage(string messageJson);
 
-        bool HandleMessage(ref PtpList<SocketManager> serverSocketManagers, ref PtpList<SocketManager> clientSocketManagers);
+        bool HandleMessage(IPEndPoint senderEndpoint, ref PtpList<SocketManager> serverSocketManagers, ref PtpList<SocketManager> clientSocketManagers);
     }
 }

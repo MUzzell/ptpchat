@@ -34,16 +34,15 @@
             this.listBox_ErrorLog = new System.Windows.Forms.ListBox();
             this.lbl_log = new System.Windows.Forms.Label();
             this.grid_Servers = new System.Windows.Forms.DataGridView();
+            this.servers_NodeIdCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.servers_IpAddressCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.server_PortCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.servers_LastHelloCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.socketManagerBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.lbl_Clients = new System.Windows.Forms.Label();
             this.grid_Clients = new System.Windows.Forms.DataGridView();
             this.btn_ClientConnect = new System.Windows.Forms.Button();
             this.lbl_NodeId = new System.Windows.Forms.Label();
-            this.servers_NodeIdCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.servers_IpAddressCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.server_PortCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.servers_LastHelloCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.servers_IsListeningCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.clients_NodeIdCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.clients_IPAddressCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.clients_PortCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -89,13 +88,42 @@
             this.servers_NodeIdCol,
             this.servers_IpAddressCol,
             this.server_PortCol,
-            this.servers_LastHelloCol,
-            this.servers_IsListeningCol});
+            this.servers_LastHelloCol});
             this.grid_Servers.Location = new System.Drawing.Point(40, 151);
             this.grid_Servers.Name = "grid_Servers";
             this.grid_Servers.ReadOnly = true;
             this.grid_Servers.Size = new System.Drawing.Size(661, 150);
             this.grid_Servers.TabIndex = 6;
+            // 
+            // servers_NodeIdCol
+            // 
+            this.servers_NodeIdCol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.servers_NodeIdCol.HeaderText = "NodeID";
+            this.servers_NodeIdCol.Name = "servers_NodeIdCol";
+            this.servers_NodeIdCol.ReadOnly = true;
+            // 
+            // servers_IpAddressCol
+            // 
+            this.servers_IpAddressCol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.servers_IpAddressCol.HeaderText = "IP Address";
+            this.servers_IpAddressCol.Name = "servers_IpAddressCol";
+            this.servers_IpAddressCol.ReadOnly = true;
+            // 
+            // server_PortCol
+            // 
+            this.server_PortCol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.server_PortCol.HeaderText = "Port";
+            this.server_PortCol.Name = "server_PortCol";
+            this.server_PortCol.ReadOnly = true;
+            this.server_PortCol.Width = 50;
+            // 
+            // servers_LastHelloCol
+            // 
+            this.servers_LastHelloCol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.servers_LastHelloCol.HeaderText = "Last Recieve time";
+            this.servers_LastHelloCol.Name = "servers_LastHelloCol";
+            this.servers_LastHelloCol.ReadOnly = true;
+            this.servers_LastHelloCol.Width = 150;
             // 
             // lbl_Clients
             // 
@@ -142,42 +170,6 @@
             this.lbl_NodeId.Size = new System.Drawing.Size(0, 13);
             this.lbl_NodeId.TabIndex = 10;
             // 
-            // servers_NodeIdCol
-            // 
-            this.servers_NodeIdCol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.servers_NodeIdCol.HeaderText = "NodeID";
-            this.servers_NodeIdCol.Name = "servers_NodeIdCol";
-            this.servers_NodeIdCol.ReadOnly = true;
-            // 
-            // servers_IpAddressCol
-            // 
-            this.servers_IpAddressCol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.servers_IpAddressCol.HeaderText = "IP Address";
-            this.servers_IpAddressCol.Name = "servers_IpAddressCol";
-            this.servers_IpAddressCol.ReadOnly = true;
-            // 
-            // server_PortCol
-            // 
-            this.server_PortCol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.server_PortCol.HeaderText = "Port";
-            this.server_PortCol.Name = "server_PortCol";
-            this.server_PortCol.ReadOnly = true;
-            this.server_PortCol.Width = 50;
-            // 
-            // servers_LastHelloCol
-            // 
-            this.servers_LastHelloCol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.servers_LastHelloCol.HeaderText = "Last Recieve time";
-            this.servers_LastHelloCol.Name = "servers_LastHelloCol";
-            this.servers_LastHelloCol.ReadOnly = true;
-            this.servers_LastHelloCol.Width = 150;
-            // 
-            // servers_IsListeningCol
-            // 
-            this.servers_IsListeningCol.HeaderText = "Is Listening?";
-            this.servers_IsListeningCol.Name = "servers_IsListeningCol";
-            this.servers_IsListeningCol.ReadOnly = true;
-            // 
             // clients_NodeIdCol
             // 
             this.clients_NodeIdCol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
@@ -195,7 +187,7 @@
             // clients_PortCol
             // 
             this.clients_PortCol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.clients_PortCol.HeaderText = "Local Port";
+            this.clients_PortCol.HeaderText = "Their Port";
             this.clients_PortCol.Name = "clients_PortCol";
             this.clients_PortCol.ReadOnly = true;
             this.clients_PortCol.Width = 50;
@@ -257,7 +249,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn servers_IpAddressCol;
         private System.Windows.Forms.DataGridViewTextBoxColumn server_PortCol;
         private System.Windows.Forms.DataGridViewTextBoxColumn servers_LastHelloCol;
-        private System.Windows.Forms.DataGridViewTextBoxColumn servers_IsListeningCol;
         private System.Windows.Forms.DataGridViewTextBoxColumn clients_NodeIdCol;
         private System.Windows.Forms.DataGridViewTextBoxColumn clients_IPAddressCol;
         private System.Windows.Forms.DataGridViewTextBoxColumn clients_PortCol;
