@@ -108,19 +108,6 @@
                             //and store the socket manager instance now that we've created a connection
                             ptpClient.ServerSocketManagers.Add(socketManager);
                         }
-
-                        //if (socketManager.IsServerConnection)
-                        //{
-
-                        //}
-                        //else
-                        //{
-                        //    if (!ptpClient.ClientSocketManagers.Contains(socketManager))
-                        //    {
-                        //        //and store the socket manager instance now that we've created a connection
-                        //        ptpClient.ClientSocketManagers.Add(socketManager);
-                        //    }
-                        //}
                     });
         }
 
@@ -211,41 +198,33 @@
 
         private void ClientSocketManagers_OnAdd(object sender, SocketManager socketManager)
         {
-            UI.Invoke(
-                () =>
-                    {
-                        try
-                        {
-                            var castList = this.grid_Clients.Rows.Cast<DataGridViewRow>().ToList();
-
-                            var rowToupdate = castList.FirstOrDefault(r => r.Cells["clients_NodeIdCol"].Value.Equals(socketManager.LocalNodeId));
-
-                            if (rowToupdate == null)
-                            {
-                                this.grid_Clients.Rows.Add(
-                                    socketManager.LocalNodeId,
-                                    socketManager.DestinationEndpoint?.Address ?? socketManager.LocalEndpoint?.Address,
-                                    socketManager.LocalEndpoint?.Port,
-                                    socketManager.LastHelloRecieved.ToShortTimeString(),
-                                    socketManager.IsSocketListening.ToString());
-                            }
-                            else
-                            {
-                                this.grid_Clients.Rows[rowToupdate.Index].Cells[0].Value = socketManager.LocalNodeId;
-                                this.grid_Clients.Rows[rowToupdate.Index].Cells[1].Value = socketManager.DestinationEndpoint?.Address ?? socketManager.LocalEndpoint?.Address;
-                                this.grid_Clients.Rows[rowToupdate.Index].Cells[2].Value = socketManager.LocalEndpoint?.Port;
-                                this.grid_Clients.Rows[rowToupdate.Index].Cells[3].Value = socketManager.LastHelloRecieved.ToLocalTime();
-                                this.grid_Clients.Rows[rowToupdate.Index].Cells[4].Value = socketManager.IsSocketListening.ToString();
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                        }
-                    });
-
             //once we've added them to our clients list, we set up the onchange event
             //so the UI will update with any changes to the socket manager
             socketManager.PropertyChanged += this.ClientSocketManagers_PropertyChanged;
+
+            UI.Invoke(
+              () =>
+              {
+                  try
+                  {
+                      var castList = this.grid_Clients.Rows.Cast<DataGridViewRow>().ToList();
+
+                      var rowToupdate = castList.FirstOrDefault(r => r.Cells["clients_NodeIdCol"].Value.Equals(socketManager.DestinationNodeId));
+
+                      if (rowToupdate == null)
+                      {
+                          this.grid_Clients.Rows.Add(
+                                socketManager.DestinationNodeId,
+                                socketManager.DestinationEndpoint.Address,
+                                socketManager.DestinationEndpoint.Port,
+                                socketManager.LastHelloRecieved.ToShortTimeString());
+                      }
+                  }
+                  catch (Exception ex)
+                  {
+                  }
+              });
+
         }
 
         private void ClientSocketManagers_PropertyChanged(object sender, PropertyChangedEventArgs args)
