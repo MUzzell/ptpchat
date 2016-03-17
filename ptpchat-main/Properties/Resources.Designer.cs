@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ptpchat.Properties
+namespace PtpChat.Main.Properties
 {
 
 

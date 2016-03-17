@@ -1,8 +1,6 @@
-﻿namespace ptpchat.Communication_Messages
+﻿namespace PtpChat.VerbHandlers.Communication_Messages
 {
     using System;
-
-    using ptpchat.Class_Definitions;
 
     public class ConnectMessage : BaseMessage
     {

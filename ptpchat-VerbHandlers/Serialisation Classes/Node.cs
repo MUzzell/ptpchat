@@ -1,4 +1,4 @@
-﻿namespace ptpchat.Class_Definitions
+﻿namespace PtpChat.VerbHandlers.Serialisation_Classes
 {
     using System;
     using System.Net;

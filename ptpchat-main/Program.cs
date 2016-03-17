@@ -1,9 +1,11 @@
-﻿namespace ptpchat
+﻿namespace PtpChat.Main
 {
-	using System;
-	using System.Windows.Forms;
-	using util;
-	internal static class Program
+    using System;
+    using System.Windows.Forms;
+
+    using PtpChat.Main.Util;
+
+    internal static class Program
     {
         /// <summary>
         /// The main entry point for the application.

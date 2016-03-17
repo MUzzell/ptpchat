@@ -1,4 +1,4 @@
-﻿namespace ptpchat.Class_Definitions
+﻿namespace PtpChat.Net.Socket_Manager
 {
     using System;
     using System.ComponentModel;

@@ -1,4 +1,4 @@
-﻿namespace ptpchat
+﻿namespace PtpChat.Main
 {
     using System;
     using System.Collections.Generic;
@@ -8,8 +8,9 @@
     using System.Net;
     using System.Windows.Forms;
 
-    using ptpchat.Class_Definitions;
-    using ptpchat.Client_Class;
+    using ptpchat_Net.Socket_Manager;
+
+    using PtpChat.Main.Client_Class;
 
     using Timer = System.Timers.Timer;
 
@@ -182,13 +183,6 @@
         }
 
         //#########
-        //Delegates
-        //#########
-        private delegate void SendHelloByIpDelegate(PTPClient ptpClient, object ipAddresses);
-
-        private delegate void SendHelloBySocketManagerDelegate(PTPClient ptpClient, SocketManager socketManager);
-
-        //#########
         //Event Handlers
         //#########
         private void ErrorMessages_OnAdd(object sender, string error)
@@ -226,6 +220,43 @@
                     });
         }
 
+        private void ServerSocketManagers_OnAdd(object sender, SocketManager socketManager)
+        {
+            //once we've added them to our server list, we set up the onchange event
+            //so the UI will update with any changes to the socket manager
+            socketManager.PropertyChanged += this.ServerSocketManagers_PropertyChanged;
+
+            UI.Invoke(
+                () =>
+                    {
+                        try
+                        {
+                            var castList = this.grid_Servers.Rows.Cast<DataGridViewRow>().ToList();
+
+                            var rowToupdate = castList.FirstOrDefault(r => r.Cells["servers_NodeIdCol"].Value.Equals(socketManager.DestinationNodeId));
+
+                            if (rowToupdate == null)
+                            {
+                                this.grid_Servers.Rows.Add(
+                                    socketManager.DestinationNodeId,
+                                    socketManager.DestinationEndpoint.Address,
+                                    socketManager.DestinationEndpoint.Port,
+                                    socketManager.LastHelloRecieved.ToShortTimeString());
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                        }
+                    });
+        }
+
+        //#########
+        //Delegates
+        //#########
+        private delegate void SendHelloByIpDelegate(PTPClient ptpClient, object ipAddresses);
+
+        private delegate void SendHelloBySocketManagerDelegate(PTPClient ptpClient, SocketManager socketManager);
+
         private void ClientSocketManagers_PropertyChanged(object sender, PropertyChangedEventArgs args)
         {
             var socketManager = (SocketManager)sender;
@@ -260,36 +291,6 @@
         private void ClientSocketManagers_SelectionChanged(object sender, EventArgs e)
         {
             //if client socket manager is selected, show connect button, else hide it
-        }
-
-        private void ServerSocketManagers_OnAdd(object sender, SocketManager socketManager)
-        {
-            //once we've added them to our server list, we set up the onchange event
-            //so the UI will update with any changes to the socket manager
-            socketManager.PropertyChanged += this.ServerSocketManagers_PropertyChanged;
-
-            UI.Invoke(
-                () =>
-                    {
-                        try
-                        {
-                            var castList = this.grid_Servers.Rows.Cast<DataGridViewRow>().ToList();
-
-                            var rowToupdate = castList.FirstOrDefault(r => r.Cells["servers_NodeIdCol"].Value.Equals(socketManager.DestinationNodeId));
-
-                            if (rowToupdate == null)
-                            {
-                                this.grid_Servers.Rows.Add(
-                                    socketManager.DestinationNodeId,
-                                    socketManager.DestinationEndpoint.Address,
-                                    socketManager.DestinationEndpoint.Port,
-                                    socketManager.LastHelloRecieved.ToShortTimeString());
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                        }
-                    });
         }
 
         private void ServerSocketManagers_PropertyChanged(object sender, PropertyChangedEventArgs args)

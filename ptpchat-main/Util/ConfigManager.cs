@@ -1,24 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Net;
-
-namespace ptpchat.util
+﻿namespace PtpChat.Main.Util
 {
-	class ConfigManager
-	{
+    using System.Net;
 
-		IPAddress InitialServerAddress
-		{
-			get
-			{
-				return IPAddress.Parse(Properties.Settings.Default.InitialServerAddress_Host);
-			}
-			
+    using PtpChat.Main.Properties;
 
-		}
-
-	}
+    internal class ConfigManager
+    {
+        IPAddress InitialServerAddress { get { return IPAddress.Parse(Settings.Default.InitialServerAddress_Host); } }
+    }
 }

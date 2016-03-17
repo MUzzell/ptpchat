@@ -76,10 +76,6 @@
       <DependentUpon>UDPChatForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Util\ConfigManager.cs" />
-    <Compile Include="VerbHandlers\ConnectVerbHandler.cs" />
-    <Compile Include="VerbHandlers\HelloVerbHandler.cs" />
-    <Compile Include="VerbHandlers\IVerbHandler.cs" />
-    <Compile Include="VerbHandlers\RoutingVerbHandler.cs" />
     <EmbeddedResource Include="PTPChatForm.resx">
       <DependentUpon>PTPChatForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -122,17 +118,17 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ptpchat-Net\ptpchat-Net.csproj">
+    <ProjectReference Include="..\ptpchat-Net\PtpChat.Net.csproj">
       <Project>{1ae1ae0d-5c66-4864-b033-a95706645d1e}</Project>
-      <Name>ptpchat-Net</Name>
+      <Name>PtpChat.Net</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ptpchat-UtilityClasses\ptpchat-UtilityClasses.csproj">
+    <ProjectReference Include="..\ptpchat-UtilityClasses\PtpChat.UtilityClasses.csproj">
       <Project>{56d98466-8cfa-46c8-a40f-229eeb5d2c87}</Project>
-      <Name>ptpchat-UtilityClasses</Name>
+      <Name>PtpChat.UtilityClasses</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ptpchat-VerbHandlers\ptpchat-VerbHandlers.csproj">
+    <ProjectReference Include="..\ptpchat-VerbHandlers\PtpChat.VerbHandlers.csproj">
       <Project>{dbb71a47-545b-4dd7-8472-fc45ff76cc0e}</Project>
-      <Name>ptpchat-VerbHandlers</Name>
+      <Name>PtpChat.VerbHandlers</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

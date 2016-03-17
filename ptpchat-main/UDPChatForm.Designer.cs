@@ -1,4 +1,4 @@
-﻿namespace ptpchat
+﻿namespace PtpChat.Main
 {
 	partial class UDPChatForm
 	{

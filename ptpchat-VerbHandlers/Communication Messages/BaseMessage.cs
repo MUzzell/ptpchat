@@ -1,4 +1,4 @@
-﻿namespace ptpchat.Class_Definitions
+﻿namespace PtpChat.VerbHandlers.Communication_Messages
 {
     public class BaseMessage
     {

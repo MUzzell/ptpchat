@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ptpchat-Main", "ptpchat-main\ptpchat-Main.csproj", "{45084864-EA6E-426C-8E8A-EB55841F1EBB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PtpChat.Main", "ptpchat-main\PtpChat.Main.csproj", "{45084864-EA6E-426C-8E8A-EB55841F1EBB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ptpchat-VerbHandlers", "ptpchat-VerbHandlers\ptpchat-VerbHandlers.csproj", "{DBB71A47-545B-4DD7-8472-FC45FF76CC0E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PtpChat.VerbHandlers", "ptpchat-VerbHandlers\PtpChat.VerbHandlers.csproj", "{DBB71A47-545B-4DD7-8472-FC45FF76CC0E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ptpchat-Net", "ptpchat-Net\ptpchat-Net.csproj", "{1AE1AE0D-5C66-4864-B033-A95706645D1E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PtpChat.Net", "ptpchat-Net\PtpChat.Net.csproj", "{1AE1AE0D-5C66-4864-B033-A95706645D1E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ptpchat-UtilityClasses", "ptpchat-UtilityClasses\ptpchat-UtilityClasses.csproj", "{56D98466-8CFA-46C8-A40F-229EEB5D2C87}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PtpChat.UtilityClasses", "ptpchat-UtilityClasses\PtpChat.UtilityClasses.csproj", "{56D98466-8CFA-46C8-A40F-229EEB5D2C87}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

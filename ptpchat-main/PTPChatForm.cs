@@ -1,4 +1,4 @@
-﻿namespace ptpchat
+﻿namespace PtpChat.Main
 {
     using System;
     using System.IO;
@@ -8,7 +8,7 @@
 
     using Newtonsoft.Json;
 
-    using ptpchat.Class_Definitions;
+    using ptpchat_VerbHandlers.Communication_Messages;
 
     public partial class PTPChatForm : Form
     {

@@ -1,4 +1,4 @@
-﻿namespace ptpchat.Class_Definitions
+﻿namespace PtpChat.Main.Class_Definitions
 {
     internal static class JsonDefinitions
     {
