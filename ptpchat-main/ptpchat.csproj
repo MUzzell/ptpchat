@@ -89,6 +89,7 @@
     <Compile Include="UDPChatForm.Designer.cs">
       <DependentUpon>UDPChatForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Util\ConfigManager.cs" />
     <Compile Include="VerbHandlers\ConnectVerbHandler.cs" />
     <Compile Include="VerbHandlers\HelloVerbHandler.cs" />
     <Compile Include="VerbHandlers\IVerbHandler.cs" />
