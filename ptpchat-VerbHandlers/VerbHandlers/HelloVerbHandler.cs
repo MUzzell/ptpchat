@@ -10,7 +10,7 @@
     using ptpchat.Client_Class;
     using ptpchat.Communication_Messages;
 
-    internal class HelloVerbHandler : IVerbHandler
+    public class HelloVerbHandler : IVerbHandler
     {
         private HelloMessage Message { get; set; }
 
@@ -23,15 +23,17 @@
         public bool HandleMessage(IPEndPoint senderEndpoint, ref PtpList<SocketManager> serverSocketManagers, ref PtpList<SocketManager> clientSocketManagers)
         {
             var socketManager = serverSocketManagers.FirstOrDefault(a => a.DestinationNodeId == this.Message.msg_data.node_id)
-                             ?? clientSocketManagers.FirstOrDefault(a => a.DestinationNodeId == this.Message.msg_data.node_id);
+                                ?? clientSocketManagers.FirstOrDefault(a => a.DestinationNodeId == this.Message.msg_data.node_id);
 
             if (socketManager == null)
             {
                 socketManager = serverSocketManagers.FirstOrDefault(a => Equals(a.DestinationEndpoint.Address, senderEndpoint.Address))
-                             ?? clientSocketManagers.FirstOrDefault(a => Equals(a.DestinationEndpoint.Address, senderEndpoint.Address));
+                                ?? clientSocketManagers.FirstOrDefault(a => Equals(a.DestinationEndpoint.Address, senderEndpoint.Address));
 
-                if(socketManager != null)
+                if (socketManager != null)
+                {
                     socketManager.DestinationNodeId = this.Message.msg_data.node_id;
+                }
             }
 
             if (socketManager == null)

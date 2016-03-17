@@ -7,7 +7,7 @@
     using ptpchat.Client_Class;
     using ptpchat.Communication_Messages;
 
-    internal class ConnectVerbHandler : IVerbHandler
+    public class ConnectVerbHandler : IVerbHandler
     {
         private ConnectMessage Message { get; set; }
 

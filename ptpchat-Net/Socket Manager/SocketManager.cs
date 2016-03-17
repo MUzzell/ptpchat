@@ -3,7 +3,6 @@
     using System;
     using System.ComponentModel;
     using System.Net;
-    using System.Net.Sockets;
 
     public class SocketManager : INotifyPropertyChanged
     {
@@ -16,19 +15,21 @@
             this.LocalEndpoint = localEndpoint;
         }
 
-        //the node id of the guy we're connected to
-        private Guid destinationNodeId;
         private IPEndPoint destinationEndpoint;
 
-        //our node id
-        private Guid localNodeId;
-        private IPEndPoint localEndpoint;
+        //the node id of the guy we're connected to
+        private Guid destinationNodeId;
 
         private bool isSocketListening;
 
-        public bool IsServerConnection { get; set; }
-
         private DateTime lastHelloRecieved;
+
+        private IPEndPoint localEndpoint;
+
+        //our node id
+        private Guid localNodeId;
+
+        public bool IsServerConnection { get; set; }
 
         public bool IsSocketListening
         {
@@ -44,6 +45,7 @@
                 this.OnPropertyChanged(new PropertyChangedEventArgs("IsSocketListening"));
             }
         }
+
         public IPEndPoint DestinationEndpoint
         {
             get { return this.destinationEndpoint; }
@@ -58,6 +60,7 @@
                 this.OnPropertyChanged(new PropertyChangedEventArgs("DestinationEndpoint"));
             }
         }
+
         public IPEndPoint LocalEndpoint
         {
             get { return this.localEndpoint; }

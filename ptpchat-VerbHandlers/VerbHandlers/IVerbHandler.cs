@@ -5,7 +5,7 @@
     using ptpchat.Class_Definitions;
     using ptpchat.Client_Class;
 
-    internal interface IVerbHandler
+    public interface IVerbHandler
     {
         void ParseBaseMessage(string messageJson);
 

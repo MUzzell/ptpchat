@@ -10,7 +10,7 @@
     using ptpchat.Class_Definitions;
     using ptpchat.Client_Class;
 
-    internal class RoutingVerbHandler : IVerbHandler
+    public class RoutingVerbHandler : IVerbHandler
     {
         private RoutingMessage Message { get; set; }
 

@@ -48,33 +48,19 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class Definitions\JSONDefinitions.cs" />
-    <Compile Include="Class Definitions\Node.cs" />
-    <Compile Include="Class Definitions\SocketManager.cs" />
     <Compile Include="Client Class\PTPClient.cs" />
-    <Compile Include="Client Class\PTPList.cs" />
     <Compile Include="Client Class\UI.cs" />
-    <Compile Include="Communication Messages\BaseMessage.cs" />
-    <Compile Include="Communication Messages\ConnectMessage.cs" />
-    <Compile Include="Communication Messages\HelloMessage.cs" />
-    <Compile Include="Communication Messages\RoutingMessage.cs" />
     <Compile Include="PTPChatForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -134,6 +120,20 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ptpchat-Net\ptpchat-Net.csproj">
+      <Project>{1ae1ae0d-5c66-4864-b033-a95706645d1e}</Project>
+      <Name>ptpchat-Net</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ptpchat-UtilityClasses\ptpchat-UtilityClasses.csproj">
+      <Project>{56d98466-8cfa-46c8-a40f-229eeb5d2c87}</Project>
+      <Name>ptpchat-UtilityClasses</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ptpchat-VerbHandlers\ptpchat-VerbHandlers.csproj">
+      <Project>{dbb71a47-545b-4dd7-8472-fc45ff76cc0e}</Project>
+      <Name>ptpchat-VerbHandlers</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

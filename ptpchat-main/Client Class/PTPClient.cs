@@ -55,15 +55,15 @@
             {
                 //else create the socket manager instance for this ip address as we've not seen it before
                 socketManager = new SocketManager
-                {
-                    LocalNodeId = this.ThisNodeId,
-                    LocalEndpoint = this.LocalEndpoint,
-                    DestinationNodeId = Guid.Empty,
-                    DestinationEndpoint = new IPEndPoint(ip, port),
+                                    {
+                                        LocalNodeId = this.ThisNodeId,
+                                        LocalEndpoint = this.LocalEndpoint,
+                                        DestinationNodeId = Guid.Empty,
+                                        DestinationEndpoint = new IPEndPoint(ip, port),
 
-                    //UdpClient = this.LocalUdpClient,
-                    IsServerConnection = isServer
-                };
+                                        //UdpClient = this.LocalUdpClient,
+                                        IsServerConnection = isServer
+                                    };
             }
 
             var sendSuccessful = this.SendHello(ref socketManager);
@@ -136,7 +136,6 @@
                                 {
                                     break;
                                 }
-
                             }
                             catch (Exception ex)
                             {

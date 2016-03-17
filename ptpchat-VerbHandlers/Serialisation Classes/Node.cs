@@ -3,7 +3,7 @@
     using System;
     using System.Net;
 
-    internal class Node
+    public class Node
     {
         public Guid NodeId { get; set; }
 
