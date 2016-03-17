@@ -4,12 +4,12 @@
 
     using ptpchat.Class_Definitions;
 
-    internal class HelloMessage : BaseMessage
+    public class HelloMessage : BaseMessage
     {
         public new HelloData msg_data { get; set; }
     }
 
-    internal class HelloData
+    public class HelloData
     {
         public Guid node_id { get; set; }
 

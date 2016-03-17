@@ -203,28 +203,27 @@
             socketManager.PropertyChanged += this.ClientSocketManagers_PropertyChanged;
 
             UI.Invoke(
-              () =>
-              {
-                  try
-                  {
-                      var castList = this.grid_Clients.Rows.Cast<DataGridViewRow>().ToList();
+                () =>
+                    {
+                        try
+                        {
+                            var castList = this.grid_Clients.Rows.Cast<DataGridViewRow>().ToList();
 
-                      var rowToupdate = castList.FirstOrDefault(r => r.Cells["clients_NodeIdCol"].Value.Equals(socketManager.DestinationNodeId));
+                            var rowToupdate = castList.FirstOrDefault(r => r.Cells["clients_NodeIdCol"].Value.Equals(socketManager.DestinationNodeId));
 
-                      if (rowToupdate == null)
-                      {
-                          this.grid_Clients.Rows.Add(
-                                socketManager.DestinationNodeId,
-                                socketManager.DestinationEndpoint.Address,
-                                socketManager.DestinationEndpoint.Port,
-                                socketManager.LastHelloRecieved.ToShortTimeString());
-                      }
-                  }
-                  catch (Exception ex)
-                  {
-                  }
-              });
-
+                            if (rowToupdate == null)
+                            {
+                                this.grid_Clients.Rows.Add(
+                                    socketManager.DestinationNodeId,
+                                    socketManager.DestinationEndpoint.Address,
+                                    socketManager.DestinationEndpoint.Port,
+                                    socketManager.LastHelloRecieved.ToShortTimeString());
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                        }
+                    });
         }
 
         private void ClientSocketManagers_PropertyChanged(object sender, PropertyChangedEventArgs args)
@@ -239,7 +238,7 @@
                             var castList = this.grid_Clients.Rows.Cast<DataGridViewRow>().ToList();
 
                             var rowToupdate = castList.FirstOrDefault(r => r.Cells["clients_NodeIdCol"].Value.Equals(socketManager.DestinationNodeId))
-                                           ?? castList.FirstOrDefault(r => r.Cells["clients_IpAddressCol"].Value.Equals(socketManager.DestinationEndpoint.Address));
+                                              ?? castList.FirstOrDefault(r => r.Cells["clients_IpAddressCol"].Value.Equals(socketManager.DestinationEndpoint.Address));
 
                             if (rowToupdate == null)
                             {
@@ -305,7 +304,7 @@
                             var castList = this.grid_Servers.Rows.Cast<DataGridViewRow>().ToList();
 
                             var rowToupdate = castList.FirstOrDefault(r => r.Cells["servers_NodeIdCol"].Value.Equals(socketManager.DestinationNodeId))
-                                           ?? castList.FirstOrDefault(r => r.Cells["servers_IpAddressCol"].Value.Equals(socketManager.DestinationEndpoint.Address));
+                                              ?? castList.FirstOrDefault(r => r.Cells["servers_IpAddressCol"].Value.Equals(socketManager.DestinationEndpoint.Address));
 
                             if (rowToupdate == null)
                             {
