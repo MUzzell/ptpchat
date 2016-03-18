@@ -4,7 +4,7 @@
 
     using PtpChat.Main.Properties;
 
-    internal class ConfigManager
+    public class ConfigManager
     {
         IPAddress InitialServerAddress { get { return IPAddress.Parse(Settings.Default.InitialServerAddress_Host); } }
     }

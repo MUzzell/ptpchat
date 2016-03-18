@@ -1,10 +1,13 @@
 ﻿namespace PtpChat.Main.Client_Class
 {
     using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Linq;
     using System.Net;
     using System.Net.Sockets;
     using System.Text;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using Newtonsoft.Json;
@@ -15,22 +18,19 @@
     using PtpChat.VerbHandlers.Communication_Messages;
     using PtpChat.VerbHandlers.Handlers;
 
+    using Timer = System.Timers.Timer;
+
     public class PTPClient
     {
-        public PTPClient()
-        {
-            this.ErrorMessages = new PtpList<string>();
-            this.ThisNodeId = Guid.NewGuid();
+        //#########
+        //Delegates
+        //#########
+        private delegate void SendHelloByIpDelegate(List<IPAddress> ipAddresses);
+        private delegate void SendHelloBySocketManagerDelegate(SocketManager socketManager);
 
-            this.LocalEndpoint = new IPEndPoint(IPAddress.Any, new Random().Next(10000, 65535));
-            this.LocalUdpClient = new UdpClient(this.LocalEndpoint);
-
-            this.ServerSocketManagers = new PtpList<SocketManager>();
-            this.ClientSocketManagers = new PtpList<SocketManager>();
-        }
+        private readonly Timer periodicHelloTimer = new Timer { Interval = 10000 };
 
         public PtpList<SocketManager> ClientSocketManagers;
-
         public PtpList<SocketManager> ServerSocketManagers;
 
         public Guid ThisNodeId { get; }
@@ -41,9 +41,75 @@
 
         public PtpList<string> ErrorMessages { get; }
 
+        public PTPClient(List<IPAddress> ServerIps)
+        {
+            this.ErrorMessages = new PtpList<string>();
+            this.ThisNodeId = Guid.NewGuid();
+
+            this.LocalEndpoint = new IPEndPoint(IPAddress.Any, new Random().Next(10000, 65535));
+            this.LocalUdpClient = new UdpClient(this.LocalEndpoint);
+
+            this.ServerSocketManagers = new PtpList<SocketManager>();
+            this.ClientSocketManagers = new PtpList<SocketManager>();
+
+            var worker = new BackgroundWorker();
+
+            // what to do in the background thread
+            worker.DoWork += async delegate (object o, DoWorkEventArgs args)
+                {
+                    foreach (var ip in ServerIps)
+                    {
+                        //send the hello, 
+                        await this.SendNewHello(ip, 9001, true);
+                    }
+                };
+
+            worker.RunWorkerCompleted += delegate(object o, RunWorkerCompletedEventArgs args)
+                {
+                    this.StartPeriodicHelloTimer();
+                };
+
+            worker.RunWorkerAsync();
+
+            this.StartListening();
+        }
+
+        private void StopPeriodicHelloTimer()
+        {
+            this.periodicHelloTimer.Enabled = false;
+        }
+
+        private void StartPeriodicHelloTimer()
+        {
+            //once the startup hello to the server has finished, we need to start periodically sending the hello messages
+            //setup the periodicHelloTimer function that will send the hello messages on a new thread
+            this.periodicHelloTimer.Elapsed += async (sender, args) =>
+            {
+                if (this.ServerSocketManagers.Any())
+                {
+                    foreach (var serverSocket in this.ServerSocketManagers)
+                    {
+                        await this.SendHello(serverSocket);
+                    }
+                }
+
+                if (!this.ClientSocketManagers.Any())
+                {
+                    return;
+                }
+
+                foreach (var clientSocket in this.ClientSocketManagers)
+                {
+                    await this.SendHello(clientSocket);
+                }
+            };
+
+            this.periodicHelloTimer.Enabled = true;
+        }
+
         //send a hello to an ip address
         //create a new socket manager and send the hello, then return the socket manager
-        public SocketManager SendHello(IPAddress ip, int port, bool isServer)
+        public async Task SendNewHello(IPAddress ip, int port, bool isServer)
         {
             SocketManager socketManager;
 
@@ -57,31 +123,39 @@
             {
                 //else create the socket manager instance for this ip address as we've not seen it before
                 socketManager = new SocketManager
-                                    {
-                                        LocalNodeId = this.ThisNodeId,
-                                        LocalEndpoint = this.LocalEndpoint,
-                                        DestinationNodeId = Guid.Empty,
-                                        DestinationEndpoint = new IPEndPoint(ip, port),
+                {
+                    LocalNodeId = this.ThisNodeId,
+                    LocalEndpoint = this.LocalEndpoint,
+                    DestinationNodeId = Guid.Empty,
+                    DestinationEndpoint = new IPEndPoint(ip, port),
 
-                                        //UdpClient = this.LocalUdpClient,
-                                        IsServerConnection = isServer
-                                    };
+                    //UdpClient = this.LocalUdpClient,
+                    IsServerConnection = isServer
+                };
             }
 
-            var sendSuccessful = this.SendHello(ref socketManager);
+            await this.SendHello(socketManager);
 
-            return sendSuccessful ? socketManager : null;
+            if (isServer && !this.ServerSocketManagers.Contains(socketManager))
+            {
+                this.ServerSocketManagers.Add(socketManager);
+            }
+
+            if (!isServer && !this.ClientSocketManagers.Contains(socketManager))
+            {
+                this.ClientSocketManagers.Add(socketManager);
+            }
         }
 
         //send a hello using an existing socketManager
-        public bool SendHello(ref SocketManager socketManager)
+        public async Task SendHello(SocketManager socketManager)
         {
             try
             {
                 //check that we dont hello ourselves
                 if (socketManager?.DestinationEndpoint == null)
                 {
-                    return false;
+                    return;
                 }
 
                 var helloJson = "{" + string.Format(JsonDefinitions.HelloJson, this.ThisNodeId, string.Empty) + "}";
@@ -90,18 +164,16 @@
                 var encodedHelloMsg = Encoding.ASCII.GetBytes(helloJson);
 
                 //send the hello msg to the server at the IP
-                this.LocalUdpClient.SendAsync(
+                await this.LocalUdpClient.SendAsync(
                     encodedHelloMsg,
                     encodedHelloMsg.Length,
                     socketManager.DestinationEndpoint.Address.ToString(),
                     socketManager.DestinationEndpoint.Port > 0 ? socketManager.DestinationEndpoint.Port : 9001);
-
-                return true;
             }
             catch (Exception ex)
             {
                 this.ErrorMessages.Add(ex.ToString());
-                return false;
+
             }
         }
 
