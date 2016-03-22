@@ -90,7 +90,7 @@
                                       IsServerConnection = false
                                   };
 
-                if (!clientSocketManagers.Any(a => a.DestinationNodeId == manager.LocalNodeId))
+                if (!clientSocketManagers.Any(a => a.DestinationNodeId == manager.DestinationNodeId))
                 {
                     clientSocketManagers.Add(manager);
                 }

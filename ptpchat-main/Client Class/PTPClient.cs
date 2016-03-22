@@ -215,7 +215,7 @@
                             }
                             catch (SocketException ex)
                             {
-                                this.ErrorMessages.Add("Error receiving data. Are you using a proxy?");
+                                this.ErrorMessages.Add("Error receiving data.");
                             }
                             catch (Exception ex)
                             {
