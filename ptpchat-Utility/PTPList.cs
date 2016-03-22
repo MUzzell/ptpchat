@@ -1,4 +1,4 @@
-﻿namespace PtpChat.UtilityClasses
+﻿namespace PtpChat.Utility
 {
     using System;
     using System.Collections.Generic;

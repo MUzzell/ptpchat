@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PtpChat.Net</RootNamespace>
-    <AssemblyName>PtpChat-Net</AssemblyName>
+    <AssemblyName>PtpChat.Net</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -45,9 +45,9 @@
     <Compile Include="SocketManager.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ptpchat-UtilityClasses\PtpChat.UtilityClasses.csproj">
+    <ProjectReference Include="..\ptpchat-UtilityClasses\PtpChat.Utility.csproj">
       <Project>{56d98466-8cfa-46c8-a40f-229eeb5d2c87}</Project>
-      <Name>PtpChat.UtilityClasses</Name>
+      <Name>PtpChat.Utility</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

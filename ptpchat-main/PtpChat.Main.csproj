@@ -8,7 +8,7 @@
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PtpChat.Main</RootNamespace>
-    <AssemblyName>PtpChat-Main</AssemblyName>
+    <AssemblyName>PtpChat.Main</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <PublishUrl>publish\</PublishUrl>
@@ -58,9 +58,8 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class Definitions\JSONDefinitions.cs" />
-    <Compile Include="Client Class\PTPClient.cs" />
-    <Compile Include="Client Class\UI.cs" />
+    <Compile Include="PTPClient.cs" />
+    <Compile Include="UI.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UDPChatForm.cs">
@@ -117,9 +116,9 @@
       <Project>{1ae1ae0d-5c66-4864-b033-a95706645d1e}</Project>
       <Name>PtpChat.Net</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ptpchat-UtilityClasses\PtpChat.UtilityClasses.csproj">
+    <ProjectReference Include="..\ptpchat-UtilityClasses\PtpChat.Utility.csproj">
       <Project>{56d98466-8cfa-46c8-a40f-229eeb5d2c87}</Project>
-      <Name>PtpChat.UtilityClasses</Name>
+      <Name>PtpChat.Utility</Name>
     </ProjectReference>
     <ProjectReference Include="..\ptpchat-VerbHandlers\PtpChat.VerbHandlers.csproj">
       <Project>{dbb71a47-545b-4dd7-8472-fc45ff76cc0e}</Project>

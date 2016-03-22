@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PtpChat.Base</RootNamespace>
-    <AssemblyName>PtpChat-Base</AssemblyName>
+    <AssemblyName>PtpChat.Base</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -36,16 +36,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Interfaces\BaseVerbHandler.cs" />
-    <Compile Include="Communication Messages\BaseMessage.cs" />
-    <Compile Include="Communication Messages\ConnectMessage.cs" />
-    <Compile Include="Communication Messages\HelloMessage.cs" />
-    <Compile Include="Communication Messages\RoutingMessage.cs" />
+    <Compile Include="Messages\BaseMessage.cs" />
+    <Compile Include="Messages\ConnectMessage.cs" />
+    <Compile Include="Messages\HelloMessage.cs" />
+    <Compile Include="Messages\RoutingMessage.cs" />
     <Compile Include="Interfaces\ILogManager.cs" />
     <Compile Include="Interfaces\INodeManager.cs" />
     <Compile Include="Interfaces\ISocketHandler.cs" />
-    <Compile Include="General Classes\Node.cs" />
+    <Compile Include="Classes\Node.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
