@@ -46,7 +46,9 @@
             this.ErrorMessages = new PtpList<string>();
             this.ThisNodeId = Guid.NewGuid();
 
-            this.LocalEndpoint = new IPEndPoint(IPAddress.Any, new Random().Next(10000, 65535));
+            //this.LocalEndpoint = new IPEndPoint(IPAddress.Any, new Random().Next(10000, 65535));
+            this.LocalEndpoint = new IPEndPoint(IPAddress.Any, 23456);
+
             this.LocalUdpClient = new UdpClient(this.LocalEndpoint);
 
             this.ServerSocketManagers = new PtpList<SocketManager>();
@@ -210,6 +212,10 @@
                                 {
                                     break;
                                 }
+                            }
+                            catch (SocketException ex)
+                            {
+                                this.ErrorMessages.Add("Error receiving data. Are you using a proxy?");
                             }
                             catch (Exception ex)
                             {
