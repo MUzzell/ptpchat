@@ -56,7 +56,13 @@
         public bool HandleMessage(IPEndPoint senderEndpoint, ref PtpList<SocketManager> serverSocketManagers, ref PtpList<SocketManager> clientSocketManagers)
         {
             var socketManager = serverSocketManagers.FirstOrDefault(a => a.DestinationNodeId == this.Message.msg_data.node_id)
-                                ?? clientSocketManagers.FirstOrDefault(a => a.DestinationNodeId == this.Message.msg_data.node_id);
+                                        ?? clientSocketManagers.FirstOrDefault(a => a.DestinationNodeId == this.Message.msg_data.node_id);
+
+            if (socketManager == null)
+            {
+                socketManager = serverSocketManagers.FirstOrDefault(a => Equals(a.DestinationEndpoint.Address, senderEndpoint.Address))
+                                ?? clientSocketManagers.FirstOrDefault(a => Equals(a.DestinationEndpoint.Address, senderEndpoint.Address));
+            }
 
             if (socketManager == null)
             {
@@ -84,7 +90,7 @@
                                       IsServerConnection = false
                                   };
 
-                if (clientSocketManagers.All(a => a.DestinationNodeId != manager.LocalNodeId))
+                if (!clientSocketManagers.Any(a => a.DestinationNodeId == manager.LocalNodeId))
                 {
                     clientSocketManagers.Add(manager);
                 }
