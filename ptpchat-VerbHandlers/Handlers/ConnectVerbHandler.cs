@@ -1,23 +1,22 @@
 ﻿namespace PtpChat.VerbHandlers.Handlers
 {
-    using System;
-    using System.Net;
+	using System;
+	using System.Net;
 
-    using PtpChat.Net;
-    using PtpChat.UtilityClasses;
+	using PtpChat.Net;
+	using PtpChat.Utility;
+	using Base.Interfaces;
+	using Base.Messages;
 
-    public class ConnectVerbHandler : IVerbHandler
+	public class ConnectVerbHandler : BaseVerbHandler
     {
-        private ConnectMessage Message { get; set; }
+		private ConnectMessage Message { get; set; }
 
-        public void ParseBaseMessage(string messageJson)
-        {
-            throw new NotImplementedException();
-        }
+		public ConnectVerbHandler(ref ILogManager logger, ref INodeManager nodeManager, ref ISocketHandler socketHandler) : base( ref logger, ref nodeManager, ref socketHandler) { }
 
-        public bool HandleMessage(IPEndPoint senderEndpoint, ref PtpList<SocketManager> serverSocketManagers, ref PtpList<SocketManager> clientSocketManagers)
-        {
-            throw new NotImplementedException();
-        }
-    }
+		public override bool HandleMessage(string messageJson, IPEndPoint senderEndpoint)
+		{
+			throw new NotImplementedException();
+		}
+	}
 }

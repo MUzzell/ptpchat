@@ -1,22 +1,25 @@
 ﻿namespace PtpChat.VerbHandlers.Handlers
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net;
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
+	using System.Net;
 
-    using Newtonsoft.Json;
+	using Newtonsoft.Json;
 
-    using PtpChat.Base.Communication_Messages;
-    using PtpChat.Base.General_Classes;
-    using PtpChat.Net;
-    using PtpChat.UtilityClasses;
+	using PtpChat.Base.Messages;
+	using PtpChat.Base.Classes;
+	using PtpChat.Net;
+	using PtpChat.Utility;
+	using Base.Interfaces;
 
-    public class RoutingVerbHandler : IVerbHandler
+	public class RoutingVerbHandler : BaseVerbHandler
     {
         private RoutingMessage Message { get; set; }
 
         private List<Node> Nodes { get; set; }
+
+		public RoutingVerbHandler(ref ILogManager logger, ref INodeManager nodeManager, ref ISocketHandler socketHandler) : base(ref logger, ref nodeManager, ref socketHandler) { }
 
         public void ParseBaseMessage(string messageJson)
         {
@@ -99,5 +102,10 @@
 
             return false;
         }
-    }
+
+		public override bool HandleMessage(string messageJson, IPEndPoint senderEndpoint)
+		{
+			throw new NotImplementedException();
+		}
+	}
 }

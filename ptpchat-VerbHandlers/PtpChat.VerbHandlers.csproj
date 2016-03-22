@@ -78,7 +78,7 @@
       <Project>{1ae1ae0d-5c66-4864-b033-a95706645d1e}</Project>
       <Name>PtpChat.Net</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ptpchat-UtilityClasses\PtpChat.Utility.csproj">
+    <ProjectReference Include="..\ptpchat-Utility\PtpChat.Utility.csproj">
       <Project>{56d98466-8cfa-46c8-a40f-229eeb5d2c87}</Project>
       <Name>PtpChat.Utility</Name>
     </ProjectReference>

@@ -4,7 +4,7 @@
 
     public abstract class BaseVerbHandler
     {
-        protected BaseVerbHandler(ref ILogManager logger, ref INodeManager nodeManager, ref ISocketHandler socketHandler)
+		protected BaseVerbHandler(ref ILogManager logger, ref INodeManager nodeManager, ref ISocketHandler socketHandler)
         {
             this.LogManager = logger;
             this.NodeManager = nodeManager;

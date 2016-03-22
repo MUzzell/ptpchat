@@ -12,9 +12,9 @@
 
     using Newtonsoft.Json;
 
-    using PtpChat.Base.Communication_Messages;
+    using PtpChat.Base.Messages;
     using PtpChat.Net;
-    using PtpChat.UtilityClasses;
+    using PtpChat.Utility;
     using PtpChat.VerbHandlers.Handlers;
 
     public class PTPClient
@@ -149,8 +149,8 @@
                     return;
                 }
 
-                var helloJson = "{" + string.Format(JsonDefinitions.HelloJson, this.ThisNodeId, string.Empty) + "}";
-
+                //var helloJson = "{" + string.Format(JsonDefinitions.HelloJson, this.ThisNodeId, string.Empty) + "}";
+				var helloJson = "wew lad";
                 //create the byte array for the Hello JSON message data
                 var encodedHelloMsg = Encoding.ASCII.GetBytes(helloJson);
 

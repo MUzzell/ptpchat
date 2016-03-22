@@ -8,9 +8,8 @@
     using System.Net;
     using System.Windows.Forms;
 
-    using PtpChat.Main.Client_Class;
     using PtpChat.Net;
-    using PtpChat.UtilityClasses;
+    using PtpChat.Utility;
 
     public partial class UDPChatForm : Form
     {
