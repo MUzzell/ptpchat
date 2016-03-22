@@ -1,9 +1,9 @@
-﻿namespace PtpChat.Base.Interfaces
+﻿namespace PtpChat_Base.Interfaces
 {
-	public interface INodeManager
-	{
+    using PtpChat_Base.General_Classes;
 
-		void Add(Node node);
-
-	}
+    public interface INodeManager
+    {
+        void Add(Node node);
+    }
 }

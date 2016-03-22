@@ -1,4 +1,4 @@
-﻿namespace PtpChat.Main.Client_Class
+﻿namespace PtpChat_Main.Client_Class
 {
     using System;
     using System.Windows.Forms;

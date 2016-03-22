@@ -1,9 +1,10 @@
-﻿namespace PtpChat.VerbHandlers.Handlers
+﻿namespace PtpChat_VerbHandlers.Handlers
 {
     using System.Net;
 
-    using PtpChat.Net.Socket_Manager;
-    using PtpChat.UtilityClasses;
+    using PtpChat_Net;
+
+    using PtpChat_UtilityClasses;
 
     public interface IVerbHandler
     {

@@ -1,6 +1,6 @@
-﻿namespace PtpChat.Base.Interfaces
+﻿namespace PtpChat_Base.Interfaces
 {
-	public interface ILogManager
-	{
-	}
+    public interface ILogManager
+    {
+    }
 }

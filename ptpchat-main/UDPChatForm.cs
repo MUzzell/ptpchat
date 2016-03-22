@@ -1,26 +1,24 @@
-﻿namespace PtpChat.Main
+﻿namespace PtpChat_Main
 {
-	using System;
-	using System.Collections.Generic;
-	using System.ComponentModel;
-	using System.Configuration;
-	using System.Linq;
-	using System.Net;
-	using System.Windows.Forms;
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Configuration;
+    using System.Linq;
+    using System.Net;
+    using System.Windows.Forms;
 
-	using PtpChat.Main.Client_Class;
-	using PtpChat.Net.Socket_Manager;
-	using UtilityClasses;
+    using PtpChat_Main.Client_Class;
 
-	public partial class UDPChatForm : Form
+    using PtpChat_Net;
+
+    using PtpChat_UtilityClasses;
+
+    public partial class UDPChatForm : Form
     {
-        private PTPClient PtpClient { get; }
-
-
         public UDPChatForm(ConfigManager manager)
             : this()
         {
-
         }
 
         public UDPChatForm()
@@ -41,8 +39,7 @@
             this.PtpClient.ErrorMessages.OnAdd += this.ErrorMessages_OnAdd;
         }
 
-
-
+        private PTPClient PtpClient { get; }
 
         //send a hello using an already existing socketManager, 
         //private static void ClientSendHello(PTPClient ptpClient, SocketManager socketManager)
@@ -143,14 +140,8 @@
                                     socketManager.DestinationNodeId,
                                     socketManager.DestinationEndpoint.Address,
                                     socketManager.DestinationEndpoint.Port,
-
-                                    socketManager.LastHelloRecieved != DateTime.MinValue
-                                        ? socketManager.LastHelloRecieved.ToLocalTime().ToShortTimeString()
-                                        : "--",
-
-                                    socketManager.LastHelloRecieved != DateTime.MinValue 
-                                        ? "Connectable" 
-                                        : "Not Connectable");
+                                    socketManager.LastHelloRecieved != DateTime.MinValue ? socketManager.LastHelloRecieved.ToLocalTime().ToShortTimeString() : "--",
+                                    socketManager.LastHelloRecieved != DateTime.MinValue ? "Connectable" : "Not Connectable");
                             }
                         }
                         catch (Exception ex)
@@ -189,8 +180,6 @@
                     });
         }
 
-
-
         private void ClientSocketManagers_PropertyChanged(object sender, PropertyChangedEventArgs args)
         {
             var socketManager = (SocketManager)sender;
@@ -215,10 +204,7 @@
                             this.grid_Clients.Rows[rowToupdate.Index].Cells[2].Value = socketManager.DestinationEndpoint.Port;
                             this.grid_Clients.Rows[rowToupdate.Index].Cells[3].Value = socketManager.LastHelloRecieved.ToLocalTime();
 
-                            this.grid_Clients.Rows[rowToupdate.Index].Cells[4].Value = socketManager.LastHelloRecieved != DateTime.MinValue 
-                                ? "Connectable" 
-                                : "Not Connectable";
-
+                            this.grid_Clients.Rows[rowToupdate.Index].Cells[4].Value = socketManager.LastHelloRecieved != DateTime.MinValue ? "Connectable" : "Not Connectable";
                         }
                         catch (Exception ex)
                         {

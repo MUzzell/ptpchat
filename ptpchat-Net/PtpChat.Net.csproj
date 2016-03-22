@@ -7,8 +7,8 @@
     <ProjectGuid>{1AE1AE0D-5C66-4864-B033-A95706645D1E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ptpchat_Net</RootNamespace>
-    <AssemblyName>ptpchat-Net</AssemblyName>
+    <RootNamespace>PtpChat_Net</RootNamespace>
+    <AssemblyName>PtpChat-Net</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

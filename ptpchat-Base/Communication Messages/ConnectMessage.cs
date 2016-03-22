@@ -1,4 +1,4 @@
-﻿namespace PtpChat.Base.Messages
+﻿namespace PtpChat_Base.Communication_Messages
 {
     using System;
 
@@ -13,8 +13,8 @@
 
         public Guid dst_node_id { get; set; }
 
-        string dst { get; set; }
+        private string dst { get; set; }
 
-        string src { get; set; }
+        private string src { get; set; }
     }
 }

@@ -1,23 +1,22 @@
-﻿namespace PtpChat.Base.Interfaces
+﻿namespace PtpChat_Base.Interfaces
 {
-	using System;
-	using System.Net;
+    using System.Net;
 
-	public abstract class BaseVerbHandler
-	{
+    public abstract class BaseVerbHandler
+    {
+        protected BaseVerbHandler(ref ILogManager logger, ref INodeManager nodeManager, ref ISocketHandler socketHandler)
+        {
+            this.LogManager = logger;
+            this.NodeManager = nodeManager;
+            this.SocketHandler = socketHandler;
+        }
 
-		private ILogManager logManager {get;set;}
-		private INodeManager nodeManager { get; set; }
-		private ISocketHandler socketHandler { get; set; }
+        private ILogManager LogManager { get; set; }
 
-		public BaseVerbHandler(ref ILogManager logger, ref INodeManager nodeManager, ref ISocketHandler socketHandler)
-		{
-			this.logManager = logger;
-			this.nodeManager = nodeManager;
-			this.socketHandler = socketHandler;
-		}
-		
-		public abstract bool HandleMessage(string messageJson, IPEndPoint senderEndpoint);
-		
+        private INodeManager NodeManager { get; set; }
+
+        private ISocketHandler SocketHandler { get; set; }
+
+        public abstract bool HandleMessage(string messageJson, IPEndPoint senderEndpoint);
     }
 }

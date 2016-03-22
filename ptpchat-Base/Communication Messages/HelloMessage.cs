@@ -1,4 +1,4 @@
-﻿namespace PtpChat.Base.Messages
+﻿namespace PtpChat_Base.Communication_Messages
 {
     using System;
 

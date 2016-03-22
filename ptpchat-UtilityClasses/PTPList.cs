@@ -1,4 +1,4 @@
-﻿namespace PtpChat.UtilityClasses
+﻿namespace PtpChat_UtilityClasses
 {
     using System;
     using System.Collections.Generic;
@@ -21,10 +21,10 @@
 
         public new void Remove(T item)
         {
-			if (this.OnRemove != null)
-			{
-				this.OnRemove(this, item);
-			}
+            if (this.OnRemove != null)
+            {
+                this.OnRemove(this, item);
+            }
             base.Remove(item);
         }
     }

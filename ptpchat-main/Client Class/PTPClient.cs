@@ -1,45 +1,29 @@
-﻿namespace PtpChat.Main.Client_Class
+﻿namespace PtpChat_Main.Client_Class
 {
-	using System;
-	using System.Collections.Generic;
-	using System.ComponentModel;
-	using System.Linq;
-	using System.Net;
-	using System.Net.Sockets;
-	using System.Text;
-	using System.Threading.Tasks;
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Linq;
+    using System.Net;
+    using System.Net.Sockets;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Timers;
 
-	using Newtonsoft.Json;
+    using Newtonsoft.Json;
 
-	using PtpChat.Main.Class_Definitions;
-	using PtpChat.Net.Socket_Manager;
-	using PtpChat.UtilityClasses;
-	using PtpChat.VerbHandlers.Handlers;
+    using PtpChat_Base.Communication_Messages;
 
-	using Timer = System.Timers.Timer;
-	using Base.Messages;
+    using PtpChat_Main.Class_Definitions;
 
-	public class PTPClient
+    using PtpChat_Net;
+
+    using PtpChat_UtilityClasses;
+
+    using PtpChat_VerbHandlers.Handlers;
+
+    public class PTPClient
     {
-        //#########
-        //Delegates
-        //#########
-        private delegate void SendHelloByIpDelegate(List<IPAddress> ipAddresses);
-        private delegate void SendHelloBySocketManagerDelegate(SocketManager socketManager);
-
-        private readonly Timer periodicHelloTimer = new Timer { Interval = 10000 };
-
-        public PtpList<SocketManager> ClientSocketManagers;
-        public PtpList<SocketManager> ServerSocketManagers;
-
-        public Guid ThisNodeId { get; }
-
-        public IPEndPoint LocalEndpoint { get; }
-
-        public UdpClient LocalUdpClient { get; }
-
-        public PtpList<string> ErrorMessages { get; }
-
         public PTPClient(List<IPAddress> ServerIps)
         {
             this.ErrorMessages = new PtpList<string>();
@@ -56,7 +40,7 @@
             var worker = new BackgroundWorker();
 
             // what to do in the background thread
-            worker.DoWork += async delegate (object o, DoWorkEventArgs args)
+            worker.DoWork += async delegate
                 {
                     foreach (var ip in ServerIps)
                     {
@@ -65,15 +49,26 @@
                     }
                 };
 
-            worker.RunWorkerCompleted += delegate(object o, RunWorkerCompletedEventArgs args)
-                {
-                    this.StartPeriodicHelloTimer();
-                };
+            worker.RunWorkerCompleted += delegate { this.StartPeriodicHelloTimer(); };
 
             worker.RunWorkerAsync();
 
             this.StartListening();
         }
+
+        private readonly Timer periodicHelloTimer = new Timer { Interval = 10000 };
+
+        public PtpList<SocketManager> ClientSocketManagers;
+
+        public PtpList<SocketManager> ServerSocketManagers;
+
+        public Guid ThisNodeId { get; }
+
+        public IPEndPoint LocalEndpoint { get; }
+
+        public UdpClient LocalUdpClient { get; }
+
+        public PtpList<string> ErrorMessages { get; }
 
         private void StopPeriodicHelloTimer()
         {
@@ -85,25 +80,25 @@
             //once the startup hello to the server has finished, we need to start periodically sending the hello messages
             //setup the periodicHelloTimer function that will send the hello messages on a new thread
             this.periodicHelloTimer.Elapsed += async (sender, args) =>
-            {
-                if (this.ServerSocketManagers.Any())
                 {
-                    foreach (var serverSocket in this.ServerSocketManagers)
+                    if (this.ServerSocketManagers.Any())
                     {
-                        await this.SendHello(serverSocket);
+                        foreach (var serverSocket in this.ServerSocketManagers)
+                        {
+                            await this.SendHello(serverSocket);
+                        }
                     }
-                }
 
-                if (!this.ClientSocketManagers.Any())
-                {
-                    return;
-                }
+                    if (!this.ClientSocketManagers.Any())
+                    {
+                        return;
+                    }
 
-                foreach (var clientSocket in this.ClientSocketManagers)
-                {
-                    await this.SendHello(clientSocket);
-                }
-            };
+                    foreach (var clientSocket in this.ClientSocketManagers)
+                    {
+                        await this.SendHello(clientSocket);
+                    }
+                };
 
             this.periodicHelloTimer.Enabled = true;
         }
@@ -124,15 +119,15 @@
             {
                 //else create the socket manager instance for this ip address as we've not seen it before
                 socketManager = new SocketManager
-                {
-                    LocalNodeId = this.ThisNodeId,
-                    LocalEndpoint = this.LocalEndpoint,
-                    DestinationNodeId = Guid.Empty,
-                    DestinationEndpoint = new IPEndPoint(ip, port),
+                                    {
+                                        LocalNodeId = this.ThisNodeId,
+                                        LocalEndpoint = this.LocalEndpoint,
+                                        DestinationNodeId = Guid.Empty,
+                                        DestinationEndpoint = new IPEndPoint(ip, port),
 
-                    //UdpClient = this.LocalUdpClient,
-                    IsServerConnection = isServer
-                };
+                                        //UdpClient = this.LocalUdpClient,
+                                        IsServerConnection = isServer
+                                    };
             }
 
             await this.SendHello(socketManager);
@@ -165,16 +160,16 @@
                 var encodedHelloMsg = Encoding.ASCII.GetBytes(helloJson);
 
                 //send the hello msg to the server at the IP
-                await this.LocalUdpClient.SendAsync(
-                    encodedHelloMsg,
-                    encodedHelloMsg.Length,
-                    socketManager.DestinationEndpoint.Address.ToString(),
-                    socketManager.DestinationEndpoint.Port > 0 ? socketManager.DestinationEndpoint.Port : 9001);
+                await
+                    this.LocalUdpClient.SendAsync(
+                        encodedHelloMsg,
+                        encodedHelloMsg.Length,
+                        socketManager.DestinationEndpoint.Address.ToString(),
+                        socketManager.DestinationEndpoint.Port > 0 ? socketManager.DestinationEndpoint.Port : 9001);
             }
             catch (Exception ex)
             {
                 this.ErrorMessages.Add(ex.ToString());
-
             }
         }
 
@@ -264,5 +259,12 @@
                     throw new Exception("No known verb handler");
             }
         }
+
+        //#########
+        //Delegates
+        //#########
+        private delegate void SendHelloByIpDelegate(List<IPAddress> ipAddresses);
+
+        private delegate void SendHelloBySocketManagerDelegate(SocketManager socketManager);
     }
 }

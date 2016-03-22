@@ -1,18 +1,16 @@
-﻿namespace PtpChat.Base.Interfaces
+﻿namespace PtpChat_Base.Interfaces
 {
-	using System;
-	using System.Net;
+    using System;
+    using System.Net;
 
-	public interface ISocketHandler
-	{
+    public interface ISocketHandler
+    {
+        void Start();
 
+        void Stop();
 
-		void Start();
+        bool SendMessage(IPEndPoint dst, IPEndPoint src, byte[] message);
 
-		void Stop();
-
-		bool SendMessage(IPEndPoint dst, IPEndPoint src, byte[] message);
-
-		bool SendMessage(Guid dstNodeId, byte[] messsage);
-	}
+        bool SendMessage(Guid dstNodeId, byte[] messsage);
+    }
 }

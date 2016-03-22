@@ -1,18 +1,18 @@
-﻿namespace PtpChat.VerbHandlers.Handlers
+﻿namespace PtpChat_VerbHandlers.Handlers
 {
-	using System;
-	using System.Collections.Generic;
-	using System.Linq;
-	using System.Net;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Net;
 
-	using Newtonsoft.Json;
+    using Newtonsoft.Json;
 
-	using PtpChat.Net.Socket_Manager;
-	using PtpChat.UtilityClasses;
-	using Base.Messages;
-	using Base;
+    using PtpChat_Base.Communication_Messages;
+    using PtpChat_Base.General_Classes;
+    using PtpChat_Net;
+    using PtpChat_UtilityClasses;
 
-	public class RoutingVerbHandler : IVerbHandler
+    public class RoutingVerbHandler : IVerbHandler
     {
         private RoutingMessage Message { get; set; }
 
@@ -55,7 +55,7 @@
         public bool HandleMessage(IPEndPoint senderEndpoint, ref PtpList<SocketManager> serverSocketManagers, ref PtpList<SocketManager> clientSocketManagers)
         {
             var socketManager = serverSocketManagers.FirstOrDefault(a => a.DestinationNodeId == this.Message.msg_data.node_id)
-                                        ?? clientSocketManagers.FirstOrDefault(a => a.DestinationNodeId == this.Message.msg_data.node_id);
+                                ?? clientSocketManagers.FirstOrDefault(a => a.DestinationNodeId == this.Message.msg_data.node_id);
 
             if (socketManager == null)
             {
