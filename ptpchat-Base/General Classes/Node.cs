@@ -1,4 +1,4 @@
-﻿namespace PtpChat_Base.General_Classes
+﻿namespace PtpChat.Base.General_Classes
 {
     using System;
     using System.Net;

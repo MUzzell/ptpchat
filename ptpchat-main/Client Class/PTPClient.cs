@@ -1,4 +1,4 @@
-﻿namespace PtpChat_Main.Client_Class
+﻿namespace PtpChat.Main.Client_Class
 {
     using System;
     using System.Collections.Generic;
@@ -12,15 +12,11 @@
 
     using Newtonsoft.Json;
 
-    using PtpChat_Base.Communication_Messages;
-
-    using PtpChat_Main.Class_Definitions;
-
-    using PtpChat_Net;
-
-    using PtpChat_UtilityClasses;
-
-    using PtpChat_VerbHandlers.Handlers;
+    using PtpChat.Base.Communication_Messages;
+    using PtpChat.Main.Class_Definitions;
+    using PtpChat.Net;
+    using PtpChat.UtilityClasses;
+    using PtpChat.VerbHandlers.Handlers;
 
     public class PTPClient
     {

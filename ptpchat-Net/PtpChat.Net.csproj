@@ -7,7 +7,7 @@
     <ProjectGuid>{1AE1AE0D-5C66-4864-B033-A95706645D1E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PtpChat_Net</RootNamespace>
+    <RootNamespace>PtpChat.Net</RootNamespace>
     <AssemblyName>PtpChat-Net</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

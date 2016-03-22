@@ -1,4 +1,4 @@
-﻿namespace PtpChat_VerbHandlers.Handlers
+﻿namespace PtpChat.VerbHandlers.Handlers
 {
     using System;
     using System.Collections.Generic;
@@ -7,10 +7,10 @@
 
     using Newtonsoft.Json;
 
-    using PtpChat_Base.Communication_Messages;
-    using PtpChat_Base.General_Classes;
-    using PtpChat_Net;
-    using PtpChat_UtilityClasses;
+    using PtpChat.Base.Communication_Messages;
+    using PtpChat.Base.General_Classes;
+    using PtpChat.Net;
+    using PtpChat.UtilityClasses;
 
     public class RoutingVerbHandler : IVerbHandler
     {

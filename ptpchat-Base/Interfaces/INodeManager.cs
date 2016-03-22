@@ -1,6 +1,6 @@
-﻿namespace PtpChat_Base.Interfaces
+﻿namespace PtpChat.Base.Interfaces
 {
-    using PtpChat_Base.General_Classes;
+    using PtpChat.Base.General_Classes;
 
     public interface INodeManager
     {

@@ -1,9 +1,9 @@
-﻿namespace PtpChat_Main
+﻿namespace PtpChat.Main
 {
     using System;
     using System.Windows.Forms;
 
-    using PtpChat_UtilityClasses;
+    using PtpChat.UtilityClasses;
 
     internal static class Program
     {

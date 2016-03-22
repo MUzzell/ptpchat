@@ -1,4 +1,4 @@
-﻿namespace PtpChat_Base.Interfaces
+﻿namespace PtpChat.Base.Interfaces
 {
     using System.Net;
 

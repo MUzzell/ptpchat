@@ -1,4 +1,4 @@
-﻿namespace PtpChat_Net
+﻿namespace PtpChat.Net
 {
     using System;
     using System.ComponentModel;

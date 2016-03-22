@@ -1,4 +1,4 @@
-﻿namespace PtpChat_UtilityClasses
+﻿namespace PtpChat.UtilityClasses
 {
     public class ConfigManager
     {

@@ -1,4 +1,4 @@
-﻿namespace PtpChat_Main
+﻿namespace PtpChat.Main
 {
     using System;
     using System.Collections.Generic;
@@ -8,11 +8,9 @@
     using System.Net;
     using System.Windows.Forms;
 
-    using PtpChat_Main.Client_Class;
-
-    using PtpChat_Net;
-
-    using PtpChat_UtilityClasses;
+    using PtpChat.Main.Client_Class;
+    using PtpChat.Net;
+    using PtpChat.UtilityClasses;
 
     public partial class UDPChatForm : Form
     {

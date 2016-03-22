@@ -1,4 +1,4 @@
-﻿namespace PtpChat_VerbHandlers.Handlers
+﻿namespace PtpChat.VerbHandlers.Handlers
 {
     using System;
     using System.Linq;
@@ -6,11 +6,9 @@
 
     using Newtonsoft.Json;
 
-    using PtpChat_Base.Communication_Messages;
-
-    using PtpChat_Net;
-
-    using PtpChat_UtilityClasses;
+    using PtpChat.Base.Communication_Messages;
+    using PtpChat.Net;
+    using PtpChat.UtilityClasses;
 
     public class HelloVerbHandler : IVerbHandler
     {
