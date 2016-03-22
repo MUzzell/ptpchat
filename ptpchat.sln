@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PtpChat.Net", "ptpchat-Net\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PtpChat.UtilityClasses", "ptpchat-UtilityClasses\PtpChat.UtilityClasses.csproj", "{56D98466-8CFA-46C8-A40F-229EEB5D2C87}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PtpChat.Base", "ptpchat-Base\PtpChat.Base.csproj", "{50487D52-36A9-4B44-AA8A-B5CF5688E3D0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{56D98466-8CFA-46C8-A40F-229EEB5D2C87}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{56D98466-8CFA-46C8-A40F-229EEB5D2C87}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{56D98466-8CFA-46C8-A40F-229EEB5D2C87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50487D52-36A9-4B44-AA8A-B5CF5688E3D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50487D52-36A9-4B44-AA8A-B5CF5688E3D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50487D52-36A9-4B44-AA8A-B5CF5688E3D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50487D52-36A9-4B44-AA8A-B5CF5688E3D0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

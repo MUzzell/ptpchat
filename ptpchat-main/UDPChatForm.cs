@@ -1,20 +1,18 @@
 ﻿namespace PtpChat.Main
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Configuration;
-    using System.Linq;
-    using System.Net;
-    using System.Windows.Forms;
+	using System;
+	using System.Collections.Generic;
+	using System.ComponentModel;
+	using System.Configuration;
+	using System.Linq;
+	using System.Net;
+	using System.Windows.Forms;
 
-    using PtpChat.Main.Client_Class;
-    using PtpChat.Main.Util;
-    using PtpChat.Net.Socket_Manager;
+	using PtpChat.Main.Client_Class;
+	using PtpChat.Net.Socket_Manager;
+	using UtilityClasses;
 
-    using Timer = System.Timers.Timer;
-
-    public partial class UDPChatForm : Form
+	public partial class UDPChatForm : Form
     {
         private PTPClient PtpClient { get; }
 

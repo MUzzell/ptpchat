@@ -3,7 +3,7 @@
     using System;
     using System.Windows.Forms;
 
-    using PtpChat.Main.Util;
+    using PtpChat.UtilityClasses;
 
     internal static class Program
     {

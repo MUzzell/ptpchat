@@ -1,19 +1,18 @@
 ﻿namespace PtpChat.VerbHandlers.Handlers
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net;
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
+	using System.Net;
 
-    using Newtonsoft.Json;
+	using Newtonsoft.Json;
 
-    using PtpChat.Net.Socket_Manager;
-    using PtpChat.UtilityClasses;
-    using PtpChat.VerbHandlers.Communication_Messages;
-    using PtpChat.VerbHandlers.Handlers;
-    using PtpChat.VerbHandlers.Serialisation_Classes;
+	using PtpChat.Net.Socket_Manager;
+	using PtpChat.UtilityClasses;
+	using Base.Messages;
+	using Base;
 
-    public class RoutingVerbHandler : IVerbHandler
+	public class RoutingVerbHandler : IVerbHandler
     {
         private RoutingMessage Message { get; set; }
 

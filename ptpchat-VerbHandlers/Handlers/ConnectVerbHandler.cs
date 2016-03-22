@@ -1,13 +1,13 @@
 ﻿namespace PtpChat.VerbHandlers.Handlers
 {
-    using System;
-    using System.Net;
+	using System;
+	using System.Net;
 
-    using PtpChat.Net.Socket_Manager;
-    using PtpChat.UtilityClasses;
-    using PtpChat.VerbHandlers.Communication_Messages;
+	using PtpChat.Net.Socket_Manager;
+	using PtpChat.UtilityClasses;
+	using Base.Messages;
 
-    public class ConnectVerbHandler : IVerbHandler
+	public class ConnectVerbHandler : IVerbHandler
     {
         private ConnectMessage Message { get; set; }
 

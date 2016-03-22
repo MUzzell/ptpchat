@@ -1,26 +1,25 @@
 ﻿namespace PtpChat.Main.Client_Class
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Linq;
-    using System.Net;
-    using System.Net.Sockets;
-    using System.Text;
-    using System.Threading;
-    using System.Threading.Tasks;
+	using System;
+	using System.Collections.Generic;
+	using System.ComponentModel;
+	using System.Linq;
+	using System.Net;
+	using System.Net.Sockets;
+	using System.Text;
+	using System.Threading.Tasks;
 
-    using Newtonsoft.Json;
+	using Newtonsoft.Json;
 
-    using PtpChat.Main.Class_Definitions;
-    using PtpChat.Net.Socket_Manager;
-    using PtpChat.UtilityClasses;
-    using PtpChat.VerbHandlers.Communication_Messages;
-    using PtpChat.VerbHandlers.Handlers;
+	using PtpChat.Main.Class_Definitions;
+	using PtpChat.Net.Socket_Manager;
+	using PtpChat.UtilityClasses;
+	using PtpChat.VerbHandlers.Handlers;
 
-    using Timer = System.Timers.Timer;
+	using Timer = System.Timers.Timer;
+	using Base.Messages;
 
-    public class PTPClient
+	public class PTPClient
     {
         //#########
         //Delegates

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace PtpChat.Main.Properties {
+namespace ptpchat.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
@@ -20,30 +20,6 @@ namespace PtpChat.Main.Properties {
         public static Settings Default {
             get {
                 return defaultInstance;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("37.139.19.21")]
-        public string InitialServerAddress_Host {
-            get {
-                return ((string)(this["InitialServerAddress_Host"]));
-            }
-            set {
-                this["InitialServerAddress_Host"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("9001")]
-        public int InitialServerAddress_Port {
-            get {
-                return ((int)(this["InitialServerAddress_Port"]));
-            }
-            set {
-                this["InitialServerAddress_Port"] = value;
             }
         }
     }
