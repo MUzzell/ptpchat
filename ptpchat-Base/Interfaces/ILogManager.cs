@@ -1,5 +1,7 @@
 ﻿namespace PtpChat.Base.Interfaces
 {
+	using System;
+	
 	/// <summary>
 	/// Handles logging for this program
 	/// </summary>
@@ -27,14 +29,16 @@
 		/// <summary>
 		/// Log at ERROR level, an event which has prevented normal operation.
 		/// <param name="message">What will be added to the log at this level.</param>
+		/// <param name="exception">Optionally include an exception if applicable.</param>
 		/// </summary>
-		void Error(string message);
+		void Error(string message, Exception exception = null);
 
 		/// <summary>
 		/// Log at FATAL level, an event which will now stop the program from running.
 		/// <param name="message">What will be added to the log at this level.</param>
+		/// <param name="exception">Optionally include an exception if applicable.</param>
 		/// </summary>
-		void Fatal(string message);
+		void Fatal(string message, Exception exception = null);
 
 	}
 }

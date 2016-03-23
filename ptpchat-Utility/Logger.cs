@@ -43,9 +43,12 @@ namespace PtpChat.Utility
 			
 		}
 
-		public void Fatal(string message)
+		public void Fatal(string message, Exception exception = null)
 		{
-			internalLogger.Fatal(message);
+			if (exception != null)
+				internalLogger.Fatal(message);
+			else
+				internalLogger.Fatal(exception, message);
 		}
 
 		public void Debug(string message)
@@ -53,9 +56,12 @@ namespace PtpChat.Utility
 			internalLogger.Debug(message);
 		}
 
-		public void Error(string message)
+		public void Error(string message, Exception exception = null)
 		{
-			internalLogger.Error(message);
+			if (exception != null)
+				internalLogger.Error(message);
+			else
+				internalLogger.Error(exception, message);
 		}
 
 		public void Info(string message)

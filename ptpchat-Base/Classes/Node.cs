@@ -10,5 +10,11 @@
         public IPAddress IpAddress { get; set; }
 
         public int Port { get; set; }
-    }
+
+		public IPEndPoint IpEndPoint { get { return new IPEndPoint(this.IpAddress, this.Port); } }
+
+		public DateTime LastSeen { get; set; }
+
+		public string Version { get; set; }
+	}
 }

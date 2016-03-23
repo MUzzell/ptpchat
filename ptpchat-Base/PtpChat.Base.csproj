@@ -35,7 +35,6 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Interfaces\BaseVerbHandler.cs" />
     <Compile Include="Messages\BaseMessage.cs" />
     <Compile Include="Messages\ConnectMessage.cs" />
     <Compile Include="Messages\HelloMessage.cs" />

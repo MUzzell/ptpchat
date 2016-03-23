@@ -1,29 +1,65 @@
 ﻿namespace PtpChat.VerbHandlers.Handlers
 {
 	using System;
-	using System.Linq;
 	using System.Net;
 
-	using Newtonsoft.Json;
-
 	using PtpChat.Base.Messages;
-	using PtpChat.Net;
-	using PtpChat.Utility;
 	using Base.Interfaces;
+	using VerbHandlers;
+	using System.Collections.Generic;
+	using Base.Classes;
 
-	public class HelloVerbHandler : BaseVerbHandler
+	public class HelloVerbHandler : BaseVerbHandler<HelloMessage>
     {
+		private static readonly string LogInvalidNodeId = "Invalid Node ID in HELLO message, ignoring";
+		private static readonly string LogSameNodeId = "Recieved Hello presented this Node's ID! ignoring";
+
         private HelloMessage Message { get; set; }
 
 		public HelloVerbHandler(ref ILogManager logger, ref INodeManager nodeManager, ref ISocketHandler socketHandler) : base(ref logger, ref nodeManager, ref socketHandler) { }
-		
-        public void ParseBaseMessage(string messageJson)
-        {
-            this.Message = JsonConvert.DeserializeObject<HelloMessage>(messageJson);
-            // { "msg_data": { "node_id": "5f715c17-4a41-482a-ab1f-45fa2cdd702b", "version": "ptpchat-server; 0.0"}, "msg_type": "HELLO"}
-        }
 
-        
+		protected override bool HandleVerb(HelloMessage message, IPEndPoint senderEndpoint)
+		{
+			this.logger.Debug("Hello message recieved from sender: " + senderEndpoint);
+
+			Guid nodeId = message.msg_data.node_id;
+
+			if (nodeId == null || nodeId == Guid.Empty)
+			{
+				this.logger.Warning(HelloVerbHandler.LogInvalidNodeId);
+				return false;
+			}
+
+			if (nodeId == this.NodeManager.LocalNode.NodeId)
+			{
+				this.logger.Error(HelloVerbHandler.LogSameNodeId);
+				return false;
+			}
+
+			var filter = new Dictionary<NodeFilterType, object>();
+			filter.Add(NodeFilterType.NodeId, nodeId);
+
+			var nodes = this.NodeManager.GetNodes(filter);
+
+			if (nodes.Count > 0) // Existing Node
+			{
+				var node = nodes[0];
+				node.LastSeen = DateTime.Now;
+				this.NodeManager.Update(node);
+			}
+			else //New Node
+			{
+				var node = new Node();
+
+				node.NodeId = nodeId;
+				node.LastSeen = DateTime.Now;
+				this.NodeManager.Add(node);
+			}
+
+			return true;
+		}
+
+
 		/*
         var socketManager = serverSocketManagers.FirstOrDefault(a => a.DestinationNodeId == this.Message.msg_data.node_id)
                             ?? clientSocketManagers.FirstOrDefault(a => a.DestinationNodeId == this.Message.msg_data.node_id);
@@ -50,11 +86,7 @@
         //return 'dont stop listening' after message has been handled
         return false;
 		*/
-        
 
-		public override bool HandleMessage(string messageJson, IPEndPoint senderEndpoint)
-		{
-			throw new NotImplementedException();
-		}
+
 	}
 }

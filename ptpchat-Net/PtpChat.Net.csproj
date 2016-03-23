@@ -42,9 +42,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SocketHandler.cs" />
     <Compile Include="SocketManager.cs" />
+    <Compile Include="SocketThread.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ptpchat-Base\PtpChat.Base.csproj">
+      <Project>{50487d52-36a9-4b44-aa8a-b5cf5688e3d0}</Project>
+      <Name>PtpChat.Base</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ptpchat-Utility\PtpChat.Utility.csproj">
       <Project>{56d98466-8cfa-46c8-a40f-229eeb5d2c87}</Project>
       <Name>PtpChat.Utility</Name>

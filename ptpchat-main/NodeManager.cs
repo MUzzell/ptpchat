@@ -19,6 +19,14 @@ namespace PtpChat.Main
 		//Can set the 'concurrency level'? why does # of threads matter?
 		ConcurrentDictionary<Guid, Node> nodes = new ConcurrentDictionary<Guid, Node>();
 
+		public Node LocalNode
+		{
+			get
+			{
+				return new Node();
+			}
+		}
+
 		public NodeManager(ILogManager logger)
 		{
 			if (logger == null)
@@ -91,7 +99,7 @@ namespace PtpChat.Main
 
 		}
 
-		public IList<Node> GetNodes(Dictionary<NodeFilterType, object> filter)
+		public IList<Node> GetNodes(Dictionary<NodeFilterType, object> filter = null)
 		{
 
 			if (filter == null)

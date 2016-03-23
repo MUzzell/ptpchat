@@ -58,6 +58,8 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MessageHandler.cs" />
+    <Compile Include="NodeManager.cs" />
     <Compile Include="PTPClient.cs" />
     <Compile Include="UI.cs" />
     <Compile Include="Program.cs" />

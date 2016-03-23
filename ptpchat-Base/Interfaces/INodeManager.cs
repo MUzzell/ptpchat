@@ -10,6 +10,11 @@
 	public interface INodeManager
     {
 		/// <summary>
+		/// This attribute represents this node.
+		/// </summary>
+		Node LocalNode { get; }
+
+		/// <summary>
 		/// Attempt to add the given Node.
 		/// Throws an ArgumentException if unable to do so, such as if the nodeId already exists.
 		/// <param name="node">The new node to be added, will be compared against its NodeId.</param>
@@ -41,7 +46,7 @@
 		/// Get a list of Nodes that match the provided filter.
 		/// <param name="filter">A Dictionary that matches </param>
 		/// </summary>
-		IList<Node> GetNodes(Dictionary<NodeFilterType, object> filter);
+		IList<Node> GetNodes(Dictionary<NodeFilterType, object> filter = null);
     }
 
 	public enum NodeFilterType
