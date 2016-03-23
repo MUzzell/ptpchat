@@ -47,7 +47,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Handlers\ConnectVerbHandler.cs" />
     <Compile Include="Handlers\HelloVerbHandler.cs" />
-    <Compile Include="Handlers\IVerbHandler.cs" />
     <Compile Include="Handlers\RoutingVerbHandler.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

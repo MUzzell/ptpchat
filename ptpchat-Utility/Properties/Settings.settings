@@ -1,0 +1,21 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="PtpChat.Utility.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="DefaultServer_Host" Type="System.String" Scope="User">
+      <Value Profile="(Default)">37.139.19.21</Value>
+    </Setting>
+    <Setting Name="DefaultServer_Port" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">9001</Value>
+    </Setting>
+    <Setting Name="DefaultLoggingFile" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">ptpchat\logs\main.log</Value>
+    </Setting>
+    <Setting Name="DefaultApplicationFolder" Type="System.String" Scope="User">
+      <Value Profile="(Default)">ptpchat</Value>
+    </Setting>
+    <Setting Name="IsLoggingEnabled" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
