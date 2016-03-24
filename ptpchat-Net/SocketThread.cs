@@ -1,83 +1,77 @@
 ﻿namespace PtpChat.Net
 {
-	using Base.Interfaces;
-	using System;
-	using System.Net;
-	using System.Net.Sockets;
-	using System.Text;
+    using System;
+    using System.Net;
+    using System.Net.Sockets;
+    using System.Text;
 
-	internal class SocketThread
-	{
-		private static readonly string LogArgumentException = "Argument Exception recieved whilst parsing recieved data: {0}";
-		private static readonly string LogSocketException = "Socket Exception recieved whilst operating on socket: {0}";
+    using PtpChat.Base.Interfaces;
 
-		public UdpClient socket { get; }
+    internal class SocketThread
+    {
+        public SocketThread(UdpClient socket, IMessageHandler messageHandler, ILogManager logger)
+        {
+            this.Socket = socket;
+            this.messageHandler = messageHandler;
+            this.logger = logger;
+        }
 
-		private IMessageHandler messageHandler;
-		private ILogManager logger;
+        public SocketThread(IPEndPoint local, IMessageHandler messageHandler, ILogManager logger)
+        {
+            this.Socket = new UdpClient(local);
+            this.messageHandler = messageHandler;
+            this.logger = logger;
+        }
 
-		private volatile bool running = true;
+        private const string LogArgumentException = "Argument Exception recieved whilst parsing recieved data: {0}";
+        private const string LogSocketException = "Socket Exception recieved whilst operating on socket: {0}";
 
-		public SocketThread(UdpClient socket, 
-			IMessageHandler messageHandler,
-			ILogManager logger)
-		{
-			this.logger = logger;
-			this.socket = socket;
-			this.messageHandler = messageHandler;
-		}
+        private readonly ILogManager logger;
+        private IMessageHandler messageHandler;
 
-		public SocketThread(IPEndPoint local,
-			IMessageHandler messageHandler,
-			ILogManager logger)
-		{
-			this.logger = logger;
-			this.socket = new UdpClient(local);
-			this.messageHandler = messageHandler;
-		}
+        private volatile bool running = true;
 
-		public async void Run()
-		{
-			this.logger.Info(string.Format("New SocketThread starting, endpoint: {0}", this.socket.Client.LocalEndPoint));
-			try
-			{
-				while (this.running)
-				{
-					try
-					{
-						this.logger.Debug("listening on SocketThread");
-						
-						var asyncResult = await this.socket.ReceiveAsync();
+        private UdpClient Socket { get; }
 
-						var message = Encoding.ASCII.GetString(asyncResult.Buffer);
+        public async void Run()
+        {
+            this.logger.Info($"New SocketThread starting, endpoint: {this.Socket.Client.LocalEndPoint}");
+            try
+            {
+                while (this.running)
+                {
+                    try
+                    {
+                        this.logger.Debug("listening on SocketThread");
 
-						this.messageHandler.HandleMessage(message, asyncResult.RemoteEndPoint);
+                        var asyncResult = await this.Socket.ReceiveAsync();
 
-					}
-					catch (ArgumentException ae)
-					{
-						this.logger.Warning(string.Format(SocketThread.LogArgumentException, ae.Message));
-					}
-					
-				}
-			}
-			catch (SocketException se)
-			{
-				this.logger.Error(string.Format(SocketThread.LogArgumentException, se.Message));
-			}
-			
-		}
+                        //nothing ever turns up here? are we getting any messages from the server? nothing on wireshark...
+                        var message = Encoding.ASCII.GetString(asyncResult.Buffer);
 
-		// will it work? Who knows, thats the fuuunn.
-		public void Send(IPEndPoint dst, byte[] msg)
-		{
-			this.socket.Send(msg, msg.Length);
-		}
+                        this.messageHandler.HandleMessage(message, asyncResult.RemoteEndPoint);
+                    }
+                    catch (ArgumentException ae)
+                    {
+                        this.logger.Warning(string.Format(LogArgumentException, ae.Message));
+                    }
+                }
+            }
+            catch (SocketException se)
+            {
+                this.logger.Error(string.Format(LogArgumentException, se.Message));
+            }
+        }
 
-		public void Stop()
-		{
-			this.running = false;
-		}
+        public void SetMessageHandler(IMessageHandler handler) => this.messageHandler = handler;
 
-	}
+        // will it work? Who knows, thats the fuuunn.
+        // turns out no it wont.
+        public void Send(IPEndPoint dst, byte[] msg)
+        {
+            this.Socket.SendAsync(msg, msg.Length, dst.Address.ToString(), dst.Port);
+        }
+
+        public void Stop() => this.running = false;
+    }
 }

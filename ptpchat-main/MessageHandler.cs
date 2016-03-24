@@ -1,52 +1,54 @@
 ﻿namespace PtpChat.Main
 {
-	using System;
-	using System.Collections.Generic;
-	using System.Net;
-	using PtpChat.Base.Interfaces;
-	using Base.Messages;
-	using Newtonsoft.Json;
+    using System;
+    using System.Collections.Generic;
+    using System.Net;
 
-	internal class MessageHandler : IMessageHandler
-	{
-		private static readonly string LogCannotParseJson = "Unable to deserialise Json message, ignoring";
-		private static readonly string LogUnexpectedError = "Unexpected error";
+    using Newtonsoft.Json;
 
-		private ILogManager logger;
-		private Dictionary<MessageType, IVerbHandler> handlers;
+    using PtpChat.Base.Interfaces;
+    using PtpChat.Base.Messages;
 
-		public MessageHandler(ILogManager logger)
-		{
-			this.logger = logger;
-		}
+    internal class MessageHandler : IMessageHandler
+    {
+        public MessageHandler(ILogManager logger)
+        {
+            this.logger = logger;
+            this.handlers = new Dictionary<MessageType, IVerbHandler>();
+        }
 
-		public void AddHandler(MessageType type, IVerbHandler handler)
-		{
-			this.handlers.Add(type, handler);
-		}
+        private static readonly string LogCannotParseJson = "Unable to deserialise Json message, ignoring";
+        private static readonly string LogUnexpectedError = "Unexpected error";
 
-		public void HandleMessage(string messageJson, IPEndPoint senderEndpoint)
-		{
-			try
-			{
-				var baseMessage = JsonConvert.DeserializeObject<BaseMessage>(messageJson);
+        private readonly Dictionary<MessageType, IVerbHandler> handlers;
+        private readonly ILogManager logger;
 
-				this.handlers[baseMessage.msg_type].HandleMessage(messageJson, senderEndpoint);
+        public void HandleMessage(string messageJson, IPEndPoint senderEndpoint)
+        {
+            try
+            {
+                var baseMessage = JsonConvert.DeserializeObject<BaseMessage>(messageJson);
 
-			}
-			catch(JsonException)
-			{
-				this.logger.Warning(MessageHandler.LogCannotParseJson);
-			}
-			catch(Exception e) // global!!
-			{
-				this.logger.Error(MessageHandler.LogUnexpectedError, e);
-			}
-		}
+                this.handlers[baseMessage.msg_type].HandleMessage(messageJson, senderEndpoint);
+            }
+            catch (JsonException)
+            {
+                this.logger.Warning(LogCannotParseJson);
+            }
+            catch (Exception e) // global!!
+            {
+                this.logger.Error(LogUnexpectedError, e);
+            }
+        }
 
-		public string BuildMessage(BaseMessage message)
-		{
-			return JsonConvert.SerializeObject(message);
-		}
-	}
+        public string BuildMessage(BaseMessage message)
+        {
+            return JsonConvert.SerializeObject(message);
+        }
+
+        public void AddHandler(MessageType type, IVerbHandler handler)
+        {
+            this.handlers.Add(type, handler);
+        }
+    }
 }

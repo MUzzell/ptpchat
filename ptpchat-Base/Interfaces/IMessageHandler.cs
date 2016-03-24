@@ -1,12 +1,13 @@
 ﻿namespace PtpChat.Base.Interfaces
 {
-	using Messages;
-	using System.Net;
+    using System.Net;
 
-	public interface IMessageHandler
-	{
-		void HandleMessage(string messageJson, IPEndPoint senderEndpoint);
+    using PtpChat.Base.Messages;
 
-		string BuildMessage(BaseMessage message);
-	}
+    public interface IMessageHandler
+    {
+        void HandleMessage(string messageJson, IPEndPoint senderEndpoint);
+
+        string BuildMessage(BaseMessage message);
+    }
 }

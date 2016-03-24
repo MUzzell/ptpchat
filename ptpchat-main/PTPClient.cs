@@ -1,35 +1,40 @@
 ﻿namespace PtpChat.Main
 {
-	using System.Collections.Generic;
+    using System;
 
-	using PtpChat.Base.Messages;
-	using PtpChat.Net;
-	using PtpChat.Utility;
-	using Base.Interfaces;
-	using VerbHandlers.Handlers;
+    using PtpChat.Base.Classes;
+    using PtpChat.Base.Interfaces;
+    using PtpChat.Base.Messages;
+    using PtpChat.Net;
+    using PtpChat.Utility;
+    using PtpChat.VerbHandlers.Handlers;
 
-	public class PTPClient
+    public class PTPClient
     {
-		public PTPClient(ConfigManager config)
-		{
+        public PTPClient(ConfigManager config)
+        {
+            ILogManager logger = new Logger(config, "ptpchat");
 
-			ILogManager logger = new Logger(config, "ptpchat");
+            INodeManager nodeManager = new NodeManager(logger);
+            nodeManager.Add(new Node{IpAddress = config.InitialServerAddress, NodeId = Guid.Empty,Port = 9001});
 
-			INodeManager nodeManager = new NodeManager(logger);
+            //socket handler here used to create its UDP socket thread handling in the ctor
+            ISocketHandler socketHandler = new SocketHandler(logger, nodeManager);
 
-			var handlers = new Dictionary<MessageType, IVerbHandler>();
-			
-			var messageHandler = new MessageHandler(logger);
+            var messageHandler = new MessageHandler(logger);
+            //the message handler requires the socket handler instance, here --->                                  V
+            messageHandler.AddHandler(MessageType.HELLO, new HelloVerbHandler(ref logger, ref nodeManager, ref socketHandler));
+            messageHandler.AddHandler(MessageType.ROUTING, new RoutingVerbHandler(ref logger, ref nodeManager, ref socketHandler));
 
-			ISocketHandler socketHandler = new SocketHandler(logger, nodeManager, messageHandler);
+            //but the socket handler cannot set up its threads for the udpclient handling until the message handler has its setup verb handlers
+            //or else there wont be any verb handlers to use, so im updating the socket handler (and all the threads) after the message handler has been setup 
+            socketHandler.SetMessageHandler(messageHandler);
 
-			messageHandler.AddHandler(MessageType.HELLO, new HelloVerbHandler(ref logger, ref nodeManager, ref socketHandler));
-			messageHandler.AddHandler(MessageType.ROUTING, new RoutingVerbHandler(ref logger, ref nodeManager, ref socketHandler));
+            //but before we start using them
+            socketHandler.Start();
+        }
 
-
-		}
-
-		/**
+        /**
             this.ErrorMessages = new PtpList<string>();
             this.ThisNodeId = Guid.NewGuid();
 
@@ -269,7 +274,6 @@
         //#########
         private delegate void SendHelloByIpDelegate(List<IPAddress> ipAddresses);
 
-        private delegate void SendHelloBySocketManagerDelegate(SocketManager socketManager);
+        private delegate void SendHelloBySocketManagerDelegate(SocketManager socketManager);*/
     }
-	*/
 }

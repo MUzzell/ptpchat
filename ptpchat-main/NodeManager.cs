@@ -1,138 +1,132 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace PtpChat.Main
+﻿namespace PtpChat.Main
 {
-	using Base.Classes;
-	using PtpChat.Base.Interfaces;
-	using System.Collections.Concurrent;
+    using System;
+    using System.Collections.Concurrent;
+    using System.Collections.Generic;
+    using System.Linq;
 
-	internal class NodeManager : INodeManager
-	{
-		private static readonly string LogAddedNode = "Added new node, Node ID: {0}";
-		private static readonly string LogDeletedNode = "Deleted node, Node ID: {0}";
-		private static readonly string LogUpdatedNode = "Updated node, Node ID: {0}";
+    using PtpChat.Base.Classes;
+    using PtpChat.Base.Interfaces;
 
-		ILogManager logger;
-		
-		//Can set the 'concurrency level'? why does # of threads matter?
-		ConcurrentDictionary<Guid, Node> nodes = new ConcurrentDictionary<Guid, Node>();
+    internal class NodeManager : INodeManager
+    {
+        public NodeManager(ILogManager logger)
+        {
+            if (logger == null)
+            {
+                throw new ArgumentNullException(nameof(logger), @"Is Null");
+            }
 
-		public Node LocalNode
-		{
-			get
-			{
-				return new Node();
-			}
-		}
+            this.logger = logger;
 
-		public NodeManager(ILogManager logger)
-		{
-			if (logger == null)
-			{
-				throw new ArgumentNullException("logger", "Is Null");
-			}
+            this.LocalNode = new Node{ NodeId = Guid.NewGuid()};
+        }
 
-			this.logger = logger;
-		}
+        private const string LogAddedNode = "Added new node, Node ID: {0}";
+        private const string LogDeletedNode = "Deleted node, Node ID: {0}";
+        private const string LogUpdatedNode = "Updated node, Node ID: {0}";
 
-		public void Add(Node node)
-		{
+        private readonly ILogManager logger;
 
-			if (!this.nodes.TryAdd(node.NodeId, node))
-			{
-				throw new InvalidOperationException("Add, Node is already present");
-			}
-			this.logger.Info(string.Format(NodeManager.LogAddedNode, node.NodeId));
-		}
+        public Node LocalNode { get; }
 
-		public Node Delete(Node node)
-		{
-			if (node == null || node.NodeId == null)
-			{
-				throw new ArgumentNullException("node", "node or its ID is null");
-			}
-			
-			return this.Delete(node.NodeId);
-			
-		}
+        //Can set the 'concurrency level'? why does # of threads matter?
+        private readonly ConcurrentDictionary<Guid, Node> nodes = new ConcurrentDictionary<Guid, Node>();
 
-		public Node Delete(Guid nodeId)
-		{
+        public void Add(Node node)
+        {
+            if (!this.nodes.TryAdd(node.NodeId, node))
+            {
+                throw new InvalidOperationException("Add, Node is already present");
+            }
 
-			if (nodeId == null || nodeId == Guid.Empty)
-			{
-				throw new ArgumentNullException("nodeId", "Invalid nodeId");
-			}
+            this.logger.Info(string.Format(LogAddedNode, node.NodeId));
+        }
 
-			Node outNode;
-			if (!this.nodes.TryRemove(nodeId, out outNode))
-			{
-				throw new InvalidOperationException("Delete, NodeID not present");
-			}
+        public Node Delete(Node node)
+        {
+            if (node?.NodeId == null)
+            {
+                throw new ArgumentNullException(nameof(node), @"node or its ID is null");
+            }
 
-			this.logger.Info(string.Format(NodeManager.LogDeletedNode, outNode.NodeId));
-			return outNode;
-		}
+            return this.Delete(node.NodeId);
+        }
 
-		public void Update(Node node)
-		{
-			if (node == null || node.NodeId == null)
-			{
-				throw new ArgumentNullException("node", "node or its ID is null");
-			}
+        public Node Delete(Guid nodeId)
+        {
+            if (nodeId == null || nodeId == Guid.Empty)
+            {
+                throw new ArgumentNullException(nameof(nodeId), @"Invalid nodeId");
+            }
 
-			Node currentNode;
+            Node outNode;
+            if (!this.nodes.TryRemove(nodeId, out outNode))
+            {
+                throw new InvalidOperationException("Delete, NodeID not present");
+            }
 
-			if (!this.nodes.TryGetValue(node.NodeId, out currentNode))
-			{
-				throw new InvalidOperationException("Update, could not find Node");
-			}
+            this.logger.Info(string.Format(LogDeletedNode, outNode.NodeId));
+            return outNode;
+        }
 
-			if (!this.nodes.TryUpdate(node.NodeId, node, currentNode))
-			{
-				throw new InvalidOperationException("Update, unable to update node");
-			}
+        public void Update(Node node)
+        {
+            if (node?.NodeId == null)
+            {
+                throw new ArgumentNullException(nameof(node), @"node or its ID is null");
+            }
 
-			this.logger.Info(string.Format(NodeManager.LogUpdatedNode, node.NodeId));
+            Node currentNode;
 
-		}
-		
-		public IList<Node> GetNodes(Dictionary<NodeFilterType, object> filter = null)
-		{
+            if (!this.nodes.TryGetValue(node.NodeId, out currentNode))
+            {
+                throw new InvalidOperationException("Update, could not find Node");
+            }
 
-			if (filter == null)
-			{
-				return (IList<Node>)this.nodes.ToList();
-			}
+            if (!this.nodes.TryUpdate(node.NodeId, node, currentNode))
+            {
+                throw new InvalidOperationException("Update, unable to update node");
+            }
 
-			IList<Node> nodeList = new List<Node>();
+            this.logger.Info(string.Format(LogUpdatedNode, node.NodeId));
+        }
 
-			foreach (KeyValuePair<Guid, Node> kv in this.nodes.TakeWhile(kv => this.matches(kv.Value, filter)))
-			{
-				nodeList.Add(kv.Value);
-			}
+        public IEnumerable<Node> GetNodes(Func<KeyValuePair<Guid, Node>, bool> filter) => this.nodes.Where(filter).Select(n => n.Value);
+        public IEnumerable<Node> GetNodes() => this.nodes.Select(n => n.Value);
 
-			return nodeList;
-			
-		}
-		
-		private bool matches(Node node, Dictionary<NodeFilterType, object> filter)
-		{
-			Node outNode = node;
+        //public IList<Node> GetNodes(Dictionary<NodeFilterType, object> filter = null)
+        //{
+        //    if (filter == null)
+        //    {
+        //        return (IList<Node>)this.nodes.ToList();
+        //    }
 
-			if (filter.ContainsKey(NodeFilterType.NodeId))
-			{
-				Guid nodeId = (Guid)filter[NodeFilterType.NodeId];
+        //    IList<Node> nodeList = new List<Node>();
 
-				if (node.NodeId != nodeId)
-					outNode = null;
-			}
+        //    foreach (var kv in this.nodes.TakeWhile(kv => this.matches(kv.Value, filter)))
+        //    {
+        //        nodeList.Add(kv.Value);
+        //    }
 
-			return outNode != null;
-		}
+        //    return nodeList;
+        //}
 
-		
-	}
+        //private bool matches(Node node, Dictionary<NodeFilterType, object> filter)
+        //{
+        //    var outNode = node;
+
+        //    if (filter.ContainsKey(NodeFilterType.NodeId))
+        //    {
+        //        var nodeId = (Guid)filter[NodeFilterType.NodeId];
+
+        //        if (node.NodeId != nodeId)
+        //        {
+        //            outNode = null;
+        //        }
+        //    }
+
+        //    return outNode != null;
+        //}
+    }
 }

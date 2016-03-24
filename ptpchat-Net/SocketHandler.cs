@@ -1,118 +1,117 @@
 ﻿namespace PtpChat.Net
 {
-	using System.Net;
-	using System.Net.Sockets;
-	using System;
-	using System.Collections.Generic;
-	using System.Text;
-	using System.Threading.Tasks;
-	using System.Threading;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Net;
+    using System.Net.Sockets;
+    using System.Text;
+    using System.Threading;
+    using System.Threading.Tasks;
 
-	using PtpChat.Base.Interfaces;
-	using Base.Classes;
-	using Base.Messages;
-	public class SocketHandler : ISocketHandler
-	{
+    using PtpChat.Base.Interfaces;
+    using PtpChat.Base.Messages;
 
-		private static readonly string LogHandlerStarting = "SocketHandler starting";
-		private static readonly string LogHandlerStopping = "SocketHandler stopping";
-		private static readonly string LogPortBound = "SocketHandler has bound to 0.0.0.0:{0}";
+    public class SocketHandler : ISocketHandler
+    {
+        public SocketHandler(ILogManager logger, INodeManager nodeManager)
+        {
+            this.logger = logger;
 
-		private ILogManager logger;
-		private INodeManager nodeManager;
-		private IMessageHandler messageHandler;
+            this.internalThreads = new Dictionary<int, SocketThread>();
 
-		private Random internalRand;
-		private Timer helloTimer;
+            //What if it's in use??
+            this.localPort = new Random().Next(10000, 65535);
+            this.localClient = new UdpClient(this.localPort, AddressFamily.InterNetwork);
 
-		//threads are organised by their port.
-		private IDictionary<int, SocketThread> internalThreads;
+            this.logger.Info(string.Format(LogPortBound, this.localPort));
 
-		//im holding onto this until i figure out how to do the rest of the socket stuff.
-		private int localPort;
+            nodeManager.LocalNode.Port = this.localPort;
+            this.nodeManager = nodeManager;
 
-		public SocketHandler(
-			ILogManager logger, 
-			INodeManager nodeManager, 
-			IMessageHandler handler)
-		{
-			this.logger = logger;
-			this.nodeManager = nodeManager;
-			this.messageHandler = handler;
+            this.internalThreads.Add(this.localPort, new SocketThread(this.localClient, null, this.logger));
+        }
 
-			this.internalThreads = new Dictionary<int, SocketThread>();
-			this.internalRand = new Random();
+        public void SetMessageHandler(IMessageHandler handler)
+        {
+            this.messageHandler = handler;
 
-			//What if it's in use??
-			this.localPort = this.internalRand.Next(10000,65535);
+            foreach (var socketThread in this.internalThreads)
+            {
+                socketThread.Value.SetMessageHandler(handler);
+            }
+        }
 
-			UdpClient newClient = new UdpClient(localPort, AddressFamily.InterNetwork);
+        private const string LogHandlerStarting = "SocketHandler starting";
+        private const string LogHandlerStopping = "SocketHandler stopping";
+        private const string LogPortBound = "SocketHandler has bound to 0.0.0.0:{0}";
 
-			this.logger.Info(string.Format(SocketHandler.LogPortBound, this.localPort));
+        private Timer helloTimer;
 
-			this.internalThreads.Add(this.localPort, new SocketThread(newClient, messageHandler, logger));
-			
-		}
+        //threads are organised by their port.
+        private readonly IDictionary<int, SocketThread> internalThreads;
 
-		private void SendHellos(object state)
-		{
-			var nodes = nodeManager.GetNodes();
+        private UdpClient localClient;
 
-			var hello = new HelloMessage()
-			{
-				msg_type = MessageType.HELLO,
-				msg_data = new HelloData
-				{
-					node_id = nodeManager.LocalNode.NodeId,
-					version = nodeManager.LocalNode.Version
-				}
-			};
+        //im holding onto this until i figure out how to do the rest of the socket stuff.
+        private readonly int localPort;
 
-			//i hope this works!
-			var msg = Encoding.ASCII.GetBytes(this.messageHandler.BuildMessage(hello));
+        private readonly ILogManager logger;
+        public IMessageHandler messageHandler { get; set; }
+        private readonly INodeManager nodeManager;
 
-			this.logger.Debug(string.Format("Sending Hellos to {0} nodes", nodes.Count));
+        public bool SendMessage(Guid dstNodeId, byte[] messsage)
+        {
+            var node = this.nodeManager.GetNodesLinq(a => a.Value.NodeId == dstNodeId).FirstOrDefault();
 
+            if (node == null) return false;
 
+            throw new NotImplementedException();
+        }
 
-			foreach (Node node in nodes)
-				this.SendMessage(node.IpEndPoint, null, msg);
-		}
+        public bool SendMessage(IPEndPoint dst, IPEndPoint src, byte[] message)
+        {
+            this.internalThreads[this.localPort].Send(dst, message);
 
-		public bool SendMessage(Guid dstNodeId, byte[] messsage)
-		{
-			var filter = new Dictionary<NodeFilterType, object>();
-			filter[NodeFilterType.NodeId] = dstNodeId;
+            return true;
+        }
 
-			throw new NotImplementedException();
-			
-			
-		}
+        public void Start()
+        {
+            this.logger.Info(LogHandlerStarting);
 
-		public bool SendMessage(IPEndPoint dst, IPEndPoint src, byte[] message)
-		{
-			this.internalThreads[this.localPort].Send(dst, message);
+            foreach (var thread in this.internalThreads.Values)
+            {
+                new Task(() => thread.Run()).Start();
+            }
 
-			return true;
-		}
+            this.helloTimer = new Timer(this.SendHellos, null, 0, 3000);
+        }
 
-		public void Start()
-		{
-			this.logger.Info(SocketHandler.LogHandlerStarting);
-			
-			foreach (SocketThread thread in this.internalThreads.Values)
-				new Task(() => thread.Run()).Start();
+        public void Stop()
+        {
+            this.logger.Info(LogHandlerStopping);
 
-			this.helloTimer = new Timer(new TimerCallback(SendHellos), null, 0, 3000);
-		}
+            foreach (var thread in this.internalThreads.Values)
+            {
+                thread.Stop();
+            }
+        }
 
-		public void Stop()
-		{
-			this.logger.Info(SocketHandler.LogHandlerStopping);
+        private void SendHellos(object state)
+        {
+            var nodes = this.nodeManager.GetNodes().ToList();
 
-			foreach (SocketThread thread in this.internalThreads.Values)
-				thread.Stop();
-		}
-		
-	}
+            var hello = new HelloMessage { msg_type = MessageType.HELLO, msg_data = new HelloData { node_id = this.nodeManager.LocalNode.NodeId, version = string.Empty } };
+
+            var msg = Encoding.ASCII.GetBytes(this.messageHandler.BuildMessage(hello));
+
+            this.logger.Debug($"Sending Hellos to {nodes.Count} nodes");
+
+            foreach (var node in nodes)
+            {
+                this.SendMessage(node.IpEndPoint, null, msg);
+            }
+        }
+    }
 }

@@ -1,25 +1,28 @@
 ﻿namespace PtpChat.VerbHandlers.Handlers
 {
-	using System;
-	using System.Collections.Generic;
-	using System.Linq;
-	using System.Net;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Net;
 
-	using Newtonsoft.Json;
+    using Newtonsoft.Json;
 
-	using PtpChat.Base.Messages;
-	using PtpChat.Base.Classes;
-	using PtpChat.Net;
-	using PtpChat.Utility;
-	using Base.Interfaces;
+    using PtpChat.Base.Classes;
+    using PtpChat.Base.Interfaces;
+    using PtpChat.Base.Messages;
+    using PtpChat.Net;
+    using PtpChat.Utility;
 
-	public class RoutingVerbHandler : BaseVerbHandler<RoutingVerbHandler>
+    public class RoutingVerbHandler : BaseVerbHandler<RoutingVerbHandler>
     {
+        public RoutingVerbHandler(ref ILogManager logger, ref INodeManager nodeManager, ref ISocketHandler socketHandler)
+            : base(ref logger, ref nodeManager, ref socketHandler)
+        {
+        }
+
         private RoutingMessage Message { get; set; }
 
         private List<Node> Nodes { get; set; }
-
-		public RoutingVerbHandler(ref ILogManager logger, ref INodeManager nodeManager, ref ISocketHandler socketHandler) : base(ref logger, ref nodeManager, ref socketHandler) { }
 
         public void ParseBaseMessage(string messageJson)
         {
@@ -92,7 +95,7 @@
                                       IsServerConnection = false
                                   };
 
-                if (!clientSocketManagers.Any(a => a.DestinationNodeId == manager.DestinationNodeId))
+                if (clientSocketManagers.All(a => a.DestinationNodeId != manager.DestinationNodeId))
                 {
                     clientSocketManagers.Add(manager);
                 }
@@ -103,9 +106,9 @@
             return false;
         }
 
-		protected override bool HandleVerb(RoutingVerbHandler message, IPEndPoint senderEndpoint)
-		{
-			throw new NotImplementedException();
-		}
-	}
+        protected override bool HandleVerb(RoutingVerbHandler message, IPEndPoint senderEndpoint)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

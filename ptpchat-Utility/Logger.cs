@@ -1,78 +1,68 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PtpChat.Utility
+﻿namespace PtpChat.Utility
 {
-	using PtpChat.Base.Interfaces;
+    using System;
+    using System.IO;
 
-	using NLog;
-	using NLog.Config;
-	using NLog.Targets;
-	using System.IO;
+    using NLog;
+    using NLog.Config;
+    using NLog.Targets;
 
-	public class Logger : ILogManager
-	{
-		private NLog.Logger internalLogger;
+    using PtpChat.Base.Interfaces;
 
-		public Logger(ConfigManager config, string logName)
-		{
-			var loggerConfig = new LoggingConfiguration();
-			
-			var consoleTarget = new ColoredConsoleTarget();
+    public class Logger : ILogManager
+    {
+        public Logger(ConfigManager config, string logName)
+        {
+            var consoleTarget = new ColoredConsoleTarget { Layout = @"${date:format=HH\:mm\:ss} ${logger} ${level} ${message}" };
 
-			consoleTarget.Layout = @"${date:format=HH\:mm\:ss} ${logger} ${level} ${message}";
-			
-			var fileTarget = new FileTarget();
+            var fileTarget = new FileTarget
+                                 {
+                                     Layout = @"${date:format=yyyy-MM-dd HH\:mm\:ss} ${logger} ${level} ${message}",
+                                     FileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), config.DefaultLoggingFile)
+                                 };
 
-			fileTarget.Layout = @"${date:format=yyyy-MM-dd HH\:mm\:ss} ${logger} ${level} ${message}";
-			
-			fileTarget.FileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), config.DefaultLoggingFile);
+            var loggerConfig = new LoggingConfiguration();
+            loggerConfig.AddTarget("console", consoleTarget);
+            loggerConfig.AddTarget("file", fileTarget);
 
-			loggerConfig.AddTarget("console", consoleTarget);
-			loggerConfig.AddTarget("file", fileTarget);
+            loggerConfig.LoggingRules.Add(new LoggingRule("*", config.IsLoggingEnabled ? LogLevel.Debug : LogLevel.Off, consoleTarget));
+            loggerConfig.LoggingRules.Add(new LoggingRule("*", config.IsLoggingEnabled ? LogLevel.Debug : LogLevel.Off, fileTarget));
 
-			loggerConfig.LoggingRules.Add(new LoggingRule("*", config.IsLoggingEnabled ? LogLevel.Debug : LogLevel.Off, consoleTarget));
-			loggerConfig.LoggingRules.Add(new LoggingRule("*", config.IsLoggingEnabled ? LogLevel.Debug : LogLevel.Off, fileTarget));
+            LogManager.Configuration = loggerConfig;
 
-			LogManager.Configuration = loggerConfig;
+            this.internalLogger = LogManager.GetLogger(logName);
+        }
 
-			internalLogger = LogManager.GetLogger(logName);
-			
-		}
+        private readonly NLog.Logger internalLogger;
 
-		public void Fatal(string message, Exception exception = null)
-		{
-			if (exception != null)
-				internalLogger.Fatal(message);
-			else
-				internalLogger.Fatal(exception, message);
-		}
+        public void Fatal(string message, Exception exception = null)
+        {
+            if (exception != null)
+            {
+                this.internalLogger.Fatal(exception,message);
+            }
+            else
+            {
+                this.internalLogger.Fatal(message);
+            }
+        }
 
-		public void Debug(string message)
-		{
-			internalLogger.Debug(message);
-		}
+        public void Debug(string message) => this.internalLogger.Debug(message);
 
-		public void Error(string message, Exception exception = null)
-		{
-			if (exception != null)
-				internalLogger.Error(message);
-			else
-				internalLogger.Error(exception, message);
-		}
+        public void Error(string message, Exception exception = null)
+        {
+            if (exception != null)
+            {
+                this.internalLogger.Error(exception, message);
+            }
+            else
+            {
+                this.internalLogger.Error(message);
+            }
+        }
 
-		public void Info(string message)
-		{
-			internalLogger.Info(message);
-		}
+        public void Info(string message) => this.internalLogger.Info(message);
 
-		public void Warning(string message)
-		{
-			internalLogger.Warn(message);
-		}
-	}
+        public void Warning(string message) => this.internalLogger.Warn(message);
+    }
 }

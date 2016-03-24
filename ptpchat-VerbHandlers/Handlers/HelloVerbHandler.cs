@@ -1,66 +1,60 @@
 ﻿namespace PtpChat.VerbHandlers.Handlers
 {
-	using System;
-	using System.Net;
+    using System;
+    using System.Linq;
+    using System.Net;
 
-	using PtpChat.Base.Messages;
-	using Base.Interfaces;
-	using VerbHandlers;
-	using System.Collections.Generic;
-	using Base.Classes;
+    using PtpChat.Base.Classes;
+    using PtpChat.Base.Interfaces;
+    using PtpChat.Base.Messages;
 
-	public class HelloVerbHandler : BaseVerbHandler<HelloMessage>
+    public class HelloVerbHandler : BaseVerbHandler<HelloMessage>
     {
-		private static readonly string LogInvalidNodeId = "Invalid Node ID in HELLO message, ignoring";
-		private static readonly string LogSameNodeId = "Recieved Hello presented this Node's ID! ignoring";
+        public HelloVerbHandler(ref ILogManager logger, ref INodeManager nodeManager, ref ISocketHandler socketHandler)
+            : base(ref logger, ref nodeManager, ref socketHandler)
+        {
+        }
+
+        private static readonly string LogInvalidNodeId = "Invalid Node ID in HELLO message, ignoring";
+        private static readonly string LogSameNodeId = "Recieved Hello presented this Node's ID! ignoring";
 
         private HelloMessage Message { get; set; }
 
-		public HelloVerbHandler(ref ILogManager logger, ref INodeManager nodeManager, ref ISocketHandler socketHandler) : base(ref logger, ref nodeManager, ref socketHandler) { }
+        protected override bool HandleVerb(HelloMessage message, IPEndPoint senderEndpoint)
+        {
+            this.logger.Debug("Hello message recieved from sender: " + senderEndpoint);
 
-		protected override bool HandleVerb(HelloMessage message, IPEndPoint senderEndpoint)
-		{
-			this.logger.Debug("Hello message recieved from sender: " + senderEndpoint);
+            var nodeId = message.msg_data.node_id;
 
-			Guid nodeId = message.msg_data.node_id;
+            if (nodeId == Guid.Empty)
+            {
+                this.logger.Warning(LogInvalidNodeId);
+                return false;
+            }
 
-			if (nodeId == null || nodeId == Guid.Empty)
-			{
-				this.logger.Warning(HelloVerbHandler.LogInvalidNodeId);
-				return false;
-			}
+            if (nodeId == this.NodeManager.LocalNode.NodeId)
+            {
+                this.logger.Error(LogSameNodeId);
+                return false;
+            }
 
-			if (nodeId == this.NodeManager.LocalNode.NodeId)
-			{
-				this.logger.Error(HelloVerbHandler.LogSameNodeId);
-				return false;
-			}
+            var nodes = this.NodeManager.GetNodesLinq(d => d.Value.NodeId == nodeId).ToList();
 
-			var filter = new Dictionary<NodeFilterType, object>();
-			filter.Add(NodeFilterType.NodeId, nodeId);
+            if (nodes.Count > 0) // Existing Node
+            {
+                var node = nodes[0];
+                node.LastSeen = DateTime.Now;
+                this.NodeManager.Update(node);
+            }
+            else //New Node
+            {
+                this.NodeManager.Add(new Node { NodeId = nodeId, LastSeen = DateTime.Now });
+            }
 
-			var nodes = this.NodeManager.GetNodes(filter);
+            return true;
+        }
 
-			if (nodes.Count > 0) // Existing Node
-			{
-				var node = nodes[0];
-				node.LastSeen = DateTime.Now;
-				this.NodeManager.Update(node);
-			}
-			else //New Node
-			{
-				var node = new Node();
-
-				node.NodeId = nodeId;
-				node.LastSeen = DateTime.Now;
-				this.NodeManager.Add(node);
-			}
-
-			return true;
-		}
-
-
-		/*
+        /*
         var socketManager = serverSocketManagers.FirstOrDefault(a => a.DestinationNodeId == this.Message.msg_data.node_id)
                             ?? clientSocketManagers.FirstOrDefault(a => a.DestinationNodeId == this.Message.msg_data.node_id);
 
@@ -86,7 +80,5 @@
         //return 'dont stop listening' after message has been handled
         return false;
 		*/
-
-
-	}
+    }
 }

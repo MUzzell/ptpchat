@@ -11,20 +11,13 @@
 
         public new void Add(T item)
         {
-            if (this.OnAdd != null)
-            {
-                this.OnAdd(this, item);
-            }
-
+            this.OnAdd?.Invoke(this, item);
             base.Add(item);
         }
 
         public new void Remove(T item)
         {
-            if (this.OnRemove != null)
-            {
-                this.OnRemove(this, item);
-            }
+            this.OnRemove?.Invoke(this, item);
             base.Remove(item);
         }
     }

@@ -1,17 +1,17 @@
-﻿using PtpChat.Utility.Properties;
-using System.Net;
-
-namespace PtpChat.Utility
+﻿namespace PtpChat.Utility
 {
+    using System.Net;
+
+    using PtpChat.Utility.Properties;
+
     public class ConfigManager
     {
-        public IPAddress InitialServerAddress { get { return IPAddress.Parse(Settings.Default.DefaultServer_Host); } }
+        public IPAddress InitialServerAddress => IPAddress.Parse(Settings.Default.DefaultServer_Host);
 
-		public string DefaultLoggingFile {  get { return Settings.Default.DefaultLoggingFile; } }
+        public string DefaultLoggingFile => Settings.Default.DefaultLoggingFile;
 
-		public string DefaultApplicationFolder { get { return Settings.Default.DefaultApplicationFolder; } }
+        public string DefaultApplicationFolder => Settings.Default.DefaultApplicationFolder;
 
-		public bool IsLoggingEnabled { get { return Settings.Default.IsLoggingEnabled; } }
-
+        public bool IsLoggingEnabled => Settings.Default.IsLoggingEnabled;
     }
 }

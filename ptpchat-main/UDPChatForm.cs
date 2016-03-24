@@ -18,22 +18,22 @@
         {
         }
 
-        public UDPChatForm()
+        private UDPChatForm()
         {
             this.InitializeComponent();
             //read the server ip addresses from the config
             var serverIps = this.GetServerIpsFromConfig();
 
-            this.PtpClient = new PTPClient(serverIps);
+            this.PtpClient = new PTPClient(new ConfigManager());
 
             //setup the ui manager
             UI.Initialize(this);
 
-            UI.Invoke(() => { this.lbl_NodeId.Text = "My Node Id:" + this.PtpClient.ThisNodeId; });
+            //UI.Invoke(() => { this.lbl_NodeId.Text = "My Node Id:" + this.PtpClient.ThisNodeId; });
 
-            this.PtpClient.ServerSocketManagers.OnAdd += this.ServerSocketManagers_OnAdd;
-            this.PtpClient.ClientSocketManagers.OnAdd += this.ClientSocketManagers_OnAdd;
-            this.PtpClient.ErrorMessages.OnAdd += this.ErrorMessages_OnAdd;
+            //this.PtpClient.ServerSocketManagers.OnAdd += this.ServerSocketManagers_OnAdd;
+            //this.PtpClient.ClientSocketManagers.OnAdd += this.ClientSocketManagers_OnAdd;
+            //this.PtpClient.ErrorMessages.OnAdd += this.ErrorMessages_OnAdd;
         }
 
         private PTPClient PtpClient { get; }
