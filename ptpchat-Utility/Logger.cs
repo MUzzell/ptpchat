@@ -13,7 +13,8 @@ namespace PtpChat.Utility
 	using NLog.Config;
 	using NLog.Targets;
 	using System.IO;
-	internal class Logger : ILogManager
+
+	public class Logger : ILogManager
 	{
 		private NLog.Logger internalLogger;
 

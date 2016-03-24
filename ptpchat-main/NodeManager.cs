@@ -117,7 +117,7 @@ namespace PtpChat.Main
 			return nodeList;
 			
 		}
-
+		
 		private bool matches(Node node, Dictionary<NodeFilterType, object> filter)
 		{
 			Node outNode = node;

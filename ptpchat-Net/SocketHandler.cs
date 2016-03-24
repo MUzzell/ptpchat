@@ -46,7 +46,7 @@
 			//What if it's in use??
 			this.localPort = this.internalRand.Next(10000,65535);
 
-			UdpClient newClient = new UdpClient(port, AddressFamily.InterNetwork);
+			UdpClient newClient = new UdpClient(localPort, AddressFamily.InterNetwork);
 
 			this.logger.Info(string.Format(SocketHandler.LogPortBound, this.localPort));
 

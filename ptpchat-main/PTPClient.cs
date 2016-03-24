@@ -19,8 +19,19 @@
 
     public class PTPClient
     {
-        public PTPClient(List<IPAddress> ServerIps)
-        {
+		public PTPClient(ConfigManager config)
+		{
+
+			var logger = new Logger(config, "ptpchat");
+
+			var nodeManager = new NodeManager(logger);
+
+			var SocketHandler = new SocketHandler()
+
+
+		}
+
+		/**
             this.ErrorMessages = new PtpList<string>();
             this.ThisNodeId = Guid.NewGuid();
 
@@ -262,4 +273,5 @@
 
         private delegate void SendHelloBySocketManagerDelegate(SocketManager socketManager);
     }
+	*/
 }

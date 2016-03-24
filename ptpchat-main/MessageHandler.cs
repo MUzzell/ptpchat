@@ -1,7 +1,4 @@
-﻿
-
-
-namespace PtpChat.Main
+﻿namespace PtpChat.Main
 {
 	using System;
 	using System.Collections.Generic;
