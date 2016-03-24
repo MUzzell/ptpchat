@@ -8,13 +8,13 @@
 	using Base.Interfaces;
 	using Base.Messages;
 
-	public class ConnectVerbHandler : BaseVerbHandler
+	public class ConnectVerbHandler : BaseVerbHandler<ConnectMessage>
     {
 		private ConnectMessage Message { get; set; }
 
 		public ConnectVerbHandler(ref ILogManager logger, ref INodeManager nodeManager, ref ISocketHandler socketHandler) : base( ref logger, ref nodeManager, ref socketHandler) { }
 
-		public override bool HandleMessage(string messageJson, IPEndPoint senderEndpoint)
+		protected override bool HandleVerb(ConnectMessage message, IPEndPoint senderEndpoint)
 		{
 			throw new NotImplementedException();
 		}

@@ -1,32 +1,30 @@
 ﻿namespace PtpChat.Main
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Linq;
-    using System.Net;
-    using System.Net.Sockets;
-    using System.Text;
-    using System.Threading.Tasks;
-    using System.Timers;
+	using System.Collections.Generic;
 
-    using Newtonsoft.Json;
+	using PtpChat.Base.Messages;
+	using PtpChat.Net;
+	using PtpChat.Utility;
+	using Base.Interfaces;
+	using VerbHandlers.Handlers;
 
-    using PtpChat.Base.Messages;
-    using PtpChat.Net;
-    using PtpChat.Utility;
-    using PtpChat.VerbHandlers.Handlers;
-
-    public class PTPClient
+	public class PTPClient
     {
 		public PTPClient(ConfigManager config)
 		{
 
-			var logger = new Logger(config, "ptpchat");
+			ILogManager logger = new Logger(config, "ptpchat");
 
-			var nodeManager = new NodeManager(logger);
+			INodeManager nodeManager = new NodeManager(logger);
 
-			var SocketHandler = new SocketHandler()
+			var handlers = new Dictionary<MessageType, IVerbHandler>();
+			
+			var messageHandler = new MessageHandler(logger);
+
+			ISocketHandler socketHandler = new SocketHandler(logger, nodeManager, messageHandler);
+
+			messageHandler.AddHandler(MessageType.HELLO, new HelloVerbHandler(ref logger, ref nodeManager, ref socketHandler));
+			messageHandler.AddHandler(MessageType.ROUTING, new RoutingVerbHandler(ref logger, ref nodeManager, ref socketHandler));
 
 
 		}

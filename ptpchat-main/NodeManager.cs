@@ -98,7 +98,7 @@ namespace PtpChat.Main
 			this.logger.Info(string.Format(NodeManager.LogUpdatedNode, node.NodeId));
 
 		}
-
+		
 		public IList<Node> GetNodes(Dictionary<NodeFilterType, object> filter = null)
 		{
 

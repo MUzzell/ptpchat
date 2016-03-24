@@ -15,11 +15,14 @@
 		private ILogManager logger;
 		private Dictionary<MessageType, IVerbHandler> handlers;
 
-		public MessageHandler(ILogManager logger, 
-			Dictionary<MessageType, IVerbHandler> handlers)
+		public MessageHandler(ILogManager logger)
 		{
 			this.logger = logger;
-			this.handlers = handlers;
+		}
+
+		public void AddHandler(MessageType type, IVerbHandler handler)
+		{
+			this.handlers.Add(type, handler);
 		}
 
 		public void HandleMessage(string messageJson, IPEndPoint senderEndpoint)

@@ -13,7 +13,7 @@
 	using PtpChat.Utility;
 	using Base.Interfaces;
 
-	public class RoutingVerbHandler : BaseVerbHandler
+	public class RoutingVerbHandler : BaseVerbHandler<RoutingVerbHandler>
     {
         private RoutingMessage Message { get; set; }
 
@@ -103,7 +103,7 @@
             return false;
         }
 
-		public override bool HandleMessage(string messageJson, IPEndPoint senderEndpoint)
+		protected override bool HandleVerb(RoutingVerbHandler message, IPEndPoint senderEndpoint)
 		{
 			throw new NotImplementedException();
 		}
