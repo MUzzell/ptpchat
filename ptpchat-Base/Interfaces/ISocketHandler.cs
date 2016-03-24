@@ -8,9 +8,7 @@
         void Start();
 
         void Stop();
-
-        void SetMessageHandler(IMessageHandler handler);
-
+		
         bool SendMessage(IPEndPoint dst, IPEndPoint src, byte[] message);
 
         bool SendMessage(Guid dstNodeId, byte[] messsage);

@@ -15,8 +15,8 @@
 
     public class RoutingVerbHandler : BaseVerbHandler<RoutingVerbHandler>
     {
-        public RoutingVerbHandler(ref ILogManager logger, ref INodeManager nodeManager, ref ISocketHandler socketHandler)
-            : base(ref logger, ref nodeManager, ref socketHandler)
+        public RoutingVerbHandler(ILogManager logger, INodeManager nodeManager, ISocketHandler socketHandler)
+            : base(logger, nodeManager, socketHandler)
         {
         }
 

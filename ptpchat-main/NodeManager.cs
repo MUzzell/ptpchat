@@ -10,18 +10,6 @@
 
     internal class NodeManager : INodeManager
     {
-        public NodeManager(ILogManager logger)
-        {
-            if (logger == null)
-            {
-                throw new ArgumentNullException(nameof(logger), @"Is Null");
-            }
-
-            this.logger = logger;
-
-            this.LocalNode = new Node{ NodeId = Guid.NewGuid()};
-        }
-
         private const string LogAddedNode = "Added new node, Node ID: {0}";
         private const string LogDeletedNode = "Deleted node, Node ID: {0}";
         private const string LogUpdatedNode = "Updated node, Node ID: {0}";
@@ -33,7 +21,19 @@
         //Can set the 'concurrency level'? why does # of threads matter?
         private readonly ConcurrentDictionary<Guid, Node> nodes = new ConcurrentDictionary<Guid, Node>();
 
-        public void Add(Node node)
+		public NodeManager(ILogManager logger)
+		{
+			if (logger == null)
+			{
+				throw new ArgumentNullException(nameof(logger), @"Is Null");
+			}
+
+			this.logger = logger;
+
+			this.LocalNode = new Node { NodeId = Guid.NewGuid() };
+		}
+
+		public void Add(Node node)
         {
             if (!this.nodes.TryAdd(node.NodeId, node))
             {

@@ -9,7 +9,7 @@
 
     public abstract class BaseVerbHandler<T> : IVerbHandler
     {
-        protected BaseVerbHandler(ref ILogManager logger, ref INodeManager nodeManager, ref ISocketHandler socketHandler)
+        protected BaseVerbHandler(ILogManager logger, INodeManager nodeManager, ISocketHandler socketHandler)
         {
             this.logger = logger;
             this.NodeManager = nodeManager;

@@ -10,8 +10,8 @@
 
     public class HelloVerbHandler : BaseVerbHandler<HelloMessage>
     {
-        public HelloVerbHandler(ref ILogManager logger, ref INodeManager nodeManager, ref ISocketHandler socketHandler)
-            : base(ref logger, ref nodeManager, ref socketHandler)
+        public HelloVerbHandler(ILogManager logger, INodeManager nodeManager, ISocketHandler socketHandler)
+            : base( logger, nodeManager, socketHandler)
         {
         }
 
@@ -48,7 +48,13 @@
             }
             else //New Node
             {
-                this.NodeManager.Add(new Node { NodeId = nodeId, LastSeen = DateTime.Now });
+                this.NodeManager.Add(new Node {
+					NodeId = nodeId,
+					LastSeen = DateTime.Now,
+					IpAddress = senderEndpoint.Address,
+					Port = senderEndpoint.Port,
+					Version = message.msg_data.version
+				});
             }
 
             return true;

@@ -8,8 +8,8 @@
 
     public class ConnectVerbHandler : BaseVerbHandler<ConnectMessage>
     {
-        public ConnectVerbHandler(ref ILogManager logger, ref INodeManager nodeManager, ref ISocketHandler socketHandler)
-            : base(ref logger, ref nodeManager, ref socketHandler)
+        public ConnectVerbHandler(ILogManager logger, INodeManager nodeManager, ISocketHandler socketHandler)
+            : base(logger, nodeManager, socketHandler)
         {
         }
 

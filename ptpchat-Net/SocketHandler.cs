@@ -14,7 +14,26 @@
 
     public class SocketHandler : ISocketHandler
     {
-        public SocketHandler(ILogManager logger, INodeManager nodeManager)
+		private const string LogHandlerStarting = "SocketHandler starting";
+		private const string LogHandlerStopping = "SocketHandler stopping";
+		private const string LogPortBound = "SocketHandler has bound to 0.0.0.0:{0}";
+
+		private Timer helloTimer;
+
+		//threads are organised by their port.
+		private readonly IDictionary<int, SocketThread> internalThreads;
+
+		private readonly UdpClient localClient;
+
+		//im holding onto this until i figure out how to do the rest of the socket stuff.
+		private readonly int localPort;
+
+		private readonly ILogManager logger;
+		private readonly INodeManager nodeManager;
+
+		private IMessageHandler MessageHandler { get; set; }
+
+		public SocketHandler(ILogManager logger, INodeManager nodeManager, IMessageHandler messageHandler)
         {
             this.logger = logger;
 
@@ -24,42 +43,15 @@
             this.localPort = new Random().Next(10000, 65535);
             this.localClient = new UdpClient(this.localPort, AddressFamily.InterNetwork);
 
+			this.MessageHandler = messageHandler;
+
             this.logger.Info(string.Format(LogPortBound, this.localPort));
 
             nodeManager.LocalNode.Port = this.localPort;
             this.nodeManager = nodeManager;
 
-            this.internalThreads.Add(this.localPort, new SocketThread(this.localClient, null, this.logger));
+			this.internalThreads.Add(this.localPort, new SocketThread(this.localClient, messageHandler, this.logger));
         }
-
-        public void SetMessageHandler(IMessageHandler handler)
-        {
-            this.MessageHandler = handler;
-
-            foreach (var socketThread in this.internalThreads)
-            {
-                socketThread.Value.SetMessageHandler(handler);
-            }
-        }
-
-        private const string LogHandlerStarting = "SocketHandler starting";
-        private const string LogHandlerStopping = "SocketHandler stopping";
-        private const string LogPortBound = "SocketHandler has bound to 0.0.0.0:{0}";
-
-        private Timer helloTimer;
-
-        //threads are organised by their port.
-        private readonly IDictionary<int, SocketThread> internalThreads;
-
-        private readonly UdpClient localClient;
-
-        //im holding onto this until i figure out how to do the rest of the socket stuff.
-        private readonly int localPort;
-
-        private readonly ILogManager logger;
-        private readonly INodeManager nodeManager;
-
-        private IMessageHandler MessageHandler { get; set; }
 
         public bool SendMessage(Guid dstNodeId, byte[] messsage)
         {

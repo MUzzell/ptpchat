@@ -16,22 +16,20 @@
             ILogManager logger = new Logger(config, "ptpchat");
 
             INodeManager nodeManager = new NodeManager(logger);
-            nodeManager.Add(new Node{IpAddress = config.InitialServerAddress, NodeId = Guid.Empty,Port = 9001});
 
-            //socket handler here used to create its UDP socket thread handling in the ctor
-            ISocketHandler socketHandler = new SocketHandler(logger, nodeManager);
+			//TODO: remove this when we get a response from the server
+			nodeManager.Add(new Node{IpAddress = config.InitialServerAddress, NodeId = Guid.Empty,Port = 9001});
+			
+            MessageHandler messageHandler = new MessageHandler(logger);
 
-            var messageHandler = new MessageHandler(logger);
-            //the message handler requires the socket handler instance, here --->                                  V
-            messageHandler.AddHandler(MessageType.HELLO, new HelloVerbHandler(ref logger, ref nodeManager, ref socketHandler));
-            messageHandler.AddHandler(MessageType.ROUTING, new RoutingVerbHandler(ref logger, ref nodeManager, ref socketHandler));
+			//socket handler here used to create its UDP socket thread handling in the ctor
+			ISocketHandler socketHandler = new SocketHandler(logger, nodeManager, messageHandler);
 
-            //but the socket handler cannot set up its threads for the udpclient handling until the message handler has its setup verb handlers
-            //or else there wont be any verb handlers to use, so im updating the socket handler (and all the threads) after the message handler has been setup 
-            socketHandler.SetMessageHandler(messageHandler);
-
-            //but before we start using them
+			messageHandler.AddHandler(MessageType.HELLO, new HelloVerbHandler(logger, nodeManager, socketHandler));
+            messageHandler.AddHandler(MessageType.ROUTING, new RoutingVerbHandler(logger, nodeManager, socketHandler));
+			
             socketHandler.Start();
+
         }
 
         /**
