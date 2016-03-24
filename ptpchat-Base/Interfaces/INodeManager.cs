@@ -45,7 +45,7 @@
 
 
         IEnumerable<Node> GetNodes();
-        IEnumerable<Node> GetNodesLinq(Func<KeyValuePair<Guid, Node>, bool> filter);
+        IEnumerable<Node> GetNodes(Func<KeyValuePair<Guid, Node>, bool> filter);
     }
 
     public enum NodeFilterType

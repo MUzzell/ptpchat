@@ -34,7 +34,7 @@
 
         public void SetMessageHandler(IMessageHandler handler)
         {
-            this.messageHandler = handler;
+            this.MessageHandler = handler;
 
             foreach (var socketThread in this.internalThreads)
             {
@@ -51,18 +51,19 @@
         //threads are organised by their port.
         private readonly IDictionary<int, SocketThread> internalThreads;
 
-        private UdpClient localClient;
+        private readonly UdpClient localClient;
 
         //im holding onto this until i figure out how to do the rest of the socket stuff.
         private readonly int localPort;
 
         private readonly ILogManager logger;
-        public IMessageHandler messageHandler { get; set; }
         private readonly INodeManager nodeManager;
+
+        private IMessageHandler MessageHandler { get; set; }
 
         public bool SendMessage(Guid dstNodeId, byte[] messsage)
         {
-            var node = this.nodeManager.GetNodesLinq(a => a.Value.NodeId == dstNodeId).FirstOrDefault();
+            var node = this.nodeManager.GetNodes(a => a.Value.NodeId == dstNodeId).FirstOrDefault();
 
             if (node == null) return false;
 
@@ -104,7 +105,7 @@
 
             var hello = new HelloMessage { msg_type = MessageType.HELLO, msg_data = new HelloData { node_id = this.nodeManager.LocalNode.NodeId, version = string.Empty } };
 
-            var msg = Encoding.ASCII.GetBytes(this.messageHandler.BuildMessage(hello));
+            var msg = Encoding.ASCII.GetBytes(this.MessageHandler.BuildMessage(hello));
 
             this.logger.Debug($"Sending Hellos to {nodes.Count} nodes");
 

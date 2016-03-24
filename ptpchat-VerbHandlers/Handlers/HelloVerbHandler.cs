@@ -38,7 +38,7 @@
                 return false;
             }
 
-            var nodes = this.NodeManager.GetNodesLinq(d => d.Value.NodeId == nodeId).ToList();
+            var nodes = this.NodeManager.GetNodes(d => d.Value.NodeId == nodeId).ToList();
 
             if (nodes.Count > 0) // Existing Node
             {
