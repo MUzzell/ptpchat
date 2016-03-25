@@ -195,13 +195,15 @@
 
                 if (!this.NodeManager.GetNodes(d => d.Value.NodeId == nodeId).Any())
                 {
-                    // not seen, add. else, ignore
-                    this.NodeManager.Add(new Node
-                    {
-                        NodeId = nodeId,
-                        IpAddress = address.Address,
-                        Port = address.Port,
-                        Version = null
+					// not seen, add. else, ignore
+					this.NodeManager.Add(new Node
+					{
+						NodeId = nodeId,
+						IpAddress = address.Address,
+						Port = address.Port,
+						Version = null,
+						Added = DateTime.Now,
+						LastSeen = null
                     });
                 }
 

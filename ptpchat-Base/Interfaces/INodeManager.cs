@@ -42,8 +42,7 @@
         /// <param name="node">The node to be updates, will be compared against its NodeId.</param>
         /// </summary>
         void Update(Node node);
-
-
+		
         IEnumerable<Node> GetNodes();
         IEnumerable<Node> GetNodes(Func<KeyValuePair<Guid, Node>, bool> filter);
     }

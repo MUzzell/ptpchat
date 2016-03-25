@@ -23,36 +23,33 @@ namespace PtpChat.Utility.Properties {
             }
         }
         
-        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("37.139.19.21")]
         public string DefaultServer_Host {
             get {
                 return ((string)(this["DefaultServer_Host"]));
             }
-            set {
-                this["DefaultServer_Host"] = value;
-            }
         }
         
-        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("9001")]
         public int DefaultServer_Port {
             get {
                 return ((int)(this["DefaultServer_Port"]));
             }
-            set {
-                this["DefaultServer_Port"] = value;
-            }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("ptpchat\\logs\\main.log")]
         public string DefaultLoggingFile {
             get {
                 return ((string)(this["DefaultLoggingFile"]));
+            }
+            set {
+                this["DefaultLoggingFile"] = value;
             }
         }
         

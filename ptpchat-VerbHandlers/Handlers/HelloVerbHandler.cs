@@ -49,6 +49,7 @@
             {
                 this.NodeManager.Add(new Node {
 					NodeId = nodeId,
+					Added = DateTime.Now,
 					LastSeen = DateTime.Now,
 					IpAddress = senderEndpoint.Address,
 					Port = senderEndpoint.Port,
