@@ -1,29 +1,31 @@
 ﻿namespace PtpChat.VerbHandlers.Handlers
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net;
+	using System;
+	using System.Linq;
+	using System.Net;
+	using System.Text.RegularExpressions;
 
-    using Newtonsoft.Json;
+	using PtpChat.Base.Classes;
+	using PtpChat.Base.Interfaces;
+	using PtpChat.Base.Messages;
 
-    using PtpChat.Base.Classes;
-    using PtpChat.Base.Interfaces;
-    using PtpChat.Base.Messages;
-    using PtpChat.Net;
-    using PtpChat.Utility;
-
-    public class RoutingVerbHandler : BaseVerbHandler<RoutingVerbHandler>
+	public class RoutingVerbHandler : BaseVerbHandler<RoutingMessage>
     {
-        public RoutingVerbHandler(ILogManager logger, INodeManager nodeManager, ISocketHandler socketHandler)
+		private const string LogInvalidSenderId = "Invalid Sender Node ID in ROUTING message, ignoring";
+		private const string LogSameNodeId = "Recieved ROUTING sender's Node ID presented this Node's ID! ignoring";
+		private const string LogInvalidNodeList = "Recieved Invalid nodes list in ROUTING message, ignoring";
+		private const string LogInvalidNodesEntry = "NodeList in Routing message contained invalid NodeId, ignoring entry";
+
+		private const string IPv4Pattern = @"^((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))?(?:\:([0-9]{1,5}))?$";
+
+		private static readonly Regex IPv4Regex = new Regex(IPv4Pattern);
+
+		public RoutingVerbHandler(ILogManager logger, INodeManager nodeManager, ISocketHandler socketHandler)
             : base(logger, nodeManager, socketHandler)
         {
         }
 
-        private RoutingMessage Message { get; set; }
-
-        private List<Node> Nodes { get; set; }
-
+		/*
         public void ParseBaseMessage(string messageJson)
         {
             this.Message = JsonConvert.DeserializeObject<RoutingMessage>(messageJson);
@@ -105,10 +107,92 @@
 
             return false;
         }
+		*/
 
-        protected override bool HandleVerb(RoutingVerbHandler message, IPEndPoint senderEndpoint)
+        protected override bool HandleVerb(RoutingMessage message, IPEndPoint senderEndpoint)
         {
-            throw new NotImplementedException();
+			this.logger.Debug($"Routing message recieved from: {senderEndpoint.ToString()}");
+
+			var senderId = message.msg_data.node_id;
+
+			var nodes = message.msg_data.nodes;
+
+			if (senderId == Guid.Empty)
+			{
+				this.logger.Warning(LogInvalidSenderId);
+				return false;
+			}
+
+			if (senderId == this.NodeManager.LocalNode.NodeId)
+			{
+				this.logger.Warning(LogSameNodeId);
+				return false;
+			}
+
+			if (nodes == null)
+			{
+				this.logger.Warning(LogInvalidNodeList);
+				return false;
+			}
+
+			foreach (var node in nodes)
+			{
+				Guid nodeId;
+				string nodeAddress = node["address"].Trim();
+
+				if (!Guid.TryParse(node["node_id"], out nodeId))
+				{
+					this.logger.Warning(LogInvalidNodesEntry);
+					continue;
+				}
+
+				if (nodeId == Guid.Empty)
+				{
+					this.logger.Warning(LogInvalidNodesEntry);
+					continue;
+				}
+
+				if (nodeId == this.NodeManager.LocalNode.NodeId)
+				{
+					this.logger.Debug("Ignoring out entry in ROUTING message");
+					continue;
+				}
+					
+
+				if (string.IsNullOrWhiteSpace(nodeAddress))
+				{
+					this.logger.Warning(LogInvalidNodesEntry);
+					continue;
+				}
+
+				//parse the IPString
+				var result = IPv4Regex.Match(nodeAddress);
+
+				if (!result.Success || result.Groups.Count != 3)
+				{
+					this.logger.Warning(LogInvalidNodesEntry);
+					continue;
+				}
+
+				var nodeIP = IPAddress.Parse(result.Groups[1].Value);
+				var nodePort = int.Parse(result.Groups[2].Value);
+
+				var nMList = this.NodeManager.GetNodes(d => d.Value.NodeId == nodeId).ToList();
+
+
+
+				if (nMList.Count == 0) // not seen, add. else, ignore
+					this.NodeManager.Add(new Node
+					{
+						NodeId = nodeId,
+						IpAddress = nodeIP,
+						Port = nodePort,
+						Version = null
+					});
+
+			}
+
+			return true;
         }
     }
 }

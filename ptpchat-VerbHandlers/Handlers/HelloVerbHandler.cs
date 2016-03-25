@@ -10,16 +10,14 @@
 
     public class HelloVerbHandler : BaseVerbHandler<HelloMessage>
     {
-        public HelloVerbHandler(ILogManager logger, INodeManager nodeManager, ISocketHandler socketHandler)
+		private const string LogInvalidNodeId = "Invalid Node ID in HELLO message, ignoring";
+		private const string LogSameNodeId = "Recieved Hello presented this Node's ID! ignoring";
+		
+		public HelloVerbHandler(ILogManager logger, INodeManager nodeManager, ISocketHandler socketHandler)
             : base( logger, nodeManager, socketHandler)
         {
         }
-
-        private static readonly string LogInvalidNodeId = "Invalid Node ID in HELLO message, ignoring";
-        private static readonly string LogSameNodeId = "Recieved Hello presented this Node's ID! ignoring";
-
-        private HelloMessage Message { get; set; }
-
+		
         protected override bool HandleVerb(HelloMessage message, IPEndPoint senderEndpoint)
         {
             this.logger.Debug("Hello message recieved from sender: " + senderEndpoint);
@@ -44,6 +42,7 @@
             {
                 var node = nodes[0];
                 node.LastSeen = DateTime.Now;
+				node.Version = node.Version ?? message.msg_data.version;
                 this.NodeManager.Update(node);
             }
             else //New Node
