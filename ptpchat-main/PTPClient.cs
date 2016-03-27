@@ -39,6 +39,8 @@
 			messageHandler.AddHandler(MessageType.CONNECT, new ConnectVerbHandler(logger, dataManager, socketHandler));
 			messageHandler.AddHandler(MessageType.MESSAGE, new MessageVerbHandler(logger, dataManager, socketHandler));
 			messageHandler.AddHandler(MessageType.CHANNEL, new ChannelVerbHandler(logger, dataManager, socketHandler));
+			messageHandler.AddHandler(MessageType.JOIN, new JoinVerbHandler(logger, dataManager, socketHandler));
+			messageHandler.AddHandler(MessageType.LEAVE, new LeaveVerbHandler(logger, dataManager, socketHandler));
 
             socketHandler.Start();
 

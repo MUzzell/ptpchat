@@ -46,6 +46,8 @@
   <ItemGroup>
     <Compile Include="BaseVerbHandler.cs" />
     <Compile Include="Handlers\ChannelVerbHandler.cs" />
+    <Compile Include="Handlers\JoinVerbHandler.cs" />
+    <Compile Include="Handlers\LeaveVerbHandler.cs" />
     <Compile Include="Handlers\MessageVerbHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Handlers\ConnectVerbHandler.cs" />
