@@ -36,14 +36,13 @@
 		public SocketHandler(ILogManager logger, INodeManager nodeManager, IMessageHandler messageHandler)
         {
             this.logger = logger;
+			this.MessageHandler = messageHandler;
 
             this.internalThreads = new Dictionary<int, SocketThread>();
 
             //What if it's in use??
             this.localPort = new Random().Next(10000, 65535);
             this.localClient = new UdpClient(this.localPort, AddressFamily.InterNetwork);
-
-			this.MessageHandler = messageHandler;
 
             this.logger.Info(string.Format(LogPortBound, this.localPort));
 

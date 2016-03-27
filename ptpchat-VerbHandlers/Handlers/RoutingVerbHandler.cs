@@ -18,9 +18,8 @@
         private const string LogInvalidNodesEntry = "NodeList in Routing message contained invalid NodeId, ignoring entry";
         private const string LogInvalidIP = "NodeList in Routing message contained IP address that didn't parse, ignoring entry";
 
-        private const string IPv4Pattern = @"^((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))?(?:\:([0-9]{1,5}))?$";
-
-        private static readonly Regex IPv4Regex = new Regex(IPv4Pattern);
+        //leaving this here for my own enjoyment :P
+        //private const string IPv4Pattern = @"^((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))?(?:\:([0-9]{1,5}))?$";
 
         public RoutingVerbHandler(ILogManager logger, INodeManager nodeManager, ISocketHandler socketHandler)
             : base(logger, nodeManager, socketHandler)
@@ -139,9 +138,9 @@
 
             foreach (var node in nodes)
             {
-                Guid nodeId;
                 string nodeAddress = node["address"].Trim();
 
+                Guid nodeId;
                 if (!Guid.TryParse(node["node_id"], out nodeId))
                 {
                     this.logger.Warning(LogInvalidNodesEntry);
@@ -159,7 +158,6 @@
                     this.logger.Debug("Ignoring out entry in ROUTING message");
                     continue;
                 }
-
 
                 if (string.IsNullOrWhiteSpace(nodeAddress))
                 {
@@ -179,20 +177,6 @@
                     continue;
                 }
 
-                switch (address.AddressFamily)
-                {
-                    case System.Net.Sockets.AddressFamily.InterNetwork:
-                        // we have IPv4
-                        break;
-                    case System.Net.Sockets.AddressFamily.InterNetworkV6:
-                        // we have IPv6
-                        break;
-
-                    default:
-                        this.logger.Warning(LogInvalidIP);
-                        continue;
-                }
-
                 if (!this.NodeManager.GetNodes(d => d.Value.NodeId == nodeId).Any())
                 {
 					// not seen, add. else, ignore
@@ -206,28 +190,6 @@
 						LastSeen = null
                     });
                 }
-
-                ////parse the IPString
-                //var result = IPv4Regex.Match(nodeAddress);
-
-                //if (!result.Success || result.Groups.Count != 3)
-                //{
-                //    this.logger.Warning(LogInvalidNodesEntry);
-                //    continue;
-                //}
-
-                //var nodeIP = IPAddress.Parse(result.Groups[1].Value);
-                //var nodePort = int.Parse(result.Groups[2].Value);
-
-                //if (!this.NodeManager.GetNodes(d => d.Value.NodeId == nodeId).Any()) // not seen, add. else, ignore
-                //    this.NodeManager.Add(new Node
-                //    {
-                //        NodeId = nodeId,
-                //        IpAddress = nodeIP,
-                //        Port = nodePort,
-                //        Version = null
-                //    });
-
             }
 
             return true;
