@@ -12,14 +12,16 @@
         protected BaseVerbHandler(ILogManager logger, IDataManager dataManager, ISocketHandler socketHandler)
         {
             this.logger = logger;
-            this.DataManager = dataManager;
+            this.NodeManager = dataManager.NodeManager;
+			this.ChannelManager = dataManager.ChannelManager;
             this.SocketHandler = socketHandler;
         }
 
         private static readonly string LogCannotParseJson = "Unable to deserialise Json message, ignoring";
 
         protected ILogManager logger { get; }
-        protected IDataManager DataManager { get;}
+        protected INodeManager NodeManager { get; }
+		protected IChannelManager ChannelManager { get; }
         protected ISocketHandler SocketHandler { get; set; }
 
         public bool HandleMessage(string msgJson, IPEndPoint senderEndpoint)

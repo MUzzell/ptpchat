@@ -16,6 +16,8 @@
 
         public bool IsLoggingEnabled => Settings.Default.IsLoggingEnabled;
 
+		public string LocalNodeVersion => Settings.Default.LocalNodeVersion;
+
 		public Guid LocalNodeId
 		{
 			get

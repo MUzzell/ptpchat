@@ -31,7 +31,7 @@
 
 			this.logger = logger;
 
-			this.LocalNode = new Node { NodeId = config.LocalNodeId };
+			this.LocalNode = new Node { NodeId = config.LocalNodeId, Version = config.LocalNodeVersion };
 		}
 
 		public void Add(Node node)

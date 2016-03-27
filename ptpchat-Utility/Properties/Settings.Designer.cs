@@ -100,5 +100,14 @@ namespace PtpChat.Utility.Properties {
                 this["LocalNodeId"] = value;
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("ptpchat-client; 0.0")]
+        public string LocalNodeVersion {
+            get {
+                return ((string)(this["LocalNodeVersion"]));
+            }
+        }
     }
 }
