@@ -93,7 +93,7 @@
 
         private void SendHellos(object state)
         {
-            var nodes = this.nodeManager.GetNodes().ToList();
+            var nodes = this.nodeManager.GetNodes(node => node.Value.LastSeen != null).ToList();
 
             var hello = new HelloMessage { msg_type = MessageType.HELLO, msg_data = new HelloData { node_id = this.nodeManager.LocalNode.NodeId, version = string.Empty } };
 
