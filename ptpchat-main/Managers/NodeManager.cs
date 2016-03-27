@@ -1,14 +1,15 @@
 ﻿namespace PtpChat.Main
 {
-    using System;
-    using System.Collections.Concurrent;
-    using System.Collections.Generic;
-    using System.Linq;
+	using System;
+	using System.Collections.Concurrent;
+	using System.Collections.Generic;
+	using System.Linq;
 
-    using PtpChat.Base.Classes;
-    using PtpChat.Base.Interfaces;
+	using PtpChat.Base.Classes;
+	using PtpChat.Base.Interfaces;
+	using Utility;
 
-    internal class NodeManager : INodeManager
+	internal class NodeManager : INodeManager
     {
         private const string LogAddedNode = "Added new node, Node ID: {0}";
         private const string LogDeletedNode = "Deleted node, Node ID: {0}";
@@ -21,7 +22,7 @@
         //Can set the 'concurrency level'? why does # of threads matter?
         private readonly ConcurrentDictionary<Guid, Node> nodes = new ConcurrentDictionary<Guid, Node>();
 
-		public NodeManager(ILogManager logger)
+		public NodeManager(ILogManager logger, ConfigManager config)
 		{
 			if (logger == null)
 			{
@@ -30,7 +31,7 @@
 
 			this.logger = logger;
 
-			this.LocalNode = new Node { NodeId = Guid.NewGuid() };
+			this.LocalNode = new Node { NodeId = config.LocalNodeId };
 		}
 
 		public void Add(Node node)

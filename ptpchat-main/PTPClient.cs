@@ -15,10 +15,16 @@
         {
             ILogManager logger = new Logger(config, "ptpchat");
 
-            INodeManager nodeManager = new NodeManager(logger);
+            INodeManager nodeManager = new NodeManager(logger, config);
 
 			//TODO: remove this when we get a response from the server
-			nodeManager.Add(new Node{IpAddress = config.InitialServerAddress, NodeId = Guid.Empty,Port = 9001});
+			nodeManager.Add(new Node{
+				IpAddress = config.InitialServerAddress,
+				NodeId = config.InitialServerGuid,
+				Port = 9001,
+				Added = DateTime.Now,
+				LastSeen = DateTime.Now
+			});
 			
             MessageHandler messageHandler = new MessageHandler(logger);
 
