@@ -16,6 +16,9 @@
             ILogManager logger = new Logger(config, "ptpchat");
 
             INodeManager nodeManager = new NodeManager(logger, config);
+			IChannelManager channelManager = new ChannelManager(logger, config);
+
+			IDataManager dataManager = new DataManager(channelManager, nodeManager);
 
 			//TODO: remove this when we get a response from the server
 			nodeManager.Add(new Node{
@@ -31,9 +34,12 @@
 			//socket handler here used to create its UDP socket thread handling in the ctor
 			ISocketHandler socketHandler = new SocketHandler(logger, nodeManager, messageHandler);
 
-			messageHandler.AddHandler(MessageType.HELLO, new HelloVerbHandler(logger, nodeManager, socketHandler));
-            messageHandler.AddHandler(MessageType.ROUTING, new RoutingVerbHandler(logger, nodeManager, socketHandler));
-			
+			messageHandler.AddHandler(MessageType.HELLO, new HelloVerbHandler(logger, dataManager, socketHandler));
+            messageHandler.AddHandler(MessageType.ROUTING, new RoutingVerbHandler(logger, dataManager, socketHandler));
+			messageHandler.AddHandler(MessageType.CONNECT, new ConnectVerbHandler(logger, dataManager, socketHandler));
+			messageHandler.AddHandler(MessageType.MESSAGE, new MessageVerbHandler(logger, dataManager, socketHandler));
+			messageHandler.AddHandler(MessageType.CHANNEL, new ChannelVerbHandler(logger, dataManager, socketHandler));
+
             socketHandler.Start();
 
         }

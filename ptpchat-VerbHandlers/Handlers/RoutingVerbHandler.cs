@@ -17,8 +17,8 @@
         private const string LogInvalidNodesEntry = "NodeList in Routing message contained invalid NodeId, ignoring entry";
         private const string LogInvalidIP = "NodeList in Routing message contained IP address that didn't parse, ignoring entry";
 		
-        public RoutingVerbHandler(ILogManager logger, INodeManager nodeManager, ISocketHandler socketHandler)
-            : base(logger, nodeManager, socketHandler)
+        public RoutingVerbHandler(ILogManager logger, IDataManager dataManager, ISocketHandler socketHandler)
+            : base(logger, dataManager, socketHandler)
         {
         }
 

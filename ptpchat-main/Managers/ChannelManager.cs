@@ -5,7 +5,7 @@
 
 	using Base.Classes;
 	using Base.Interfaces;
-	
+	using Utility;
 
 	public class ChannelManager : IChannelManager
 	{
@@ -15,7 +15,7 @@
 
 		private readonly ConcurrentDictionary<Guid, ChannelMessage> Messages = new ConcurrentDictionary<Guid, ChannelMessage>();
 
-		public ChannelManager(ILogManager logger)
+		public ChannelManager(ILogManager logger, ConfigManager config)
 		{
 			if (logger == null)
 			{

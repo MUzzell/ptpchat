@@ -9,17 +9,17 @@
 
     public abstract class BaseVerbHandler<T> : IVerbHandler
     {
-        protected BaseVerbHandler(ILogManager logger, INodeManager nodeManager, ISocketHandler socketHandler)
+        protected BaseVerbHandler(ILogManager logger, IDataManager dataManager, ISocketHandler socketHandler)
         {
             this.logger = logger;
-            this.NodeManager = nodeManager;
+            this.DataManager = dataManager;
             this.SocketHandler = socketHandler;
         }
 
         private static readonly string LogCannotParseJson = "Unable to deserialise Json message, ignoring";
 
         protected ILogManager logger { get; }
-        protected INodeManager NodeManager { get;}
+        protected IDataManager DataManager { get;}
         protected ISocketHandler SocketHandler { get; set; }
 
         public bool HandleMessage(string msgJson, IPEndPoint senderEndpoint)
