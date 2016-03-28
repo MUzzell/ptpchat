@@ -1,30 +1,27 @@
-﻿namespace PtpChat.Main
+﻿namespace PtpChat.Main.Managers
 {
-	using System;
-	using System.Collections.Concurrent;
+    using System;
+    using System.Collections.Concurrent;
 
-	using Base.Classes;
-	using Base.Interfaces;
-	
+    using PtpChat.Base.Classes;
+    using PtpChat.Base.Interfaces;
 
-	public class ChannelManager : IChannelManager
-	{
-		private readonly ILogManager logger;
+    public class ChannelManager : IChannelManager
+    {
+        public ChannelManager(ILogManager logger)
+        {
+            if (logger == null)
+            {
+                throw new ArgumentNullException(nameof(logger), @"Is Null");
+            }
 
-		private readonly ConcurrentDictionary<Guid, Channel> Channels = new ConcurrentDictionary<Guid, Channel>();
+            this.logger = logger;
+        }
 
-		private readonly ConcurrentDictionary<Guid, ChannelMessage> Messages = new ConcurrentDictionary<Guid, ChannelMessage>();
+        private readonly ConcurrentDictionary<Guid, Channel> Channels = new ConcurrentDictionary<Guid, Channel>();
 
-		public ChannelManager(ILogManager logger)
-		{
-			if (logger == null)
-			{
-				throw new ArgumentNullException(nameof(logger), @"Is Null");
-			}
+        private readonly ILogManager logger;
 
-			this.logger = logger;
-		}
-
-
-	}
+        private readonly ConcurrentDictionary<Guid, ChannelMessage> Messages = new ConcurrentDictionary<Guid, ChannelMessage>();
+    }
 }

@@ -1,10 +1,13 @@
 ﻿namespace PtpChat.Main
 {
     using System;
+    using System.Collections.Generic;
 
     using PtpChat.Base.Classes;
+    using PtpChat.Base.EventArguements;
     using PtpChat.Base.Interfaces;
     using PtpChat.Base.Messages;
+    using PtpChat.Main.Managers;
     using PtpChat.Net;
     using PtpChat.Utility;
     using PtpChat.VerbHandlers.Handlers;
@@ -13,23 +16,43 @@
     {
         public PTPClient(ConfigManager config)
         {
-            ILogManager logger = new Logger(config, "ptpchat");
+            this.logger = new Logger(config, "ptpchat");
 
-            INodeManager nodeManager = new NodeManager(logger);
+            this.nodeManager = new NodeManager(this.logger);
 
-			//TODO: remove this when we get a response from the server
-			nodeManager.Add(new Node{IpAddress = config.InitialServerAddress, NodeId = Guid.Empty,Port = 9001});
-			
-            MessageHandler messageHandler = new MessageHandler(logger);
+            //TODO: remove this when we get a response from the server
+            this.nodeManager.Add(new Node { IpAddress = config.InitialServerAddress, NodeId = Guid.Empty, Port = 9001, Added = DateTime.Now, LastSeen = DateTime.Now });
 
-			//socket handler here used to create its UDP socket thread handling in the ctor
-			ISocketHandler socketHandler = new SocketHandler(logger, nodeManager, messageHandler);
+            this.nodeManager.NodeAdd += this.NodeManager_NodesChanged;
+            this.nodeManager.NodeUpdate += this.NodeManager_NodesChanged;
+            this.nodeManager.NodeDelete += this.NodeManager_NodesChanged;
 
-			messageHandler.AddHandler(MessageType.HELLO, new HelloVerbHandler(logger, nodeManager, socketHandler));
-            messageHandler.AddHandler(MessageType.ROUTING, new RoutingVerbHandler(logger, nodeManager, socketHandler));
-			
-            socketHandler.Start();
+            this.messageHandler = new MessageHandler(this.logger);
 
+            //socket handler here used to create its UDP socket thread handling in the ctor
+            this.socketHandler = new SocketHandler(this.logger, this.nodeManager, this.messageHandler);
+
+            this.messageHandler.AddHandler(MessageType.HELLO, new HelloVerbHandler(this.logger, this.nodeManager, this.socketHandler));
+            this.messageHandler.AddHandler(MessageType.ROUTING, new RoutingVerbHandler(this.logger, this.nodeManager, this.socketHandler));
+
+            this.socketHandler.Start();
+        }
+
+        private readonly ILogManager logger;
+
+        private readonly MessageHandler messageHandler;
+
+        private readonly INodeManager nodeManager;
+
+        private readonly ISocketHandler socketHandler;
+
+        public event EventHandler OnNodesChange;
+
+        public IEnumerable<Node> GetNodes() => this.nodeManager?.GetNodes();
+
+        private void NodeManager_NodesChanged(object sender, EventArgs e)
+        {
+            this.OnNodesChange?.Invoke(sender, (NodeEventArgs)e);
         }
 
         /**

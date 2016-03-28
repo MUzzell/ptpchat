@@ -54,15 +54,181 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Forms.Ribbon35, Version=3.5.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\System.Windows.Forms.Ribbon35.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Ribbon\Classes\Collections\RibbonButtonCollection.cs" />
+    <Compile Include="Ribbon\Classes\Collections\RibbonContextCollection.cs" />
+    <Compile Include="Ribbon\Classes\Collections\RibbonItemCollection.cs" />
+    <Compile Include="Ribbon\Classes\Collections\RibbonItemGroupItemCollection.cs" />
+    <Compile Include="Ribbon\Classes\Collections\RibbonPanelCollection.cs" />
+    <Compile Include="Ribbon\Classes\Collections\RibbonQuickAccessToolbarItemCollection.cs" />
+    <Compile Include="Ribbon\Classes\Collections\RibbonTabCollection.cs" />
+    <Compile Include="Ribbon\Classes\Designers\RibbonButtonDesigner.cs" />
+    <Compile Include="Ribbon\Classes\Designers\RibbonButtonListDesigner.cs" />
+    <Compile Include="Ribbon\Classes\Designers\RibbonComboBoxDesigner.cs" />
+    <Compile Include="Ribbon\Classes\Designers\RibbonDesigner.cs" />
+    <Compile Include="Ribbon\Classes\Designers\RibbonElementWithItemCollectionDesigner.cs" />
+    <Compile Include="Ribbon\Classes\Designers\RibbonItemGroupDesigner.cs" />
+    <Compile Include="Ribbon\Classes\Designers\RibbonOrbMenuItemDesigner.cs" />
+    <Compile Include="Ribbon\Classes\Designers\RibbonPanelDesigner.cs" />
+    <Compile Include="Ribbon\Classes\Designers\RibbonTabDesigner.cs" />
+    <Compile Include="Ribbon\Classes\Enums\Enums.cs" />
+    <Compile Include="Ribbon\Classes\EventArgs\RibbonButtonRenderEventArgs.cs" />
+    <Compile Include="Ribbon\Classes\EventArgs\RibbonCanvasEventArgs.cs" />
+    <Compile Include="Ribbon\Classes\EventArgs\RibbonDropDownRenderEventArgs.cs" />
+    <Compile Include="Ribbon\Classes\EventArgs\RibbonElementMeasureSizeEventArgs.cs" />
+    <Compile Include="Ribbon\Classes\EventArgs\RibbonElementPaintEventArgs.cs" />
+    <Compile Include="Ribbon\Classes\EventArgs\RibbonElementPopUpEventArgs.cs" />
+    <Compile Include="Ribbon\Classes\EventArgs\RibbonHostSizeModeHandledEventArgs.cs" />
+    <Compile Include="Ribbon\Classes\EventArgs\RibbonItemBoundsEventArgs.cs" />
+    <Compile Include="Ribbon\Classes\EventArgs\RibbonItemEventArgs.cs" />
+    <Compile Include="Ribbon\Classes\EventArgs\RibbonItemRenderEventArgs.cs" />
+    <Compile Include="Ribbon\Classes\EventArgs\RibbonOrbDropDownEventArgs.cs" />
+    <Compile Include="Ribbon\Classes\EventArgs\RibbonPanelRenderEventArgs.cs" />
+    <Compile Include="Ribbon\Classes\EventArgs\RibbonRenderEventArgs.cs" />
+    <Compile Include="Ribbon\Classes\EventArgs\RibbonTabRenderEventArgs.cs" />
+    <Compile Include="Ribbon\Classes\EventArgs\RibbonTextEventArgs.cs" />
+    <Compile Include="Ribbon\Classes\EventArgs\RibbonToolTipRenderEventArgs.cs" />
+    <Compile Include="Ribbon\Classes\GlobalHook.cs" />
+    <Compile Include="Ribbon\Classes\Glyphs\RibbonPanelGlyph.cs" />
+    <Compile Include="Ribbon\Classes\Glyphs\RibbonQuickAccessToolbarGlyph.cs" />
+    <Compile Include="Ribbon\Classes\Glyphs\RibbonTabGlyph.cs" />
+    <Compile Include="Ribbon\Classes\Interfaces\IContainsRibbonComponents.cs" />
+    <Compile Include="Ribbon\Classes\Interfaces\IContainsSelectableRibbonItems.cs" />
+    <Compile Include="Ribbon\Classes\Interfaces\IDropDownRibbonItem.cs" />
+    <Compile Include="Ribbon\Classes\Interfaces\IRibbonElement.cs" />
+    <Compile Include="Ribbon\Classes\Interfaces\IRibbonForm.cs" />
+    <Compile Include="Ribbon\Classes\Interfaces\IRibbonToolTip.cs" />
+    <Compile Include="Ribbon\Classes\Interfaces\IScrollableRibbonItem.cs" />
+    <Compile Include="Ribbon\Classes\Renderers\Color Tables\RibbonProfesionalRendererColorTable.cs" />
+    <Compile Include="Ribbon\Classes\Renderers\Color Tables\RibbonProfesionalRendererColorTableBlack.cs" />
+    <Compile Include="Ribbon\Classes\Renderers\Color Tables\RibbonProfesionalRendererColorTableBlue.cs" />
+    <Compile Include="Ribbon\Classes\Renderers\Color Tables\RibbonProfesionalRendererColorTableGreen.cs" />
+    <Compile Include="Ribbon\Classes\Renderers\Color Tables\RibbonProfesionalRendererColorTableHalloween.cs" />
+    <Compile Include="Ribbon\Classes\Renderers\Color Tables\RibbonProfesionalRendererColorTableJellyBelly.cs" />
+    <Compile Include="Ribbon\Classes\Renderers\Color Tables\RibbonProfesionalRendererColorTablePurple.cs" />
+    <Compile Include="Ribbon\Classes\Renderers\Color Tables\ToolStripColors.cs" />
+    <Compile Include="Ribbon\Classes\Renderers\RibbonColorPart.cs" />
+    <Compile Include="Ribbon\Classes\Renderers\RibbonProfessionalRenderer.cs" />
+    <Compile Include="Ribbon\Classes\Renderers\RibbonRenderer.cs" />
+    <Compile Include="Ribbon\Classes\Renderers\ToolStripRenderer.cs" />
+    <Compile Include="Ribbon\Classes\RibbonFormHelper.cs" />
+    <Compile Include="Ribbon\Classes\RibbonItemCollectionEditor.cs" />
+    <Compile Include="Ribbon\Classes\RibbonMouseSensor.cs" />
+    <Compile Include="Ribbon\Classes\RibbonPopupManager.cs" />
+    <Compile Include="Ribbon\Classes\Set.cs" />
+    <Compile Include="Ribbon\Classes\Theme.cs" />
+    <Compile Include="Ribbon\Classes\WinApi.cs" />
+    <Compile Include="Ribbon\Component Classes\Ribbon.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Ribbon\Component Classes\RibbonButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Ribbon\Component Classes\RibbonButtonList.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Ribbon\Component Classes\RibbonCaptionButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Ribbon\Component Classes\RibbonCheckBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Ribbon\Component Classes\RibbonColorChooser.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Ribbon\Component Classes\RibbonComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Ribbon\Component Classes\RibbonContext.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Ribbon\Component Classes\RibbonDescriptionMenuItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Ribbon\Component Classes\RibbonDropDown.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Ribbon\Component Classes\RibbonHost.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Ribbon\Component Classes\RibbonItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Ribbon\Component Classes\RibbonItemGroup.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Ribbon\Component Classes\RibbonLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Ribbon\Component Classes\RibbonOrbDropDown.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Ribbon\Component Classes\RibbonOrbMenuItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Ribbon\Component Classes\RibbonOrbOptionButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Ribbon\Component Classes\RibbonOrbRecentItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Ribbon\Component Classes\RibbonPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Ribbon\Component Classes\RibbonPanelPopup.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Ribbon\Component Classes\RibbonPopup.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Ribbon\Component Classes\RibbonQuickAccessToolbar.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Ribbon\Component Classes\RibbonSeparator.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Ribbon\Component Classes\RibbonTab.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Ribbon\Component Classes\RibbonTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Ribbon\Component Classes\RibbonToolTip.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Ribbon\Component Classes\RibbonUpDown.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Ribbon\Component Classes\RibbonWrappedDropDown.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Subforms\ClientsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Subforms\ClientsForm.Designer.cs">
+      <DependentUpon>ClientsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Managers\ChannelManager.cs" />
     <Compile Include="Managers\DataManager.cs" />
     <Compile Include="MessageHandler.cs" />
     <Compile Include="Managers\NodeManager.cs" />
     <Compile Include="PTPClient.cs" />
+    <Compile Include="Subforms\ServersForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Subforms\ServersForm.Designer.cs">
+      <DependentUpon>ServersForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -72,6 +238,9 @@
     <Compile Include="UDPChatForm.Designer.cs">
       <DependentUpon>UDPChatForm.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Subforms\ClientsForm.resx">
+      <DependentUpon>ClientsForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -82,10 +251,14 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="Subforms\ServersForm.resx">
+      <DependentUpon>ServersForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UDPChatForm.resx">
       <DependentUpon>UDPChatForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\NodeManager.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

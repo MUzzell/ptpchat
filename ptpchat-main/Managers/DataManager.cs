@@ -1,28 +1,28 @@
-﻿namespace PtpChat.Main
+﻿namespace PtpChat.Main.Managers
 {
-	using System;
-	using PtpChat.Base.Interfaces;
+    using System;
 
-	public class DataManager : IDataManager
-	{
-		private IChannelManager channelManager { get; set; }
+    using PtpChat.Base.Interfaces;
 
-		public IChannelManager ChannelManager { get { return this.channelManager; } }
+    public class DataManager : IDataManager
+    {
+        public DataManager(IChannelManager channelManager, INodeManager nodeManager)
+        {
+            if (channelManager == null || nodeManager == null)
+            {
+                throw new ArgumentNullException("Given node or channel manager(s) were null");
+            }
 
-		private INodeManager nodeManager { get; set; }
+            this.channelManager = channelManager;
+            this.nodeManager = nodeManager;
+        }
 
-		public INodeManager NodeManager { get { return this.nodeManager; } }
+        private IChannelManager channelManager { get; }
 
-		public DataManager(IChannelManager channelManager, INodeManager nodeManager)
-		{
+        private INodeManager nodeManager { get; }
 
-			if (channelManager == null || nodeManager == null)
-			{
-				throw new ArgumentNullException("Given node or channel manager(s) were null");
-			}
+        public IChannelManager ChannelManager => this.channelManager;
 
-			this.channelManager = channelManager;
-			this.nodeManager = nodeManager;
-		}
-	}
+        public INodeManager NodeManager => this.nodeManager;
+    }
 }

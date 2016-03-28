@@ -10,6 +10,10 @@
     /// </summary>
     public interface INodeManager
     {
+        event EventHandler NodeAdd;
+        event EventHandler NodeDelete;
+        event EventHandler NodeUpdate;
+
         /// <summary>
         /// This attribute represents this node.
         /// </summary>

@@ -1,6 +1,9 @@
 ﻿namespace PtpChat.Main
 {
-	partial class UDPChatForm
+    using PtpChat.Main.Ribbon.Classes.Enums;
+    using PtpChat.Main.Ribbon.Component_Classes;
+
+    partial class UDPChatForm
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -28,139 +31,27 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-            this.components = new System.ComponentModel.Container();
-            this.lbl_Servers = new System.Windows.Forms.Label();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.listBox_ErrorLog = new System.Windows.Forms.ListBox();
-            this.lbl_log = new System.Windows.Forms.Label();
-            this.grid_Servers = new System.Windows.Forms.DataGridView();
-            this.servers_NodeIdCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.servers_IpAddressCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.server_PortCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.servers_LastHelloCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.socketManagerBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.lbl_Clients = new System.Windows.Forms.Label();
-            this.grid_Clients = new System.Windows.Forms.DataGridView();
-            this.btn_ClientConnect = new System.Windows.Forms.Button();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UDPChatForm));
             this.lbl_NodeId = new System.Windows.Forms.Label();
-            this.clients_NodeIdCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.clients_IPAddressCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.clients_PortCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.clients_LastHelloCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.clients_IsListeningCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            ((System.ComponentModel.ISupportInitialize)(this.grid_Servers)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.socketManagerBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.grid_Clients)).BeginInit();
+            this.ribbon1 = new Ribbon.Component_Classes.Ribbon();
+            this.ribbonButton1 = new RibbonButton();
+            this.ribbonButton4 = new RibbonButton();
+            this.ribbonButton5 = new RibbonButton();
+            this.ribbonButton7 = new RibbonButton();
+            this.ribbonButton8 = new RibbonButton();
+            this.ribbonButton9 = new RibbonButton();
+            this.ribbonButton10 = new RibbonButton();
+            this.rTab_ThisNode = new RibbonTab();
+            this.rTab_Servers = new RibbonTab();
+            this.ribbonPanel1 = new RibbonPanel();
+            this.ribbonButton3 = new RibbonButton();
+            this.rTab_Clients = new RibbonTab();
+            this.ribbonPanel2 = new RibbonPanel();
+            this.ribbonButton6 = new RibbonButton();
+            this.ribbonButton2 = new RibbonButton();
+            this.pnl_SubForm = new System.Windows.Forms.Panel();
+            this.ribbonButton11 = new RibbonButton();
             this.SuspendLayout();
-            // 
-            // lbl_Servers
-            // 
-            this.lbl_Servers.AutoSize = true;
-            this.lbl_Servers.Location = new System.Drawing.Point(37, 135);
-            this.lbl_Servers.Name = "lbl_Servers";
-            this.lbl_Servers.Size = new System.Drawing.Size(46, 13);
-            this.lbl_Servers.TabIndex = 2;
-            this.lbl_Servers.Text = "Servers:";
-            // 
-            // listBox_ErrorLog
-            // 
-            this.listBox_ErrorLog.FormattingEnabled = true;
-            this.listBox_ErrorLog.Location = new System.Drawing.Point(925, 25);
-            this.listBox_ErrorLog.Name = "listBox_ErrorLog";
-            this.listBox_ErrorLog.Size = new System.Drawing.Size(425, 472);
-            this.listBox_ErrorLog.TabIndex = 4;
-            // 
-            // lbl_log
-            // 
-            this.lbl_log.AutoSize = true;
-            this.lbl_log.Location = new System.Drawing.Point(922, 9);
-            this.lbl_log.Name = "lbl_log";
-            this.lbl_log.Size = new System.Drawing.Size(28, 13);
-            this.lbl_log.TabIndex = 5;
-            this.lbl_log.Text = "Log:";
-            // 
-            // grid_Servers
-            // 
-            this.grid_Servers.AllowUserToAddRows = false;
-            this.grid_Servers.AllowUserToDeleteRows = false;
-            this.grid_Servers.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.grid_Servers.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.servers_NodeIdCol,
-            this.servers_IpAddressCol,
-            this.server_PortCol,
-            this.servers_LastHelloCol});
-            this.grid_Servers.Location = new System.Drawing.Point(40, 151);
-            this.grid_Servers.Name = "grid_Servers";
-            this.grid_Servers.ReadOnly = true;
-            this.grid_Servers.Size = new System.Drawing.Size(661, 150);
-            this.grid_Servers.TabIndex = 6;
-            // 
-            // servers_NodeIdCol
-            // 
-            this.servers_NodeIdCol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.servers_NodeIdCol.HeaderText = "NodeID";
-            this.servers_NodeIdCol.Name = "servers_NodeIdCol";
-            this.servers_NodeIdCol.ReadOnly = true;
-            // 
-            // servers_IpAddressCol
-            // 
-            this.servers_IpAddressCol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.servers_IpAddressCol.HeaderText = "IP Address";
-            this.servers_IpAddressCol.Name = "servers_IpAddressCol";
-            this.servers_IpAddressCol.ReadOnly = true;
-            // 
-            // server_PortCol
-            // 
-            this.server_PortCol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.server_PortCol.HeaderText = "Port";
-            this.server_PortCol.Name = "server_PortCol";
-            this.server_PortCol.ReadOnly = true;
-            this.server_PortCol.Width = 50;
-            // 
-            // servers_LastHelloCol
-            // 
-            this.servers_LastHelloCol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.servers_LastHelloCol.HeaderText = "Last Recieve time";
-            this.servers_LastHelloCol.Name = "servers_LastHelloCol";
-            this.servers_LastHelloCol.ReadOnly = true;
-            this.servers_LastHelloCol.Width = 150;
-            // 
-            // lbl_Clients
-            // 
-            this.lbl_Clients.AutoSize = true;
-            this.lbl_Clients.Location = new System.Drawing.Point(37, 335);
-            this.lbl_Clients.Name = "lbl_Clients";
-            this.lbl_Clients.Size = new System.Drawing.Size(41, 13);
-            this.lbl_Clients.TabIndex = 7;
-            this.lbl_Clients.Text = "Clients:";
-            // 
-            // grid_Clients
-            // 
-            this.grid_Clients.AllowUserToAddRows = false;
-            this.grid_Clients.AllowUserToDeleteRows = false;
-            this.grid_Clients.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.grid_Clients.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.clients_NodeIdCol,
-            this.clients_IPAddressCol,
-            this.clients_PortCol,
-            this.clients_LastHelloCol,
-            this.clients_IsListeningCol});
-            this.grid_Clients.Location = new System.Drawing.Point(40, 351);
-            this.grid_Clients.Name = "grid_Clients";
-            this.grid_Clients.ReadOnly = true;
-            this.grid_Clients.Size = new System.Drawing.Size(661, 150);
-            this.grid_Clients.TabIndex = 8;
-            this.grid_Clients.SelectionChanged += new System.EventHandler(this.ClientSocketManagers_SelectionChanged);
-            // 
-            // btn_ClientConnect
-            // 
-            this.btn_ClientConnect.Location = new System.Drawing.Point(725, 351);
-            this.btn_ClientConnect.Name = "btn_ClientConnect";
-            this.btn_ClientConnect.Size = new System.Drawing.Size(182, 23);
-            this.btn_ClientConnect.TabIndex = 9;
-            this.btn_ClientConnect.Text = "Connect to client";
-            this.btn_ClientConnect.UseVisualStyleBackColor = true;
-            this.btn_ClientConnect.Visible = false;
             // 
             // lbl_NodeId
             // 
@@ -170,89 +61,193 @@
             this.lbl_NodeId.Size = new System.Drawing.Size(0, 13);
             this.lbl_NodeId.TabIndex = 10;
             // 
-            // clients_NodeIdCol
+            // ribbon1
             // 
-            this.clients_NodeIdCol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.clients_NodeIdCol.HeaderText = "NodeID";
-            this.clients_NodeIdCol.Name = "clients_NodeIdCol";
-            this.clients_NodeIdCol.ReadOnly = true;
+            this.ribbon1.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.ribbon1.Location = new System.Drawing.Point(0, 0);
+            this.ribbon1.Minimized = false;
+            this.ribbon1.Name = "ribbon1";
             // 
-            // clients_IPAddressCol
             // 
-            this.clients_IPAddressCol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.clients_IPAddressCol.HeaderText = "IP Address";
-            this.clients_IPAddressCol.Name = "clients_IPAddressCol";
-            this.clients_IPAddressCol.ReadOnly = true;
             // 
-            // clients_PortCol
+            this.ribbon1.OrbDropDown.BorderRoundness = 8;
+            this.ribbon1.OrbDropDown.Location = new System.Drawing.Point(0, 0);
+            this.ribbon1.OrbDropDown.MenuItems.Add(this.ribbonButton1);
+            this.ribbon1.OrbDropDown.MenuItems.Add(this.ribbonButton4);
+            this.ribbon1.OrbDropDown.MenuItems.Add(this.ribbonButton5);
+            this.ribbon1.OrbDropDown.Name = "";
+            this.ribbon1.OrbDropDown.Size = new System.Drawing.Size(0, 72);
+            this.ribbon1.OrbDropDown.TabIndex = 0;
+            this.ribbon1.OrbImage = null;
+            this.ribbon1.OrbStyle = RibbonOrbStyle.Office_2010;
+            this.ribbon1.OrbText = "Menu";
             // 
-            this.clients_PortCol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.clients_PortCol.HeaderText = "Their Port";
-            this.clients_PortCol.Name = "clients_PortCol";
-            this.clients_PortCol.ReadOnly = true;
-            this.clients_PortCol.Width = 50;
             // 
-            // clients_LastHelloCol
             // 
-            this.clients_LastHelloCol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.clients_LastHelloCol.HeaderText = "Last Recieve time";
-            this.clients_LastHelloCol.Name = "clients_LastHelloCol";
-            this.clients_LastHelloCol.ReadOnly = true;
-            this.clients_LastHelloCol.Width = 150;
+            this.ribbon1.QuickAcessToolbar.Items.Add(this.ribbonButton7);
+            this.ribbon1.QuickAcessToolbar.Items.Add(this.ribbonButton9);
+            this.ribbon1.QuickAcessToolbar.Items.Add(this.ribbonButton11);
+            this.ribbon1.RibbonTabFont = new System.Drawing.Font("Trebuchet MS", 9F);
+            this.ribbon1.Size = new System.Drawing.Size(1365, 107);
+            this.ribbon1.TabIndex = 0;
+            this.ribbon1.Tabs.Add(this.rTab_ThisNode);
+            this.ribbon1.Tabs.Add(this.rTab_Servers);
+            this.ribbon1.Tabs.Add(this.rTab_Clients);
+            this.ribbon1.TabsMargin = new System.Windows.Forms.Padding(12, 26, 20, 0);
             // 
-            // clients_IsListeningCol
+            // ribbonButton1
             // 
-            this.clients_IsListeningCol.HeaderText = "Connectable?";
-            this.clients_IsListeningCol.Name = "clients_IsListeningCol";
-            this.clients_IsListeningCol.ReadOnly = true;
+            this.ribbonButton1.Image = ((System.Drawing.Image)(resources.GetObject("ribbonButton1.Image")));
+            this.ribbonButton1.SmallImage = ((System.Drawing.Image)(resources.GetObject("ribbonButton1.SmallImage")));
+            // 
+            // ribbonButton4
+            // 
+            this.ribbonButton4.Image = ((System.Drawing.Image)(resources.GetObject("ribbonButton4.Image")));
+            this.ribbonButton4.SmallImage = ((System.Drawing.Image)(resources.GetObject("ribbonButton4.SmallImage")));
+            // 
+            // ribbonButton5
+            // 
+            this.ribbonButton5.Image = ((System.Drawing.Image)(resources.GetObject("ribbonButton5.Image")));
+            this.ribbonButton5.SmallImage = ((System.Drawing.Image)(resources.GetObject("ribbonButton5.SmallImage")));
+            // 
+            // ribbonButton7
+            // 
+            this.ribbonButton7.DropDownItems.Add(this.ribbonButton8);
+            this.ribbonButton7.Image = ((System.Drawing.Image)(resources.GetObject("ribbonButton7.Image")));
+            this.ribbonButton7.MaxSizeMode = RibbonElementSizeMode.Compact;
+            this.ribbonButton7.MinSizeMode = RibbonElementSizeMode.Medium;
+            this.ribbonButton7.SmallImage = ((System.Drawing.Image)(resources.GetObject("ribbonButton7.SmallImage")));
+            this.ribbonButton7.Text = "I cant seem to get rid of these buttons annoyingly..";
+            // 
+            // ribbonButton8
+            // 
+            this.ribbonButton8.Image = ((System.Drawing.Image)(resources.GetObject("ribbonButton8.Image")));
+            this.ribbonButton8.SmallImage = ((System.Drawing.Image)(resources.GetObject("ribbonButton8.SmallImage")));
+            this.ribbonButton8.Text = "ribbonButton8";
+            // 
+            // ribbonButton9
+            // 
+            this.ribbonButton9.DropDownItems.Add(this.ribbonButton10);
+            this.ribbonButton9.Image = ((System.Drawing.Image)(resources.GetObject("ribbonButton9.Image")));
+            this.ribbonButton9.MaxSizeMode = RibbonElementSizeMode.Compact;
+            this.ribbonButton9.MinSizeMode = RibbonElementSizeMode.Medium;
+            this.ribbonButton9.SmallImage = ((System.Drawing.Image)(resources.GetObject("ribbonButton9.SmallImage")));
+            this.ribbonButton9.Text = "so we might as well come up with a use for them..";
+            this.ribbonButton9.Value = "";
+            // 
+            // ribbonButton10
+            // 
+            this.ribbonButton10.Image = ((System.Drawing.Image)(resources.GetObject("ribbonButton10.Image")));
+            this.ribbonButton10.SmallImage = ((System.Drawing.Image)(resources.GetObject("ribbonButton10.SmallImage")));
+            this.ribbonButton10.Text = "ribbonButton10";
+            // 
+            // rTab_ThisNode
+            // 
+            this.rTab_ThisNode.Text = "This Node";
+            // 
+            // rTab_Servers
+            // 
+            this.rTab_Servers.Panels.Add(this.ribbonPanel1);
+            this.rTab_Servers.Text = "Servers";
+            this.rTab_Servers.ActiveChanged += new System.EventHandler(this.rTab_Servers_OnSelect);
+            // 
+            // ribbonPanel1
+            // 
+            this.ribbonPanel1.Items.Add(this.ribbonButton3);
+            this.ribbonPanel1.Text = "ribbonPanel1";
+            // 
+            // ribbonButton3
+            // 
+            this.ribbonButton3.Image = ((System.Drawing.Image)(resources.GetObject("ribbonButton3.Image")));
+            this.ribbonButton3.MaxSizeMode = RibbonElementSizeMode.Medium;
+            this.ribbonButton3.MinSizeMode = RibbonElementSizeMode.Compact;
+            this.ribbonButton3.SmallImage = ((System.Drawing.Image)(resources.GetObject("ribbonButton3.SmallImage")));
+            this.ribbonButton3.Text = "Add Server";
+            // 
+            // rTab_Clients
+            // 
+            this.rTab_Clients.Panels.Add(this.ribbonPanel2);
+            this.rTab_Clients.Text = "Clients";
+            this.rTab_Clients.ActiveChanged += new System.EventHandler(this.rTab_Clients_OnSelect);
+            // 
+            // ribbonPanel2
+            // 
+            this.ribbonPanel2.Items.Add(this.ribbonButton6);
+            this.ribbonPanel2.Text = "ribbonPanel2";
+            // 
+            // ribbonButton6
+            // 
+            this.ribbonButton6.Image = ((System.Drawing.Image)(resources.GetObject("ribbonButton6.Image")));
+            this.ribbonButton6.MaxSizeMode = RibbonElementSizeMode.Medium;
+            this.ribbonButton6.MinSizeMode = RibbonElementSizeMode.Medium;
+            this.ribbonButton6.SmallImage = ((System.Drawing.Image)(resources.GetObject("ribbonButton6.SmallImage")));
+            this.ribbonButton6.Text = "Connect";
+            // 
+            // ribbonButton2
+            // 
+            this.ribbonButton2.Image = ((System.Drawing.Image)(resources.GetObject("ribbonButton2.Image")));
+            this.ribbonButton2.MaxSizeMode = RibbonElementSizeMode.Medium;
+            this.ribbonButton2.MinSizeMode = RibbonElementSizeMode.Compact;
+            this.ribbonButton2.SmallImage = ((System.Drawing.Image)(resources.GetObject("ribbonButton2.SmallImage")));
+            this.ribbonButton2.Tag = "";
+            this.ribbonButton2.Text = "Connect";
+            this.ribbonButton2.ToolTip = "";
+            this.ribbonButton2.Value = "";
+            // 
+            // pnl_SubForm
+            // 
+            this.pnl_SubForm.Location = new System.Drawing.Point(12, 113);
+            this.pnl_SubForm.Name = "pnl_SubForm";
+            this.pnl_SubForm.Size = new System.Drawing.Size(1341, 472);
+            this.pnl_SubForm.TabIndex = 12;
+            // 
+            // ribbonButton11
+            // 
+            this.ribbonButton11.Image = ((System.Drawing.Image)(resources.GetObject("ribbonButton11.Image")));
+            this.ribbonButton11.MaxSizeMode = RibbonElementSizeMode.Medium;
+            this.ribbonButton11.MinSizeMode = RibbonElementSizeMode.Medium;
+            this.ribbonButton11.SmallImage = ((System.Drawing.Image)(resources.GetObject("ribbonButton11.SmallImage")));
+            this.ribbonButton11.Text = "Assuming we wanna stick with this ribbon thing?";
             // 
             // UDPChatForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1365, 597);
+            this.Controls.Add(this.pnl_SubForm);
+            this.Controls.Add(this.ribbon1);
             this.Controls.Add(this.lbl_NodeId);
-            this.Controls.Add(this.btn_ClientConnect);
-            this.Controls.Add(this.grid_Clients);
-            this.Controls.Add(this.lbl_Clients);
-            this.Controls.Add(this.grid_Servers);
-            this.Controls.Add(this.lbl_log);
-            this.Controls.Add(this.listBox_ErrorLog);
-            this.Controls.Add(this.lbl_Servers);
             this.Name = "UDPChatForm";
             this.Text = "UDPChatForm";
-            ((System.ComponentModel.ISupportInitialize)(this.grid_Servers)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.socketManagerBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.grid_Clients)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
 		}
 
         #endregion
-        private System.Windows.Forms.Label lbl_Servers;
-        private System.Windows.Forms.Timer timer1;
-        private System.Windows.Forms.ListBox listBox_ErrorLog;
-        private System.Windows.Forms.Label lbl_log;
-        private System.Windows.Forms.DataGridView grid_Servers;
         private System.Windows.Forms.DataGridViewTextBoxColumn nodeIdDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn destinationEndpointDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn localEndpointDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn lastHelloRecievedDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewCheckBoxColumn isSocketListeningDataGridViewCheckBoxColumn;
-        private System.Windows.Forms.BindingSource socketManagerBindingSource;
-        private System.Windows.Forms.Label lbl_Clients;
-        private System.Windows.Forms.DataGridView grid_Clients;
-        private System.Windows.Forms.Button btn_ClientConnect;
         private System.Windows.Forms.Label lbl_NodeId;
-        private System.Windows.Forms.DataGridViewTextBoxColumn servers_NodeIdCol;
-        private System.Windows.Forms.DataGridViewTextBoxColumn servers_IpAddressCol;
-        private System.Windows.Forms.DataGridViewTextBoxColumn server_PortCol;
-        private System.Windows.Forms.DataGridViewTextBoxColumn servers_LastHelloCol;
-        private System.Windows.Forms.DataGridViewTextBoxColumn clients_NodeIdCol;
-        private System.Windows.Forms.DataGridViewTextBoxColumn clients_IPAddressCol;
-        private System.Windows.Forms.DataGridViewTextBoxColumn clients_PortCol;
-        private System.Windows.Forms.DataGridViewTextBoxColumn clients_LastHelloCol;
-        private System.Windows.Forms.DataGridViewTextBoxColumn clients_IsListeningCol;
+        private Ribbon.Component_Classes.Ribbon ribbon1;
+        private RibbonTab rTab_Servers;
+        private RibbonTab rTab_ThisNode;
+        private RibbonTab rTab_Clients;
+        private RibbonButton ribbonButton2;
+        private RibbonPanel ribbonPanel1;
+        private RibbonButton ribbonButton3;
+        private RibbonButton ribbonButton1;
+        private RibbonButton ribbonButton4;
+        private RibbonButton ribbonButton5;
+        private RibbonButton ribbonButton7;
+        private RibbonButton ribbonButton8;
+        private RibbonButton ribbonButton9;
+        private RibbonButton ribbonButton10;
+        private RibbonPanel ribbonPanel2;
+        private RibbonButton ribbonButton6;
+        private System.Windows.Forms.Panel pnl_SubForm;
+        private RibbonButton ribbonButton11;
     }
 }
