@@ -76,5 +76,38 @@ namespace PtpChat.Utility.Properties {
                 this["IsLoggingEnabled"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("5f715c17-4a41-482a-ab1f-45fa2cdd702b")]
+        public string DefaultServer_Guid {
+            get {
+                return ((string)(this["DefaultServer_Guid"]));
+            }
+            set {
+                this["DefaultServer_Guid"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LocalNodeId {
+            get {
+                return ((string)(this["LocalNodeId"]));
+            }
+            set {
+                this["LocalNodeId"] = value;
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("ptpchat-client; 0.0")]
+        public string LocalNodeVersion {
+            get {
+                return ((string)(this["LocalNodeVersion"]));
+            }
+        }
     }
 }

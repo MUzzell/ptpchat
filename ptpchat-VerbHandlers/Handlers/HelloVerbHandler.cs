@@ -13,8 +13,8 @@
 		private const string LogInvalidNodeId = "Invalid Node ID in HELLO message, ignoring";
 		private const string LogSameNodeId = "Recieved Hello presented this Node's ID! ignoring";
 		
-		public HelloVerbHandler(ILogManager logger, INodeManager nodeManager, ISocketHandler socketHandler)
-            : base( logger, nodeManager, socketHandler)
+		public HelloVerbHandler(ILogManager logger, IDataManager dataManager, ISocketHandler socketHandler)
+            : base( logger, dataManager, socketHandler)
         {
         }
 		

@@ -1,28 +1,24 @@
 ﻿namespace PtpChat.VerbHandlers.Handlers
 {
-    using System;
-    using System.Linq;
-    using System.Net;
-    using System.Text.RegularExpressions;
+	using System;
+	using System.Linq;
+	using System.Net;
 
-    using PtpChat.Base.Classes;
-    using PtpChat.Base.Interfaces;
-    using PtpChat.Base.Messages;
-    using PtpChat.Utility;
+	using PtpChat.Base.Classes;
+	using PtpChat.Base.Interfaces;
+	using PtpChat.Base.Messages;
+	using PtpChat.Utility;
 
-    public class RoutingVerbHandler : BaseVerbHandler<RoutingMessage>
+	public class RoutingVerbHandler : BaseVerbHandler<RoutingMessage>
     {
         private const string LogInvalidSenderId = "Invalid Sender Node ID in ROUTING message, ignoring";
         private const string LogSameNodeId = "Recieved ROUTING sender's Node ID presented this Node's ID! ignoring";
         private const string LogInvalidNodeList = "Recieved Invalid nodes list in ROUTING message, ignoring";
         private const string LogInvalidNodesEntry = "NodeList in Routing message contained invalid NodeId, ignoring entry";
         private const string LogInvalidIP = "NodeList in Routing message contained IP address that didn't parse, ignoring entry";
-
-        //leaving this here for my own enjoyment :P
-        //private const string IPv4Pattern = @"^((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))?(?:\:([0-9]{1,5}))?$";
-
-        public RoutingVerbHandler(ILogManager logger, INodeManager nodeManager, ISocketHandler socketHandler)
-            : base(logger, nodeManager, socketHandler)
+		
+        public RoutingVerbHandler(ILogManager logger, IDataManager dataManager, ISocketHandler socketHandler)
+            : base(logger, dataManager, socketHandler)
         {
         }
 

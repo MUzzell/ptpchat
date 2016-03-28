@@ -1,48 +1,40 @@
-﻿namespace PtpChat.Main.Managers
+﻿namespace PtpChat.Main
 {
-    using System;
-    using System.Collections.Concurrent;
-    using System.Collections.Generic;
-    using System.Linq;
+	using System;
+	using System.Collections.Concurrent;
+	using System.Collections.Generic;
+	using System.Linq;
 
-    using PtpChat.Base.Classes;
-    using PtpChat.Base.EventArguements;
-    using PtpChat.Base.Interfaces;
+	using PtpChat.Base.Classes;
+	using PtpChat.Base.Interfaces;
+	using Utility;
 
-    internal class NodeManager : INodeManager
+	internal class NodeManager : INodeManager
     {
-        public NodeManager(ILogManager logger)
-        {
-            if (logger == null)
-            {
-                throw new ArgumentNullException(nameof(logger), @"Is Null");
-            }
-
-            this.logger = logger;
-
-            this.LocalNode = new Node { NodeId = Guid.NewGuid() };
-        }
-
         private const string LogAddedNode = "Added new node, Node ID: {0}";
-
         private const string LogDeletedNode = "Deleted node, Node ID: {0}";
-
         private const string LogUpdatedNode = "Updated node, Node ID: {0}";
 
         private readonly ILogManager logger;
 
+        public Node LocalNode { get; }
+
         //Can set the 'concurrency level'? why does # of threads matter?
         private readonly ConcurrentDictionary<Guid, Node> nodes = new ConcurrentDictionary<Guid, Node>();
 
-        public event EventHandler NodeAdd;
+		public NodeManager(ILogManager logger, ConfigManager config)
+		{
+			if (logger == null)
+			{
+				throw new ArgumentNullException(nameof(logger), @"Is Null");
+			}
 
-        public event EventHandler NodeDelete;
+			this.logger = logger;
 
-        public event EventHandler NodeUpdate;
+			this.LocalNode = new Node { NodeId = config.LocalNodeId, Version = config.LocalNodeVersion };
+		}
 
-        public Node LocalNode { get; }
-
-        public void Add(Node node)
+		public void Add(Node node)
         {
             if (!this.nodes.TryAdd(node.NodeId, node))
             {
@@ -50,8 +42,6 @@
             }
 
             this.logger.Info(string.Format(LogAddedNode, node.NodeId));
-
-            this.NodeAdd?.Invoke(this, new NodeEventArgs { Node = node });
         }
 
         public Node Delete(Node node)
@@ -78,9 +68,6 @@
             }
 
             this.logger.Info(string.Format(LogDeletedNode, outNode.NodeId));
-
-            this.NodeDelete?.Invoke(this, new NodeEventArgs { Node = outNode });
-
             return outNode;
         }
 
@@ -104,12 +91,43 @@
             }
 
             this.logger.Info(string.Format(LogUpdatedNode, node.NodeId));
-
-            this.NodeUpdate?.Invoke(this, new NodeEventArgs { Node = currentNode });
         }
 
         public IEnumerable<Node> GetNodes(Func<KeyValuePair<Guid, Node>, bool> filter) => this.nodes.Where(filter).Select(n => n.Value);
-
         public IEnumerable<Node> GetNodes() => this.nodes.Select(n => n.Value);
+
+        //public IList<Node> GetNodes(Dictionary<NodeFilterType, object> filter = null)
+        //{
+        //    if (filter == null)
+        //    {
+        //        return (IList<Node>)this.nodes.ToList();
+        //    }
+
+        //    IList<Node> nodeList = new List<Node>();
+
+        //    foreach (var kv in this.nodes.TakeWhile(kv => this.matches(kv.Value, filter)))
+        //    {
+        //        nodeList.Add(kv.Value);
+        //    }
+
+        //    return nodeList;
+        //}
+
+        //private bool matches(Node node, Dictionary<NodeFilterType, object> filter)
+        //{
+        //    var outNode = node;
+
+        //    if (filter.ContainsKey(NodeFilterType.NodeId))
+        //    {
+        //        var nodeId = (Guid)filter[NodeFilterType.NodeId];
+
+        //        if (node.NodeId != nodeId)
+        //        {
+        //            outNode = null;
+        //        }
+        //    }
+
+        //    return outNode != null;
+        //}
     }
 }

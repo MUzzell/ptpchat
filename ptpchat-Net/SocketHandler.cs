@@ -94,7 +94,15 @@
         {
             var nodes = this.nodeManager.GetNodes(node => node.Value.LastSeen != null).ToList();
 
-            var hello = new HelloMessage { msg_type = MessageType.HELLO, msg_data = new HelloData { node_id = this.nodeManager.LocalNode.NodeId, version = string.Empty } };
+            var hello = new HelloMessage
+			{
+				msg_type = MessageType.HELLO,
+				msg_data = new HelloData
+				{
+					node_id = this.nodeManager.LocalNode.NodeId,
+					version = this.nodeManager.LocalNode.Version
+				}
+			};
 
             var msg = Encoding.ASCII.GetBytes(this.MessageHandler.BuildMessage(hello));
 

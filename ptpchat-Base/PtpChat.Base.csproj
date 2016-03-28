@@ -42,8 +42,12 @@
     <Compile Include="Interfaces\IMessageHandler.cs" />
     <Compile Include="Interfaces\IVerbHandler.cs" />
     <Compile Include="Messages\BaseMessage.cs" />
+    <Compile Include="Messages\ChannelMessage.cs" />
     <Compile Include="Messages\ConnectMessage.cs" />
     <Compile Include="Messages\HelloMessage.cs" />
+    <Compile Include="Messages\JoinMessage.cs" />
+    <Compile Include="Messages\LeaveMessage.cs" />
+    <Compile Include="Messages\MessageMessage.cs" />
     <Compile Include="Messages\RoutingMessage.cs" />
     <Compile Include="Interfaces\ILogManager.cs" />
     <Compile Include="Interfaces\INodeManager.cs" />
