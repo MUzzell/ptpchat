@@ -19,6 +19,12 @@ namespace PtpChat.Main.Ribbon.Classes
     /// </summary>
     public class RibbonMouseSensor : IDisposable
     {
+        #region Fields
+
+        private RibbonItem _lastMouseDown;
+
+        #endregion
+
         #region IDisposable Members
 
         public void Dispose()
@@ -26,12 +32,6 @@ namespace PtpChat.Main.Ribbon.Classes
             this.Disposed = true;
             this.RemoveHandlers();
         }
-
-        #endregion
-
-        #region Fields
-
-        private RibbonItem _lastMouseDown;
 
         #endregion
 
@@ -499,7 +499,6 @@ namespace PtpChat.Main.Ribbon.Classes
         {
             if (this.IsSupsended || this.Disposed)
             {
-                return;
             }
         }
 

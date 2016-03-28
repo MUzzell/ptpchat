@@ -25,6 +25,12 @@ namespace PtpChat.Main.Ribbon.Component_Classes
 
         #endregion
 
+        #region Fields
+
+        private Color _color;
+
+        #endregion
+
         #region Events
 
         /// <summary>
@@ -59,12 +65,6 @@ namespace PtpChat.Main.Ribbon.Component_Classes
 
             e.Graphics.SmoothingMode = sm;
         }
-
-        #endregion
-
-        #region Fields
-
-        private Color _color;
 
         #endregion
 

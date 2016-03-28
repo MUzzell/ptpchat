@@ -24,9 +24,11 @@
         }
 
         private const string LogArgumentException = "Argument Exception recieved whilst parsing recieved data: {0}";
+
         private const string LogSocketException = "Socket Exception recieved whilst operating on socket: {0}";
 
         private readonly ILogManager logger;
+
         private IMessageHandler messageHandler;
 
         private volatile bool running = true;

@@ -16,16 +16,16 @@ namespace PtpChat.Main.Ribbon.Classes.EventArgs
 
         #endregion
 
-        #region Fields
-
-        #endregion
-
         #region Props
 
         /// <summary>
         /// Gets the RibbonOrbDropDown related to the event
         /// </summary>
         public RibbonOrbDropDown RibbonOrbDropDown { get; }
+
+        #endregion
+
+        #region Fields
 
         #endregion
     }

@@ -1,26 +1,21 @@
 ﻿namespace PtpChat.VerbHandlers.Handlers
 {
-	using System;
-	using System.Collections.Generic;
-	using System.Linq;
-	using System.Net;
-	using System.Text;
-	using System.Threading.Tasks;
+    using System;
+    using System.Net;
 
-	using Base.Interfaces;
-	using Base.Messages;
+    using PtpChat.Base.Interfaces;
+    using PtpChat.Base.Messages;
 
-	public class MessageVerbHandler : BaseVerbHandler<MessageMessage>
-	{
-
-		public MessageVerbHandler(ILogManager logger, IDataManager dataManager, ISocketHandler socketHandler)
+    public class MessageVerbHandler : BaseVerbHandler<MessageMessage>
+    {
+        public MessageVerbHandler(ILogManager logger, IDataManager dataManager, ISocketHandler socketHandler)
             : base(logger, dataManager, socketHandler)
         {
-		}
-		
-		protected override bool HandleVerb(MessageMessage message, IPEndPoint senderEndpoint)
-		{
-			throw new NotImplementedException();
-		}
-	}
+        }
+
+        protected override bool HandleVerb(MessageMessage message, IPEndPoint senderEndpoint)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

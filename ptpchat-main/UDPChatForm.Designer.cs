@@ -225,11 +225,7 @@
 		}
 
         #endregion
-        private System.Windows.Forms.DataGridViewTextBoxColumn nodeIdDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn destinationEndpointDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn localEndpointDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn lastHelloRecievedDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn isSocketListeningDataGridViewCheckBoxColumn;
+
         private System.Windows.Forms.Label lbl_NodeId;
         private Ribbon.Component_Classes.Ribbon ribbon1;
         private RibbonTab rTab_Servers;

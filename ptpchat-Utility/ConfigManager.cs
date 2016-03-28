@@ -1,14 +1,15 @@
 ﻿namespace PtpChat.Utility
 {
-	using System.Net;
+    using System;
+    using System.Net;
 
-	using PtpChat.Utility.Properties;
-	using System;
-	public class ConfigManager
+    using PtpChat.Utility.Properties;
+
+    public class ConfigManager
     {
         public IPAddress InitialServerAddress => IPAddress.Parse(Settings.Default.DefaultServer_Host);
 
-		public Guid InitialServerGuid => Guid.Parse(Settings.Default.DefaultServer_Guid);
+        public Guid InitialServerGuid => Guid.Parse(Settings.Default.DefaultServer_Guid);
 
         public string DefaultLoggingFile => Settings.Default.DefaultLoggingFile;
 
@@ -16,24 +17,8 @@
 
         public bool IsLoggingEnabled => Settings.Default.IsLoggingEnabled;
 
-		public string LocalNodeVersion => Settings.Default.LocalNodeVersion;
+        public string LocalNodeVersion => Settings.Default.LocalNodeVersion;
 
-		public Guid LocalNodeId
-		{
-			get
-			{
-				return Guid.NewGuid();
-				/*
-				if (String.IsNullOrWhiteSpace(Settings.Default.LocalNodeId))
-				{
-					var localNodeId = Guid.NewGuid();
-					Settings.Default.LocalNodeId = localNodeId.ToString();
-					Settings.Default.Save();
-					return localNodeId;
-				}
-				return Guid.Parse(Settings.Default.LocalNodeId);
-				*/
-			}
-		}
+        public Guid LocalNodeId => Guid.NewGuid();
     }
 }

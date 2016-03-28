@@ -543,6 +543,48 @@
             }
         }
 
+        //                clrWinGrad_Light = Color.FromArgb(255, 219, 235, 246)
+
+        //                'Window Gradiants
+        //                clrLBL_FColor = Color.FromArgb(0, 0, 0)
+        //                clrBtn_FColor = Color.FromArgb(255, 255, 255)
+        //                clrBtn_FColorPressed_Selected = Color.FromArgb(0, 25, 56)
+
+        //                'ForeColor
+        //                System.Windows.Forms.ToolStripColors.Theme(False) = Themes.Blue
+
+        //            Case System.Windows.Forms.ToolStripColors.Themes.Blue
+        //                clrToolstripBtnBorder_Gold_Pressed = Color.FromArgb(255, 142, 129, 101)
+        //                clrToolstripBtnGrad_Gold_Pressed = Color.FromArgb(255, 249, 144, 46)
+        //                clrToolstripBtnGrad_WhiteGold_Pressed = Color.FromArgb(255, 252, 194, 131)
+
+        //                'Pressed Button Gradiants
+        //                clrToolstripBtnBorder_Gold_Selected = Color.FromArgb(255, 194, 169, 120)
+        //                clrToolstripBtnGrad_Gold_Selected = Color.FromArgb(255, 255, 216, 80)
+
+        //                clrToolstripBtnGrad_WhiteGold_Selected = Color.FromArgb(255, 255, 245, 192)
+
+        //                'Selected Button Gradiants
+        //                clrToolstripBtnBorder = Color.FromArgb(255, 46, 46, 46)
+
+        //                'Button Border
+
+        //Public Sub SetUpThemeColors(ByRef f As Form, ByVal blnRenderOnly As Boolean)
+        //    If Not blnRenderOnly Then
+        //        Select Case System.Windows.Forms.ToolStripColors.Theme
+        //            Case System.Windows.Forms.ToolStripColors.Themes.Black
+        //                System.Windows.Forms.ToolStripColors.Theme(False) = Themes.Black
+
+        //                'ForeColor
+        //                clrBtn_FColorPressed_Selected = Color.FromArgb(0, 0, 0)
+        //                clrBtn_FColor = Color.FromArgb(255, 255, 255)
+        //                clrLBL_FColor = Color.FromArgb(0, 0, 0)
+
+        //                'Window Gradiants
+        //                clrWinGrad_Light = Color.FromArgb(255, 244, 244, 244)
+
+        //                clrWinGrad_Dark = Color.FromArgb(255, 191, 191, 191)
+
         //private RibbonProfesionalRendererColorTable _colorTable;
 
         //public RibbonProfesionalRendererColorTable ColorTable
@@ -671,45 +713,6 @@
 
         #endregion
 
-        //                clrWinGrad_Dark = Color.FromArgb(255, 191, 191, 191)
-        //                clrWinGrad_Light = Color.FromArgb(255, 244, 244, 244)
-
-        //                'Window Gradiants
-        //                clrLBL_FColor = Color.FromArgb(0, 0, 0)
-        //                clrBtn_FColor = Color.FromArgb(255, 255, 255)
-        //                clrBtn_FColorPressed_Selected = Color.FromArgb(0, 0, 0)
-
-        //                'ForeColor
-        //                System.Windows.Forms.ToolStripColors.Theme(False) = Themes.Black
-        //            Case System.Windows.Forms.ToolStripColors.Themes.Black
-        //        Select Case System.Windows.Forms.ToolStripColors.Theme
-        //    If Not blnRenderOnly Then
-
-        //Public Sub SetUpThemeColors(ByRef f As Form, ByVal blnRenderOnly As Boolean)
-
-        //                'Button Border
-        //                clrToolstripBtnBorder = Color.FromArgb(255, 46, 46, 46)
-
-        //                'Selected Button Gradiants
-        //                clrToolstripBtnGrad_WhiteGold_Selected = Color.FromArgb(255, 255, 245, 192)
-        //                clrToolstripBtnGrad_Gold_Selected = Color.FromArgb(255, 255, 216, 80)
-        //                clrToolstripBtnBorder_Gold_Selected = Color.FromArgb(255, 194, 169, 120)
-
-        //                'Pressed Button Gradiants
-        //                clrToolstripBtnGrad_WhiteGold_Pressed = Color.FromArgb(255, 252, 194, 131)
-        //                clrToolstripBtnGrad_Gold_Pressed = Color.FromArgb(255, 249, 144, 46)
-        //                clrToolstripBtnBorder_Gold_Pressed = Color.FromArgb(255, 142, 129, 101)
-
-        //            Case System.Windows.Forms.ToolStripColors.Themes.Blue
-        //                System.Windows.Forms.ToolStripColors.Theme(False) = Themes.Blue
-
-        //                'ForeColor
-        //                clrBtn_FColorPressed_Selected = Color.FromArgb(0, 25, 56)
-        //                clrBtn_FColor = Color.FromArgb(255, 255, 255)
-        //                clrLBL_FColor = Color.FromArgb(0, 0, 0)
-
-        //                'Window Gradiants
-        //                clrWinGrad_Light = Color.FromArgb(255, 219, 235, 246)
         //                clrWinGrad_Dark = Color.FromArgb(255, 180, 202, 229)
 
         //                'Button Gradiants

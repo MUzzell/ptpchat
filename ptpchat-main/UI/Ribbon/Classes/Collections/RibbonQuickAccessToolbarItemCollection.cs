@@ -17,10 +17,6 @@ namespace PtpChat.Main.Ribbon.Classes.Collections
             this.SetOwner(toolbar.Owner);
         }
 
-        #region Fields
-
-        #endregion
-
         /// <summary>
         /// Gets the group that owns this item collection
         /// </summary>
@@ -58,5 +54,9 @@ namespace PtpChat.Main.Ribbon.Classes.Collections
             item.MaxSizeMode = RibbonElementSizeMode.Compact;
             base.Insert(index, item);
         }
+
+        #region Fields
+
+        #endregion
     }
 }

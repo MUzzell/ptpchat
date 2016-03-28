@@ -123,11 +123,8 @@ namespace PtpChat.Main.Ribbon.Component_Classes
         /// Gets the bounds of the content (where menu buttons are)
         /// </summary>
         [Browsable(false)]
-        public Rectangle ContentBounds => Rectangle.FromLTRB(
-            this.ContentMargin.Left,
-            this.ContentMargin.Top,
-            this.ClientRectangle.Right - this.ContentMargin.Right,
-            this.ClientRectangle.Bottom - this.ContentMargin.Bottom);
+        public Rectangle ContentBounds
+            => Rectangle.FromLTRB(this.ContentMargin.Left, this.ContentMargin.Top, this.ClientRectangle.Right - this.ContentMargin.Right, this.ClientRectangle.Bottom - this.ContentMargin.Bottom);
 
         /// <summary>
         /// Gets the bounds of the content part that contains the buttons on the left

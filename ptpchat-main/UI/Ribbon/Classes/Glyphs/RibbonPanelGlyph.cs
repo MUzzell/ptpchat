@@ -23,9 +23,9 @@ namespace PtpChat.Main.Ribbon.Classes.Glyphs
 
         private readonly BehaviorService _behaviorService;
 
-        private RibbonTabDesigner _componentDesigner;
-
         private readonly RibbonTab _tab;
+
+        private RibbonTabDesigner _componentDesigner;
 
         private Size size;
 

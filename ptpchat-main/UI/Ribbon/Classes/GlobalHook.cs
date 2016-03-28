@@ -28,6 +28,12 @@ namespace PtpChat.Main.Ribbon.Classes
 
         #endregion
 
+        #region Fields
+
+        private HookProcCallBack _HookProc;
+
+        #endregion
+
         #region IDisposable Members
 
         public void Dispose()
@@ -50,12 +56,6 @@ namespace PtpChat.Main.Ribbon.Classes
         /// <param name="lParam"></param>
         /// <returns></returns>
         internal delegate int HookProcCallBack(int nCode, IntPtr wParam, IntPtr lParam);
-
-        #endregion
-
-        #region Fields
-
-        private HookProcCallBack _HookProc;
 
         #endregion
 

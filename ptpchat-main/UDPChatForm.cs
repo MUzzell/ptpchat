@@ -1,6 +1,8 @@
 ﻿namespace PtpChat.Main
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Windows.Forms;
 
     using PtpChat.Main.Subforms;
@@ -18,19 +20,27 @@
             this.InitializeComponent();
 
             this.PtpClient = new PTPClient(new ConfigManager());
-            this.PtpClient.OnNodesChange += this.PtpClientOnNodesChange;
+            this.PtpClient.NodeChanged += this.PtpClient_OnNodesChange;
+
+            this.Forms = new List<Form>
+                             {
+                                 new ClientsForm(this.PtpClient) { TopLevel = false, Visible = true, FormBorderStyle = FormBorderStyle.None },
+                                 new ServersForm(this.PtpClient) { TopLevel = false, Visible = true, FormBorderStyle = FormBorderStyle.None }
+                             };
 
             //setup the ui manager
             UI.Initialize(this);
         }
 
+        private List<Form> Forms { get; }
+
         private PTPClient PtpClient { get; }
 
-        private void PtpClientOnNodesChange(object sender, EventArgs e)
+        private void PtpClient_OnNodesChange(object sender, EventArgs e)
         {
         }
 
-        //private void PtpClientOnNodesChange(object sender, EventArgs e)
+        //private void PtpClient_OnNodesChange(object sender, EventArgs e)
         //{
         //    var eventArgs = (NodeEventArgs)e;
         //    var node = eventArgs.Node;
@@ -100,7 +110,12 @@
                     {
                         this.pnl_SubForm.Controls.Clear();
 
-                        this.pnl_SubForm.Controls.Add(new ClientsForm(this.PtpClient) { TopLevel = false, Visible = true, FormBorderStyle = FormBorderStyle.None });
+                        var clientForm = this.Forms.OfType<ClientsForm>().FirstOrDefault();
+
+                        if (clientForm != null)
+                        {
+                            this.pnl_SubForm.Controls.Add(clientForm);
+                        }
                     });
         }
 
@@ -111,18 +126,24 @@
                     {
                         this.pnl_SubForm.Controls.Clear();
 
-                        this.pnl_SubForm.Controls.Add(new ServersForm(this.PtpClient) { TopLevel = false, Visible = true, FormBorderStyle = FormBorderStyle.None });
+                        var serversForm = this.Forms.OfType<ServersForm>().FirstOrDefault();
+
+                        if (serversForm != null)
+                        {
+                            this.pnl_SubForm.Controls.Add(serversForm);
+                        }
                     });
         }
 
-        //    UI.Invoke(() => this.listBox_ErrorLog.Items.Add(error));
-        //{
-        //private void ErrorMessages_OnAdd(object sender, string error)
-        ////#########
-        ////Event Handlers
+        //}
 
         ////#########
-        //}
+        ////Event Handlers
+        ////#########
+        //private void ErrorMessages_OnAdd(object sender, string error)
+        //{
+
+        //    UI.Invoke(() => this.listBox_ErrorLog.Items.Add(error));
 
         //private void ClientSocketManagers_OnAdd(object sender, SocketManager socketManager)
         //{

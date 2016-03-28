@@ -1,45 +1,56 @@
 ﻿namespace PtpChat.Main
 {
-	using System;
-	using System.Collections.Concurrent;
-	using System.Collections.Generic;
-	using System.Linq;
+    using System;
+    using System.Collections.Concurrent;
+    using System.Collections.Generic;
+    using System.Linq;
 
-	using PtpChat.Base.Classes;
-	using PtpChat.Base.Interfaces;
-	using Utility;
+    using PtpChat.Base.Classes;
+    using PtpChat.Base.EventArguements;
+    using PtpChat.Base.Interfaces;
+    using PtpChat.Utility;
 
-	internal class NodeManager : INodeManager
+    internal class NodeManager : INodeManager
     {
+        public NodeManager(ILogManager logger, ConfigManager config)
+        {
+            if (logger == null)
+            {
+                throw new ArgumentNullException(nameof(logger), @"Is Null");
+            }
+
+            this.logger = logger;
+
+            this.LocalNode = new Node { NodeId = config.LocalNodeId, Version = config.LocalNodeVersion };
+        }
+
         private const string LogAddedNode = "Added new node, Node ID: {0}";
+
         private const string LogDeletedNode = "Deleted node, Node ID: {0}";
+
         private const string LogUpdatedNode = "Updated node, Node ID: {0}";
 
         private readonly ILogManager logger;
 
-        public Node LocalNode { get; }
-
         //Can set the 'concurrency level'? why does # of threads matter?
         private readonly ConcurrentDictionary<Guid, Node> nodes = new ConcurrentDictionary<Guid, Node>();
 
-		public NodeManager(ILogManager logger, ConfigManager config)
-		{
-			if (logger == null)
-			{
-				throw new ArgumentNullException(nameof(logger), @"Is Null");
-			}
+        public event EventHandler NodeAdd;
 
-			this.logger = logger;
+        public event EventHandler NodeDelete;
 
-			this.LocalNode = new Node { NodeId = config.LocalNodeId, Version = config.LocalNodeVersion };
-		}
+        public event EventHandler NodeUpdate;
 
-		public void Add(Node node)
+        public Node LocalNode { get; }
+
+        public void Add(Node node)
         {
             if (!this.nodes.TryAdd(node.NodeId, node))
             {
                 throw new InvalidOperationException("Add, Node is already present");
             }
+
+            this.NodeAdd?.Invoke(this, new NodeEventArgs { Node = node });
 
             this.logger.Info(string.Format(LogAddedNode, node.NodeId));
         }
@@ -68,6 +79,9 @@
             }
 
             this.logger.Info(string.Format(LogDeletedNode, outNode.NodeId));
+
+            this.NodeDelete?.Invoke(this, new NodeEventArgs { Node = outNode });
+
             return outNode;
         }
 
@@ -90,32 +104,36 @@
                 throw new InvalidOperationException("Update, unable to update node");
             }
 
+            this.NodeUpdate?.Invoke(this, new NodeEventArgs { Node = node });
+
             this.logger.Info(string.Format(LogUpdatedNode, node.NodeId));
         }
 
         public IEnumerable<Node> GetNodes(Func<KeyValuePair<Guid, Node>, bool> filter) => this.nodes.Where(filter).Select(n => n.Value);
+
         public IEnumerable<Node> GetNodes() => this.nodes.Select(n => n.Value);
 
-        //public IList<Node> GetNodes(Dictionary<NodeFilterType, object> filter = null)
+        //    var outNode = node;
         //{
-        //    if (filter == null)
-        //    {
-        //        return (IList<Node>)this.nodes.ToList();
-        //    }
-
-        //    IList<Node> nodeList = new List<Node>();
-
-        //    foreach (var kv in this.nodes.TakeWhile(kv => this.matches(kv.Value, filter)))
-        //    {
-        //        nodeList.Add(kv.Value);
-        //    }
-
-        //    return nodeList;
-        //}
 
         //private bool matches(Node node, Dictionary<NodeFilterType, object> filter)
+        //}
+
+        //    return nodeList;
+        //    }
+        //        nodeList.Add(kv.Value);
+        //    {
+
+        //    foreach (var kv in this.nodes.TakeWhile(kv => this.matches(kv.Value, filter)))
+
+        //    IList<Node> nodeList = new List<Node>();
+        //    }
+        //        return (IList<Node>)this.nodes.ToList();
+        //    {
+        //    if (filter == null)
         //{
-        //    var outNode = node;
+
+        //public IList<Node> GetNodes(Dictionary<NodeFilterType, object> filter = null)
 
         //    if (filter.ContainsKey(NodeFilterType.NodeId))
         //    {

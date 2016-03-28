@@ -1,27 +1,24 @@
-﻿using System;
-using System.Linq;
-
-namespace PtpChat.Utility
+﻿namespace PtpChat.Utility
 {
+    using System;
     using System.Net;
     using System.Text.RegularExpressions;
 
     public class ExtensionMethods
     {
+        //private const string IPv4Pattern = @"^((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))?(?:\:([0-9]{1,5}))?$";
 
-		//private const string IPv4Pattern = @"^((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))?(?:\:([0-9]{1,5}))?$";
-
-		public static IPEndPoint ParseEndpoint(string endpointstring)
+        public static IPEndPoint ParseEndpoint(string endpointstring)
         {
             if (string.IsNullOrWhiteSpace(endpointstring))
             {
                 throw new FormatException("Endpoint descriptor may not be empty.");
             }
 
-            string[] values = endpointstring.Split(':');
+            var values = endpointstring.Split(':');
 
             IPAddress ipaddress = null;
-            int port = 0;
+            var port = 0;
 
             if (values.Length < 2)
             {
@@ -69,7 +66,7 @@ namespace PtpChat.Utility
                     throw new FormatException($"IPv6: Invalid endpoint '{endpointstring}'");
                 }
 
-                string ipaddressStr = addressRegex.Groups[0].Value;
+                var ipaddressStr = addressRegex.Groups[0].Value;
 
                 if (!IPAddress.TryParse(ipaddressStr, out ipaddress))
                 {
@@ -83,7 +80,9 @@ namespace PtpChat.Utility
             }
 
             if (ipaddress != null && port != 0)
+            {
                 return new IPEndPoint(ipaddress, port);
+            }
 
             return null;
         }

@@ -16,10 +16,10 @@
             var consoleTarget = new ColoredConsoleTarget { Layout = @"${date:format=HH\:mm\:ss} ${level:uppercase=true} ${message}" };
 
             var fileTarget = new FileTarget
-			{
-				Layout = @"${date:format=yyyy-MM-dd HH\:mm\:ss} ${level:uppercase=true} ${message}",
-				FileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), config.DefaultLoggingFile)
-			};
+                                 {
+                                     Layout = @"${date:format=yyyy-MM-dd HH\:mm\:ss} ${level:uppercase=true} ${message}",
+                                     FileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), config.DefaultLoggingFile)
+                                 };
 
             var loggerConfig = new LoggingConfiguration();
             loggerConfig.AddTarget("console", consoleTarget);
@@ -39,7 +39,7 @@
         {
             if (exception != null)
             {
-                this.internalLogger.Fatal(exception,message);
+                this.internalLogger.Fatal(exception, message);
             }
             else
             {

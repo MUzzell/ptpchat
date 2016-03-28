@@ -41,16 +41,16 @@ namespace PtpChat.Main.Ribbon.Component_Classes
 
         #endregion
 
-        #region Fields
-
-        #endregion
-
         #region Prop
 
         /// <summary>
         /// Gets the type of caption button this is
         /// </summary>
         public CaptionButton CaptionButtonType { get; private set; }
+
+        #endregion
+
+        #region Fields
 
         #endregion
 

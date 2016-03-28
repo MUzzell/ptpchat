@@ -1,26 +1,30 @@
 ﻿namespace PtpChat.VerbHandlers.Handlers
 {
-	using System;
-	using System.Linq;
-	using System.Net;
+    using System;
+    using System.Linq;
+    using System.Net;
 
-	using PtpChat.Base.Classes;
-	using PtpChat.Base.Interfaces;
-	using PtpChat.Base.Messages;
-	using PtpChat.Utility;
+    using PtpChat.Base.Classes;
+    using PtpChat.Base.Interfaces;
+    using PtpChat.Base.Messages;
+    using PtpChat.Utility;
 
-	public class RoutingVerbHandler : BaseVerbHandler<RoutingMessage>
+    public class RoutingVerbHandler : BaseVerbHandler<RoutingMessage>
     {
-        private const string LogInvalidSenderId = "Invalid Sender Node ID in ROUTING message, ignoring";
-        private const string LogSameNodeId = "Recieved ROUTING sender's Node ID presented this Node's ID! ignoring";
-        private const string LogInvalidNodeList = "Recieved Invalid nodes list in ROUTING message, ignoring";
-        private const string LogInvalidNodesEntry = "NodeList in Routing message contained invalid NodeId, ignoring entry";
-        private const string LogInvalidIP = "NodeList in Routing message contained IP address that didn't parse, ignoring entry";
-		
         public RoutingVerbHandler(ILogManager logger, IDataManager dataManager, ISocketHandler socketHandler)
             : base(logger, dataManager, socketHandler)
         {
         }
+
+        private const string LogInvalidSenderId = "Invalid Sender Node ID in ROUTING message, ignoring";
+
+        private const string LogSameNodeId = "Recieved ROUTING sender's Node ID presented this Node's ID! ignoring";
+
+        private const string LogInvalidNodeList = "Recieved Invalid nodes list in ROUTING message, ignoring";
+
+        private const string LogInvalidNodesEntry = "NodeList in Routing message contained invalid NodeId, ignoring entry";
+
+        private const string LogInvalidIP = "NodeList in Routing message contained IP address that didn't parse, ignoring entry";
 
         /*
         public void ParseBaseMessage(string messageJson)
@@ -108,7 +112,7 @@
 
         protected override bool HandleVerb(RoutingMessage message, IPEndPoint senderEndpoint)
         {
-            this.logger.Debug($"Routing message recieved from: {senderEndpoint.ToString()}");
+            this.logger.Debug($"Routing message recieved from: {senderEndpoint}");
 
             var senderId = message.msg_data.node_id;
 
@@ -134,7 +138,7 @@
 
             foreach (var node in nodes)
             {
-                string nodeAddress = node["address"].Trim();
+                var nodeAddress = node["address"].Trim();
 
                 Guid nodeId;
                 if (!Guid.TryParse(node["node_id"], out nodeId))
@@ -175,16 +179,8 @@
 
                 if (!this.NodeManager.GetNodes(d => d.Value.NodeId == nodeId).Any())
                 {
-					// not seen, add. else, ignore
-					this.NodeManager.Add(new Node
-					{
-						NodeId = nodeId,
-						IpAddress = address.Address,
-						Port = address.Port,
-						Version = null,
-						Added = DateTime.Now,
-						LastSeen = null
-                    });
+                    // not seen, add. else, ignore
+                    this.NodeManager.Add(new Node { NodeId = nodeId, IpAddress = address.Address, Port = address.Port, Version = null, Added = DateTime.Now, LastSeen = null });
                 }
             }
 

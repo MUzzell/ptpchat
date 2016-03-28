@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PtpChat.Base.Interfaces
+﻿namespace PtpChat.Base.Interfaces
 {
-	public interface IChannelManager
-	{
-
-	}
+    public interface IChannelManager
+    {
+    }
 }

@@ -59,7 +59,7 @@ namespace PtpChat.Main.Ribbon.Component_Classes
         #region Events
 
         /// <summary>
-        /// Raised when the <see cref="CheckBox Checked"/> property value has changed
+        /// Raised when the <see cref="CheckBox"/> property value has changed
         /// </summary>
         public event EventHandler CheckBoxCheckChanged;
 

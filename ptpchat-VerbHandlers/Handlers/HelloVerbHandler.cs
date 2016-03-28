@@ -10,14 +10,15 @@
 
     public class HelloVerbHandler : BaseVerbHandler<HelloMessage>
     {
-		private const string LogInvalidNodeId = "Invalid Node ID in HELLO message, ignoring";
-		private const string LogSameNodeId = "Recieved Hello presented this Node's ID! ignoring";
-		
-		public HelloVerbHandler(ILogManager logger, IDataManager dataManager, ISocketHandler socketHandler)
-            : base( logger, dataManager, socketHandler)
+        public HelloVerbHandler(ILogManager logger, IDataManager dataManager, ISocketHandler socketHandler)
+            : base(logger, dataManager, socketHandler)
         {
         }
-		
+
+        private const string LogInvalidNodeId = "Invalid Node ID in HELLO message, ignoring";
+
+        private const string LogSameNodeId = "Recieved Hello presented this Node's ID! ignoring";
+
         protected override bool HandleVerb(HelloMessage message, IPEndPoint senderEndpoint)
         {
             this.logger.Debug("Hello message recieved from sender: " + senderEndpoint);
@@ -42,19 +43,13 @@
             {
                 var node = nodes[0];
                 node.LastSeen = DateTime.Now;
-				node.Version = node.Version ?? message.msg_data.version;
+                node.Version = node.Version ?? message.msg_data.version;
                 this.NodeManager.Update(node);
             }
             else //New Node
             {
-                this.NodeManager.Add(new Node {
-					NodeId = nodeId,
-					Added = DateTime.Now,
-					LastSeen = DateTime.Now,
-					IpAddress = senderEndpoint.Address,
-					Port = senderEndpoint.Port,
-					Version = message.msg_data.version
-				});
+                this.NodeManager.Add(
+                    new Node { NodeId = nodeId, Added = DateTime.Now, LastSeen = DateTime.Now, IpAddress = senderEndpoint.Address, Port = senderEndpoint.Port, Version = message.msg_data.version });
             }
 
             return true;
