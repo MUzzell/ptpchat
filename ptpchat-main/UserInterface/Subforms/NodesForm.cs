@@ -43,9 +43,6 @@
            // dataGridView1.Columns.Add(column);
 
             //create a list of classes containing the data we want in the view
-            var bindingList = new BindingList<Node>(nodes ?? new List<Node>());
-            var source = new BindingSource(bindingList, null);
-            dataGridView1.DataSource = source;
         }
 
         public void RefreshNodes(PTPClient ptpclient)
@@ -56,6 +53,7 @@
             var nodes = ptpclient.GetNodes().ToList();
 
             this.objList_Nodes.SetObjects(nodes);
+
 
             var bindingList = new BindingList<Node>(nodes);
             var source = new BindingSource(bindingList, null);
@@ -87,12 +85,6 @@
                 return node.LastRecieve != DateTime.MinValue ? new DateTime(node.LastRecieve.Value.Year, node.LastRecieve.Value.Month, 1) : new DateTime(6, 6, 6);
             };
             this.olvCol_LastSeen.GroupKeyToTitleConverter = groupKey => ((DateTime)groupKey).ToString("MMMM yyyy");
-        }
-
-        private void OnNodesSort(object sender, BeforeSortingEventArgs e)
-        {
-            e.ColumnToGroupBy = this.olvCol_IsStartUpNode;
-            e.Handled = true;
         }
     }
 }

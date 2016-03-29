@@ -61,7 +61,9 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="UserInterface\Subforms\NodesForm.cs" />
+    <Compile Include="UserInterface\Subforms\NodesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="UserInterface\Subforms\NodesForm.Designer.cs">
       <DependentUpon>NodesForm.cs</DependentUpon>
     </Compile>
@@ -147,6 +149,10 @@
     <ProjectReference Include="..\ptpchat-VerbHandlers\PtpChat.VerbHandlers.csproj">
       <Project>{dbb71a47-545b-4dd7-8472-fc45ff76cc0e}</Project>
       <Name>PtpChat.VerbHandlers</Name>
+    </ProjectReference>
+    <ProjectReference Include="UserInterface\ObjectListView\ObjectListView2012.csproj">
+      <Project>{18feda0c-d147-4286-b39a-01204808106a}</Project>
+      <Name>ObjectListView2012</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
