@@ -33,13 +33,12 @@
 
             if (node != null) // Existing Node
             {
-                node.LastRecieve = DateTime.Now;
-				node.Version = node.Version ?? message.msg_data.version;
-
-                if (!node.IsConnected)
-                    node.IsConnected = true;
-
-                this.NodeManager.Update(node);
+                this.NodeManager.Update(node.NodeId, n =>
+				{
+					n.LastRecieve = DateTime.Now;
+					n.Version = node.Version ?? message.msg_data.version;
+					node.IsConnected = true;
+				});
             }
             else //New Node
             {

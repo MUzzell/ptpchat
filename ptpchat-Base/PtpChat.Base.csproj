@@ -37,6 +37,7 @@
   <ItemGroup>
     <Compile Include="Classes\Channel.cs" />
     <Compile Include="Classes\Message.cs" />
+    <Compile Include="EventArguements\ChannelEventArgs.cs" />
     <Compile Include="Interfaces\IChannelManager.cs" />
     <Compile Include="Interfaces\IDataManager.cs" />
     <Compile Include="Interfaces\IMessageHandler.cs" />

@@ -50,19 +50,15 @@
 		Node GetNodeForConnect(Guid nodeId);
 
 		/// <summary>
-		/// Update the given node, replacing the internal node with this one.
+		/// Updates the node which has the given nodeId, using the funtion provided to edit its attributs.
 		/// Throws an ArgumentException if unable to do so, such as if the Node does not exists.
-		/// <param name="node">The node to be updates, will be compared against its NodeId.</param>
+		/// <param name="nodeId">The id of the node to be updated.</param>
+		/// <param name="updateFunc">The function that will edit the parameters of the target node.</param>
 		/// </summary>
-		void Update(Node node);
+		void Update(Guid nodeId, Action<Node> updateFunc);
 
         IEnumerable<Node> GetNodes();
 
         IEnumerable<Node> GetNodes(Func<KeyValuePair<Guid, Node>, bool> filter);
-    }
-
-    public enum NodeFilterType
-    {
-        NodeId
     }
 }

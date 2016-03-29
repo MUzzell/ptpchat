@@ -1,18 +1,20 @@
 ﻿namespace PtpChat.Net
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net;
-    using System.Net.Sockets;
-    using System.Text;
-    using System.Threading;
-    using System.Threading.Tasks;
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
+	using System.Net;
+	using System.Net.Sockets;
+	using System.Text;
+	using System.Threading;
+	using System.Threading.Tasks;
 
-    using PtpChat.Base.Interfaces;
-    using PtpChat.Base.Messages;
+	using PtpChat.Base.Interfaces;
+	using PtpChat.Base.Messages;
+	using Base.Classes;
+	using Utility;
 
-    public class SocketHandler : ISocketHandler
+	public class SocketHandler : ISocketHandler
     {
 		private const string LogHandlerStarting = "SocketHandler starting";
 
@@ -31,12 +33,15 @@
 		private readonly ILogManager logger;
 
 		private readonly INodeManager nodeManager;
+		private readonly IChannelManager channelManager;
 
-		private Timer helloTimer;
+		private Timer heartBeatTimer;
 
 		private IMessageHandler MessageHandler { get; }
 
-		public SocketHandler(ILogManager logger, INodeManager nodeManager, IMessageHandler messageHandler)
+		private readonly HelloMessage NodeHello;
+
+		public SocketHandler(ILogManager logger, IDataManager dataManager, IMessageHandler messageHandler)
         {
             this.logger = logger;
             this.MessageHandler = messageHandler;
@@ -50,10 +55,22 @@
             this.logger.Info(string.Format(LogPortBound, this.localPort));
 
             nodeManager.LocalNode.Port = this.localPort;
-            this.nodeManager = nodeManager;
+
+            this.nodeManager = dataManager.NodeManager;
+			this.channelManager = dataManager.ChannelManager;
 
             this.internalThreads.Add(this.localPort, new SocketThread(this.localClient, messageHandler, this.logger));
-        }
+
+			this.NodeHello = new HelloMessage
+			{
+				msg_type = MessageType.HELLO,
+				msg_data = new HelloData
+				{
+					node_id = this.nodeManager.LocalNode.NodeId,
+					version = this.nodeManager.LocalNode.Version
+				}
+			};
+		}
 		
         public bool SendMessage(Guid dstNodeId, byte[] messsage)
         {
@@ -84,7 +101,7 @@
                 new Task(() => thread.Listen()).Start();
             }
 
-            this.helloTimer = new Timer(this.SendHellos, null, 0, 3000);
+            this.heartBeatTimer = new Timer(this.HeartBeat, null, 0, 3000);
         }
 
         public void Stop()
@@ -97,30 +114,64 @@
             }
         }
 
-        private void SendHellos(object state)
+		private void HeartBeat(object state)
+		{
+			this.SendHellos();
+			this.SendChannels();
+		}
+
+        private void SendHellos()
         {
 
             var nodes = this.nodeManager.GetNodes(node => node.Value.IsConnected || node.Value.IsStartUpNode).ToList();
-
-            var hello = new HelloMessage
-			{
-				msg_type = MessageType.HELLO,
-				msg_data = new HelloData
-				{
-					node_id = this.nodeManager.LocalNode.NodeId,
-					version = this.nodeManager.LocalNode.Version
-				}
-			};
-
-            var msg = Encoding.ASCII.GetBytes(this.MessageHandler.BuildMessage(hello));
+			
+            var msg = Encoding.ASCII.GetBytes(this.MessageHandler.BuildMessage(this.NodeHello));
 
             this.logger.Debug($"Sending Hellos to {nodes.Count} nodes");
 
             foreach (var node in nodes)
             {
                 this.SendMessage(node.IpEndPoint, null, msg);
+				this.nodeManager.Update(node.NodeId, n => n.LastSend = DateTime.Now);
             }
         }
+
+		private void SendChannels()
+		{
+
+			var channels = this.channelManager.GetChannels(c => c.Value.IsUpToDate).ToList();
+
+			if (!channels.Any())
+				return;
+
+			foreach (Channel channel in channels)
+			{
+				var chanMsg = new ChannelMessage
+				{
+					msg_data = new ChannelData
+					{
+						channel_id = channel.ChannelId,
+						channel = channel.ChannelName,
+						closed = channel.Closed,
+						members = ExtensionMethods.BuildNodeIdList(channel.Nodes),
+						msg_id = Guid.NewGuid(),
+						node_id = this.nodeManager.LocalNode.NodeId
+					}
+				};
+				var msg = Encoding.ASCII.GetBytes(this.MessageHandler.BuildMessage(chanMsg));
+
+				this.logger.Debug($"Broadcasting Channel Message ({channel.ChannelName} : {channel.ChannelId}) to {channel.Nodes.Count} nodes");
+
+                foreach (var node in this.nodeManager.GetNodes(n => channel.Nodes.Contains(n.Key)))
+				{
+					node.LastSend = DateTime.Now;
+					this.SendMessage(node.IpEndPoint, null, msg);
+				}
+
+				this.channelManager.Update(channel.ChannelId, c => c.LastTransmission = DateTime.Now);
+			}
+			
+		}
 
 		public int GetPortForNode(Guid unknownId)
 		{

@@ -14,5 +14,11 @@
         public bool Closed { get; set; }
 
         public IList<Guid> Messages { get; set; }
-    }
+
+		public DateTime Added { get; set; }
+
+		public DateTime LastTransmission { get; set; }
+
+		public bool IsUpToDate { get; set; }
+	}
 }

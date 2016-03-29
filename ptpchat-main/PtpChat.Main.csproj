@@ -61,9 +61,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="UserInterface\Subforms\NodesForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="UserInterface\Subforms\NodesForm.cs" />
     <Compile Include="UserInterface\Subforms\NodesForm.Designer.cs">
       <DependentUpon>NodesForm.cs</DependentUpon>
     </Compile>

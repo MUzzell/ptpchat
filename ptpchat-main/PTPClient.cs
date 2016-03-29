@@ -27,17 +27,16 @@
 			this.dataManager = new DataManager(this.channelManager, this.nodeManager);
 
 			//TODO: remove this when we get a response from the server
-			nodeManager.Add(new Node{
+			nodeManager.Add(new Node {
 				IpAddress = config.InitialServerAddress,
 				NodeId = config.InitialServerGuid,
-				Port = 9001,
+				Port = config.InitialServerPort,
 				Added = DateTime.Now,
-				LastRecieve = DateTime.Now
+				LastRecieve = DateTime.Now,
+				IsConnected = true,
+				IsStartUpNode = true
 			});
 			
-            //TODO: remove this when we get a response from the server
-            this.nodeManager.Add(new Node { IpAddress = config.InitialServerAddress, NodeId = config.InitialServerGuid, Port = 9001, Added = DateTime.Now, IsStartUpNode = true});
-
             this.nodeManager.NodeAdd += this.NodeManager_NodeChanged;
             this.nodeManager.NodeUpdate += this.NodeManager_NodeChanged;
             this.nodeManager.NodeDelete += this.NodeManager_NodeChanged;
@@ -45,7 +44,7 @@
             var messageHandler = new MessageHandler(this.logger);
 
 			//socket handler here used to create its UDP socket thread handling in the ctor
-			ISocketHandler socketHandler = new SocketHandler(this.logger, this.nodeManager, messageHandler);
+			ISocketHandler socketHandler = new SocketHandler(this.logger, this.dataManager, messageHandler);
 
             messageHandler.AddHandler(MessageType.HELLO, new HelloVerbHandler(this.logger, this.dataManager, socketHandler));
             messageHandler.AddHandler(MessageType.ROUTING, new RoutingVerbHandler(this.logger, this.dataManager, socketHandler));

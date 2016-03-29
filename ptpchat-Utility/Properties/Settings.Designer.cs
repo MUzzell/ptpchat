@@ -23,21 +23,27 @@ namespace PtpChat.Utility.Properties {
             }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("37.139.19.21")]
         public string DefaultServer_Host {
             get {
                 return ((string)(this["DefaultServer_Host"]));
             }
+            set {
+                this["DefaultServer_Host"] = value;
+            }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("9001")]
         public int DefaultServer_Port {
             get {
                 return ((int)(this["DefaultServer_Port"]));
+            }
+            set {
+                this["DefaultServer_Port"] = value;
             }
         }
         
@@ -107,6 +113,30 @@ namespace PtpChat.Utility.Properties {
         public string LocalNodeVersion {
             get {
                 return ((string)(this["LocalNodeVersion"]));
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("120")]
+        public int NodeCutoff {
+            get {
+                return ((int)(this["NodeCutoff"]));
+            }
+            set {
+                this["NodeCutoff"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("180")]
+        public int ChannelCutoff {
+            get {
+                return ((int)(this["ChannelCutoff"]));
+            }
+            set {
+                this["ChannelCutoff"] = value;
             }
         }
     }
