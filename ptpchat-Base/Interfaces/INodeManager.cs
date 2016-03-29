@@ -42,12 +42,19 @@
         /// </summary>
         Node Delete(Guid nodeId);
 
-        /// <summary>
-        /// Update the given node, replacing the internal node with this one.
-        /// Throws an ArgumentException if unable to do so, such as if the Node does not exists.
-        /// <param name="node">The node to be updates, will be compared against its NodeId.</param>
-        /// </summary>
-        void Update(Node node);
+		/// <summary>
+		/// Get a single node that would be suitable for sending a CONNECT Message 
+		/// </summary>
+		/// <param name="nodeId">The ID of the node we wish to send a CONNECT to.</param>
+		/// <returns>The Node that is considered siutable.</returns>
+		Node GetNodeForConnect(Guid nodeId);
+
+		/// <summary>
+		/// Update the given node, replacing the internal node with this one.
+		/// Throws an ArgumentException if unable to do so, such as if the Node does not exists.
+		/// <param name="node">The node to be updates, will be compared against its NodeId.</param>
+		/// </summary>
+		void Update(Node node);
 
         IEnumerable<Node> GetNodes();
 

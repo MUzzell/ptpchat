@@ -21,8 +21,13 @@
 
         private readonly ConcurrentDictionary<Guid, Channel> Channels = new ConcurrentDictionary<Guid, Channel>();
 
+		private readonly ConcurrentDictionary<Guid, Message> Messages = new ConcurrentDictionary<Guid, Message>();
+
         private readonly ILogManager logger;
 
-        private readonly ConcurrentDictionary<Guid, ChannelMessage> Messages = new ConcurrentDictionary<Guid, ChannelMessage>();
-    }
+		public bool IsNodeInChannel(Guid nodeId, Guid channelId)
+		{
+			throw new NotImplementedException();
+		}
+	}
 }

@@ -113,39 +113,10 @@
 
         public IEnumerable<Node> GetNodes() => this.nodes.Select(n => n.Value);
 
-        //    var outNode = node;
-        //{
+		public Node GetNodeForConnect(Guid nodeId)
+		{
+			throw new NotImplementedException();
+		}
 
-        //private bool matches(Node node, Dictionary<NodeFilterType, object> filter)
-        //}
-
-        //    return nodeList;
-        //    }
-        //        nodeList.Add(kv.Value);
-        //    {
-
-        //    foreach (var kv in this.nodes.TakeWhile(kv => this.matches(kv.Value, filter)))
-
-        //    IList<Node> nodeList = new List<Node>();
-        //    }
-        //        return (IList<Node>)this.nodes.ToList();
-        //    {
-        //    if (filter == null)
-        //{
-
-        //public IList<Node> GetNodes(Dictionary<NodeFilterType, object> filter = null)
-
-        //    if (filter.ContainsKey(NodeFilterType.NodeId))
-        //    {
-        //        var nodeId = (Guid)filter[NodeFilterType.NodeId];
-
-        //        if (node.NodeId != nodeId)
-        //        {
-        //            outNode = null;
-        //        }
-        //    }
-
-        //    return outNode != null;
-        //}
-    }
+	}
 }

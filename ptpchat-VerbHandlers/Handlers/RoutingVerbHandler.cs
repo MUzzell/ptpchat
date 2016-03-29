@@ -11,6 +11,7 @@
 
     public class RoutingVerbHandler : BaseVerbHandler<RoutingMessage>
     {
+
         public RoutingVerbHandler(ILogManager logger, IDataManager dataManager, ISocketHandler socketHandler)
             : base(logger, dataManager, socketHandler)
         {
@@ -118,19 +119,10 @@
 
             var nodes = message.msg_data.nodes;
 
-            if (senderId == Guid.Empty)
-            {
-                this.logger.Warning(LogInvalidSenderId);
-                return false;
-            }
+			if (!CheckNodeId(senderId))
+				return false;
 
-            if (senderId == this.NodeManager.LocalNode.NodeId)
-            {
-                this.logger.Warning(LogSameNodeId);
-                return false;
-            }
-
-            if (nodes == null)
+			if (nodes == null)
             {
                 this.logger.Warning(LogInvalidNodeList);
                 return false;
@@ -155,7 +147,7 @@
 
                 if (nodeId == this.NodeManager.LocalNode.NodeId)
                 {
-                    this.logger.Debug("Ignoring out entry in ROUTING message");
+                    this.logger.Debug("Ignoring our entry in ROUTING message");
                     continue;
                 }
 
@@ -179,8 +171,17 @@
 
                 if (!this.NodeManager.GetNodes(d => d.Value.NodeId == nodeId).Any())
                 {
-                    // not seen, add. else, ignore
-                    this.NodeManager.Add(new Node { NodeId = nodeId, IpAddress = address.Address, Port = address.Port, Version = null, Added = DateTime.Now, LastSeen = null });
+					// not seen, add. else, ignore
+					this.NodeManager.Add(new Node
+					{
+						NodeId = nodeId,
+						SeenThrough = senderId,
+						IpAddress = address.Address,
+						Port = address.Port,
+						Version = null,
+						Added = DateTime.Now,
+						LastRecieve = null
+                    });
                 }
             }
 

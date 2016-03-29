@@ -3,10 +3,12 @@
     using System;
     using System.Collections.Generic;
 
-    public class ChannelMessage : BaseMessage
-    {
-        public new ChannelData msg_data { get; set; }
-    }
+	public class ChannelMessage : BaseMessage
+	{
+		public new MessageType msg_type => MessageType.CHANNEL;
+
+		public new ChannelData msg_data { get; set; }
+	}
 
     public class ChannelData
     {

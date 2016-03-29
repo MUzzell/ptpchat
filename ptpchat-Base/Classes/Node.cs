@@ -6,11 +6,11 @@
 
     public class Node
     {
-        public Node()
-        {
-            this.Channels = new List<Channel>();
-            this.Messages = new List<ChannelMessage>();
-        }
+		public Node()
+		{
+			this.Channels = new List<Channel>();
+			this.Messages = new List<Message>();
+		}
 
         public Guid NodeId { get; set; }
 
@@ -20,7 +20,7 @@
 
         public IPEndPoint IpEndPoint => new IPEndPoint(this.IpAddress, this.Port);
 
-        public DateTime? LastSeen { get; set; }
+        public DateTime? LastRecieve { get; set; }
 
         public DateTime? Added { get; set; }
 
@@ -30,6 +30,8 @@
 
         public IList<Channel> Channels { get; }
 
-        public IList<ChannelMessage> Messages { get; }
-    }
+		public IList<Message> Messages { get; }
+
+		public Guid? SeenThrough { get; set; }
+	}
 }

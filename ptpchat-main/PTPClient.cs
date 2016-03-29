@@ -21,15 +21,21 @@
 
             IDataManager dataManager = new DataManager(channelManager, nodeManager);
 
-            //TODO: remove this when we get a response from the server
-            nodeManager.Add(new Node { IpAddress = config.InitialServerAddress, NodeId = config.InitialServerGuid, Port = 9001, Added = DateTime.Now, LastSeen = DateTime.Now });
+			//TODO: remove this when we get a response from the server
+			nodeManager.Add(new Node{
+				IpAddress = config.InitialServerAddress,
+				NodeId = config.InitialServerGuid,
+				Port = 9001,
+				Added = DateTime.Now,
+				LastRecieve = DateTime.Now
+			});
+			
+            MessageHandler messageHandler = new MessageHandler(logger);
 
             nodeManager.NodeAdd += this.NodeManager_NodeChanged;
             nodeManager.NodeUpdate += this.NodeManager_NodeChanged;
             nodeManager.NodeDelete += this.NodeManager_NodeChanged;
-
-            var messageHandler = new MessageHandler(logger);
-
+			
             //socket handler here used to create its UDP socket thread handling in the ctor
             ISocketHandler socketHandler = new SocketHandler(logger, nodeManager, messageHandler);
 

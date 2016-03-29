@@ -4,6 +4,7 @@
 
     public class ConnectMessage : BaseMessage
     {
+		public new MessageType msg_type => MessageType.CONNECT;
         public new ConnectData msg_data { get; set; }
     }
 
@@ -13,8 +14,8 @@
 
         public Guid dst_node_id { get; set; }
 
-        private string dst { get; set; }
+        public string dst { get; set; }
 
-        private string src { get; set; }
+        public string src { get; set; }
     }
 }

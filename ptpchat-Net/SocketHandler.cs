@@ -98,7 +98,7 @@
 
         private void SendHellos(object state)
         {
-            var nodes = this.nodeManager.GetNodes(node => node.Value.LastSeen != null).ToList();
+            var nodes = this.nodeManager.GetNodes(node => node.Value.LastRecieve != null).ToList();
 
             var hello = new HelloMessage { msg_type = MessageType.HELLO, msg_data = new HelloData { node_id = this.nodeManager.LocalNode.NodeId, version = this.nodeManager.LocalNode.Version } };
 
@@ -111,5 +111,10 @@
                 this.SendMessage(node.IpEndPoint, null, msg);
             }
         }
-    }
+
+		public int GetPortForNode(Guid unknownId)
+		{
+			throw new NotImplementedException();
+		}
+	}
 }

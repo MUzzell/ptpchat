@@ -10,8 +10,9 @@
 
     public class HelloVerbHandler : BaseVerbHandler<HelloMessage>
     {
-        public HelloVerbHandler(ILogManager logger, IDataManager dataManager, ISocketHandler socketHandler)
-            : base(logger, dataManager, socketHandler)
+		
+		public HelloVerbHandler(ILogManager logger, IDataManager dataManager, ISocketHandler socketHandler)
+            : base( logger, dataManager, socketHandler)
         {
         }
 
@@ -25,31 +26,28 @@
 
             var nodeId = message.msg_data.node_id;
 
-            if (nodeId == Guid.Empty)
-            {
-                this.logger.Warning(LogInvalidNodeId);
-                return false;
-            }
-
-            if (nodeId == this.NodeManager.LocalNode.NodeId)
-            {
-                this.logger.Error(LogSameNodeId);
-                return false;
-            }
+			if (!CheckNodeId(nodeId))
+				return false;
 
             var nodes = this.NodeManager.GetNodes(d => d.Value.NodeId == nodeId).ToList();
 
             if (nodes.Count > 0) // Existing Node
             {
                 var node = nodes[0];
-                node.LastSeen = DateTime.Now;
-                node.Version = node.Version ?? message.msg_data.version;
+                node.LastRecieve = DateTime.Now;
+				node.Version = node.Version ?? message.msg_data.version;
                 this.NodeManager.Update(node);
             }
             else //New Node
             {
-                this.NodeManager.Add(
-                    new Node { NodeId = nodeId, Added = DateTime.Now, LastSeen = DateTime.Now, IpAddress = senderEndpoint.Address, Port = senderEndpoint.Port, Version = message.msg_data.version });
+				this.NodeManager.Add(new Node {
+					NodeId = nodeId,
+					Added = DateTime.Now,
+					LastRecieve = DateTime.Now,
+					IpAddress = senderEndpoint.Address,
+					Port = senderEndpoint.Port,
+					Version = message.msg_data.version
+				});
             }
 
             return true;
