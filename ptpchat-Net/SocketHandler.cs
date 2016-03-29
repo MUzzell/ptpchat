@@ -45,6 +45,7 @@
         {
             this.logger = logger;
             this.MessageHandler = messageHandler;
+		    this.nodeManager = dataManager.NodeManager;
 
             this.internalThreads = new Dictionary<int, SocketThread>();
 
@@ -54,7 +55,7 @@
 
             this.logger.Info(string.Format(LogPortBound, this.localPort));
 
-            nodeManager.LocalNode.Port = this.localPort;
+		    this.nodeManager.LocalNode.Port = this.localPort;
 
             this.nodeManager = dataManager.NodeManager;
 			this.channelManager = dataManager.ChannelManager;

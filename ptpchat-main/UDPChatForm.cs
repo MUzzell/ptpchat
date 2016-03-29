@@ -23,8 +23,8 @@
             this.InitializeComponent();
             this.IsMdiContainer = true;
 
-            this.PtpClient = new PTPClient(new ConfigManager());
-            this.PtpClient.NodeChanged += this.PtpClient_OnNodesChange;
+            //setup the ui manager
+            UI.Initialize(this);
 
             this.Forms = new List<Form>
                              {
@@ -32,8 +32,8 @@
                                  new ChannelsForm(this.PtpClient) { TopLevel = false, Visible = true, FormBorderStyle = FormBorderStyle.None }
                              };
 
-            //setup the ui manager
-            UI.Initialize(this);
+            this.PtpClient = new PTPClient(new ConfigManager());
+            this.PtpClient.NodeChanged += this.PtpClient_OnNodesChange;
         }
 
         private List<Form> Forms { get; }
