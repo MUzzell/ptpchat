@@ -12,6 +12,8 @@
 		private const string LogInvalidNodeId = "Invalid Node ID in this message, ignoring";
 		private const string LogSameNodeId = "Recieved message presented this Node's ID! ignoring";
 
+		protected const string LogInvalidMsgId = "Recieved message with invalid msg_id, ignoring";
+
 		protected BaseVerbHandler(ILogManager logger, IDataManager dataManager, ISocketHandler socketHandler)
         {
             this.logger = logger;

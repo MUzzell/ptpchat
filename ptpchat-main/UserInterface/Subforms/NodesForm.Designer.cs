@@ -33,7 +33,7 @@
             this.olvCol_IpAddress = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvCol_Port = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvCol_Added = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvCol_LastSeen = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvCol_LastRecieve = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvCol_IsConnected = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvCol_IsStartUpNode = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
@@ -48,7 +48,7 @@
             this.objList_Nodes.AllColumns.Add(this.olvCol_IpAddress);
             this.objList_Nodes.AllColumns.Add(this.olvCol_Port);
             this.objList_Nodes.AllColumns.Add(this.olvCol_Added);
-            this.objList_Nodes.AllColumns.Add(this.olvCol_LastSeen);
+            this.objList_Nodes.AllColumns.Add(this.olvCol_LastRecieve);
             this.objList_Nodes.AllColumns.Add(this.olvCol_IsConnected);
             this.objList_Nodes.AllColumns.Add(this.olvCol_IsStartUpNode);
             this.objList_Nodes.AllowColumnReorder = true;
@@ -58,7 +58,7 @@
             this.olvCol_IpAddress,
             this.olvCol_Port,
             this.olvCol_Added,
-            this.olvCol_LastSeen,
+            this.olvCol_LastRecieve,
             this.olvCol_IsConnected,
             this.olvCol_IsStartUpNode});
             this.objList_Nodes.Cursor = System.Windows.Forms.Cursors.Default;
@@ -103,9 +103,9 @@
             // 
             // olvCol_LastSeen
             // 
-            this.olvCol_LastSeen.AspectName = "LastSeen";
-            this.olvCol_LastSeen.Text = "LastSeen";
-            this.olvCol_LastSeen.Width = 129;
+            this.olvCol_LastRecieve.AspectName = "LastRecieve";
+            this.olvCol_LastRecieve.Text = "LastRecieve";
+            this.olvCol_LastRecieve.Width = 129;
             // 
             // olvCol_IsConnected
             // 
@@ -150,7 +150,7 @@
         private BrightIdeasSoftware.OLVColumn olvCol_IpAddress;
         private BrightIdeasSoftware.OLVColumn olvCol_Port;
         private BrightIdeasSoftware.OLVColumn olvCol_Added;
-        private BrightIdeasSoftware.OLVColumn olvCol_LastSeen;
+        private BrightIdeasSoftware.OLVColumn olvCol_LastRecieve;
         private BrightIdeasSoftware.OLVColumn olvCol_IsConnected;
         private BrightIdeasSoftware.OLVColumn olvCol_IsStartUpNode;
         private System.Windows.Forms.DataGridView dataGridView1;

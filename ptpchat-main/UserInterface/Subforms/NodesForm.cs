@@ -79,12 +79,12 @@
             this.olvCol_Added.GroupKeyToTitleConverter = groupKey => ((DateTime)groupKey).ToString("MMMM yyyy");
 
 
-            this.olvCol_LastSeen.GroupKeyGetter = delegate (object rowObject)
+            this.olvCol_LastRecieve.GroupKeyGetter = delegate (object rowObject)
             {
                 Node node = (Node)rowObject;
                 return node.LastRecieve != DateTime.MinValue ? new DateTime(node.LastRecieve.Value.Year, node.LastRecieve.Value.Month, 1) : new DateTime(6, 6, 6);
             };
-            this.olvCol_LastSeen.GroupKeyToTitleConverter = groupKey => ((DateTime)groupKey).ToString("MMMM yyyy");
+            this.olvCol_LastRecieve.GroupKeyToTitleConverter = groupKey => ((DateTime)groupKey).ToString("MMMM yyyy");
         }
     }
 }

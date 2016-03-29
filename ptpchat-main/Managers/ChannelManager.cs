@@ -56,7 +56,7 @@
 		{
 			if (!this.Channels.ContainsKey(channelId))
 			{
-				throw new ArgumentException("IsNodeInChannel, given channelId is null");
+				return false;
 			}
 
 			return this.Channels[channelId].Nodes.Contains(nodeId);

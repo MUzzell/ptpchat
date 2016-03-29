@@ -165,8 +165,8 @@
 
                 foreach (var node in this.nodeManager.GetNodes(n => channel.Nodes.Contains(n.Key)))
 				{
-					node.LastSend = DateTime.Now;
 					this.SendMessage(node.IpEndPoint, null, msg);
+					this.nodeManager.Update(node.NodeId, n => n.LastSend = DateTime.Now);
 				}
 
 				this.channelManager.Update(channel.ChannelId, c => c.LastTransmission = DateTime.Now);

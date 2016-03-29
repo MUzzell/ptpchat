@@ -13,6 +13,9 @@
 	{
 		
 		private const string LogInvalidMembersEntry = "Members list in CHANNEL message contained invalid node_id, ignoring";
+		private const string LogInvalidChannelId = "CHANNEL message contained invalid channel_id, ignoring";
+		private const string LogInvalidChannelName = "CHANNEL message contained invalid channel, ignoring";
+		private const string LogInvalidMemebersList = "Members list on CHANNEL message was invalid, ignoring";
 
 		public ChannelVerbHandler(ILogManager logger, IDataManager nodeManager, ISocketHandler socketHandler)
             : base(logger, nodeManager, socketHandler)
@@ -28,46 +31,80 @@
 			if (!CheckNodeId(nodeId))
 				return false;
 
+			var data = message.msg_data;
+
+			if (data.channel_id == Guid.Empty)
+			{
+				this.logger.Warning(LogInvalidChannelId);
+				return false;
+			}
+
+			if (data.msg_id == Guid.Empty)
+			{
+				this.logger.Warning(LogInvalidMsgId);
+				return false;
+			}
+
+			if (string.IsNullOrWhiteSpace(data.channel))
+			{
+				this.logger.Warning(LogInvalidChannelName);
+				return false;
+			}
+
+			if (data.members == null)
+			{
+				this.logger.Warning(LogInvalidMemebersList);
+				return false;
+			}
+
 			var memberIds = ParseMemberList(message.msg_data.members);
+
+			//Add any unknown nodes to our list, but do not connect yet
+			var unknownIds = memberIds.Except(this.NodeManager.GetNodes(n => !memberIds.Contains(n.Key)).Select<Node, Guid>(n => n.NodeId));
+
+			foreach (Guid unknownId in unknownIds)
+			{
+				this.NodeManager.Add(new Node
+				{
+					NodeId = unknownId,
+					LastRecieve = null,
+					Added = DateTime.Now,
+					SeenThrough = nodeId
+				});
+
+			}
+
+			Channel channel;
+
+			var channels = this.ChannelManager.GetChannels(c => c.Key == message.msg_data.channel_id);
+
+			if (!channels.Any())
+			{
+				channel = new Channel
+				{
+					Added = DateTime.Now,
+					ChannelId = data.channel_id,
+					ChannelName = data.channel,
+					Closed = data.closed,
+					IsUpToDate = true,
+					LastTransmission = DateTime.Now,
+					Nodes = memberIds.ToList()
+				};
+				this.ChannelManager.Add(channel);
+			}
+			else
+			{
+				channel = channels.First();
+			}
+			
 
 			//Are we in this channel?
 			if (this.ChannelManager.IsNodeInChannel(this.NodeManager.LocalNode.NodeId, message.msg_data.channel_id))
 			{
 				//Are we listed?
-
-
-				var unknownIds = memberIds.Except(this.NodeManager.GetNodes(n => !memberIds.Contains(n.Key)).Select<Node, Guid>(n => n.NodeId));
-
-				throw new NotImplementedException();
-
-				/*
-				var connectNode = this.NodeManager.GetNodeForConnect(unknownId);
-				this.SocketHandler.SendMessage(connectNode, new ConnectMessage
+				if(!memberIds.Contains(this.NodeManager.LocalNode.NodeId))
 				{
-					msg_data = new ConnectData
-					{
-						dst_node_id = unknownId,
-						src_node_id = this.NodeManager.LocalNode.NodeId,
-						src = this.SocketHandler.GetPortForNode(unknownId)
-					}
-				});
-				*/
-			}
-			else
-			{
-				//Add any unknown nodes to our list, but do not connect
-				var unknownIds = memberIds.Except(this.NodeManager.GetNodes(n => !memberIds.Contains(n.Key)).Select<Node, Guid>(n => n.NodeId));
-
-				foreach (Guid unknownId in unknownIds)
-				{
-					this.NodeManager.Add(new Node
-					{
-						NodeId = unknownId,
-						LastRecieve = null,
-						Added = DateTime.Now,
-						SeenThrough = nodeId
-					});
-					
+					throw new NotImplementedException();
 				}
 				
 			}
