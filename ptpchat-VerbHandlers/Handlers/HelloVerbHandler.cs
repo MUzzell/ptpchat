@@ -29,13 +29,16 @@
 			if (!CheckNodeId(nodeId))
 				return false;
 
-            var nodes = this.NodeManager.GetNodes(d => d.Value.NodeId == nodeId).ToList();
+            var node = this.NodeManager.GetNodes(d => d.Value.NodeId == nodeId).FirstOrDefault();
 
-            if (nodes.Count > 0) // Existing Node
+            if (node != null) // Existing Node
             {
-                var node = nodes[0];
                 node.LastRecieve = DateTime.Now;
 				node.Version = node.Version ?? message.msg_data.version;
+
+                if (!node.IsConnected)
+                    node.IsConnected = true;
+
                 this.NodeManager.Update(node);
             }
             else //New Node
@@ -46,7 +49,8 @@
 					LastRecieve = DateTime.Now,
 					IpAddress = senderEndpoint.Address,
 					Port = senderEndpoint.Port,
-					Version = message.msg_data.version
+					Version = message.msg_data.version,
+					IsConnected = true
 				});
             }
 

@@ -1,4 +1,4 @@
-﻿namespace PtpChat.Main
+﻿namespace PtpChat.Main.Managers
 {
     using System;
     using System.Collections.Concurrent;

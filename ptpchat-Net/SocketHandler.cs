@@ -14,7 +14,29 @@
 
     public class SocketHandler : ISocketHandler
     {
-        public SocketHandler(ILogManager logger, INodeManager nodeManager, IMessageHandler messageHandler)
+		private const string LogHandlerStarting = "SocketHandler starting";
+
+		private const string LogHandlerStopping = "SocketHandler stopping";
+
+		private const string LogPortBound = "SocketHandler has bound to 0.0.0.0:{0}";
+
+		//threads are organised by their port.
+		private readonly IDictionary<int, SocketThread> internalThreads;
+
+		private readonly UdpClient localClient;
+
+		//im holding onto this until i figure out how to do the rest of the socket stuff.
+		private readonly int localPort;
+
+		private readonly ILogManager logger;
+
+		private readonly INodeManager nodeManager;
+
+		private Timer helloTimer;
+
+		private IMessageHandler MessageHandler { get; }
+
+		public SocketHandler(ILogManager logger, INodeManager nodeManager, IMessageHandler messageHandler)
         {
             this.logger = logger;
             this.MessageHandler = messageHandler;
@@ -32,29 +54,7 @@
 
             this.internalThreads.Add(this.localPort, new SocketThread(this.localClient, messageHandler, this.logger));
         }
-
-        private const string LogHandlerStarting = "SocketHandler starting";
-
-        private const string LogHandlerStopping = "SocketHandler stopping";
-
-        private const string LogPortBound = "SocketHandler has bound to 0.0.0.0:{0}";
-
-        //threads are organised by their port.
-        private readonly IDictionary<int, SocketThread> internalThreads;
-
-        private readonly UdpClient localClient;
-
-        //im holding onto this until i figure out how to do the rest of the socket stuff.
-        private readonly int localPort;
-
-        private readonly ILogManager logger;
-
-        private readonly INodeManager nodeManager;
-
-        private Timer helloTimer;
-
-        private IMessageHandler MessageHandler { get; }
-
+		
         public bool SendMessage(Guid dstNodeId, byte[] messsage)
         {
             var node = this.nodeManager.GetNodes(a => a.Value.NodeId == dstNodeId).FirstOrDefault();
@@ -80,7 +80,8 @@
 
             foreach (var thread in this.internalThreads.Values)
             {
-                new Task(() => thread.Run()).Start();
+                //start the listeners
+                new Task(() => thread.Listen()).Start();
             }
 
             this.helloTimer = new Timer(this.SendHellos, null, 0, 3000);
@@ -98,9 +99,18 @@
 
         private void SendHellos(object state)
         {
-            var nodes = this.nodeManager.GetNodes(node => node.Value.LastRecieve != null).ToList();
 
-            var hello = new HelloMessage { msg_type = MessageType.HELLO, msg_data = new HelloData { node_id = this.nodeManager.LocalNode.NodeId, version = this.nodeManager.LocalNode.Version } };
+            var nodes = this.nodeManager.GetNodes(node => node.Value.IsConnected || node.Value.IsStartUpNode).ToList();
+
+            var hello = new HelloMessage
+			{
+				msg_type = MessageType.HELLO,
+				msg_data = new HelloData
+				{
+					node_id = this.nodeManager.LocalNode.NodeId,
+					version = this.nodeManager.LocalNode.Version
+				}
+			};
 
             var msg = Encoding.ASCII.GetBytes(this.MessageHandler.BuildMessage(hello));
 
@@ -116,5 +126,10 @@
 		{
 			throw new NotImplementedException();
 		}
-	}
+
+        public void SendConnect()
+        {
+
+        }
+    }
 }

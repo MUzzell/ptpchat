@@ -1,6 +1,7 @@
 ﻿namespace PtpChat.Main
 {
     using System;
+    using System.Collections.Generic;
 
     using PtpChat.Base.Classes;
     using PtpChat.Base.Interfaces;
@@ -12,14 +13,18 @@
 
     public class PTPClient
     {
+        private readonly ILogManager logger;
+        private readonly INodeManager nodeManager;
+        private readonly IChannelManager channelManager;
+        private readonly IDataManager dataManager;
+
         public PTPClient(ConfigManager config)
         {
-            ILogManager logger = new Logger(config, "ptpchat");
+            this.logger = new Logger(config, "ptpchat");
 
-            INodeManager nodeManager = new NodeManager(logger, config);
-            IChannelManager channelManager = new ChannelManager(logger, config);
-
-            IDataManager dataManager = new DataManager(channelManager, nodeManager);
+            this.nodeManager = new NodeManager(this.logger, config);
+            this.channelManager = new ChannelManager(this.logger, config);
+			this.dataManager = new DataManager(this.channelManager, this.nodeManager);
 
 			//TODO: remove this when we get a response from the server
 			nodeManager.Add(new Node{
@@ -30,24 +35,28 @@
 				LastRecieve = DateTime.Now
 			});
 			
-            MessageHandler messageHandler = new MessageHandler(logger);
+            //TODO: remove this when we get a response from the server
+            this.nodeManager.Add(new Node { IpAddress = config.InitialServerAddress, NodeId = config.InitialServerGuid, Port = 9001, Added = DateTime.Now, IsStartUpNode = true});
 
-            nodeManager.NodeAdd += this.NodeManager_NodeChanged;
-            nodeManager.NodeUpdate += this.NodeManager_NodeChanged;
-            nodeManager.NodeDelete += this.NodeManager_NodeChanged;
-			
-            //socket handler here used to create its UDP socket thread handling in the ctor
-            ISocketHandler socketHandler = new SocketHandler(logger, nodeManager, messageHandler);
+            this.nodeManager.NodeAdd += this.NodeManager_NodeChanged;
+            this.nodeManager.NodeUpdate += this.NodeManager_NodeChanged;
+            this.nodeManager.NodeDelete += this.NodeManager_NodeChanged;
 
-            messageHandler.AddHandler(MessageType.HELLO, new HelloVerbHandler(logger, dataManager, socketHandler));
-            messageHandler.AddHandler(MessageType.ROUTING, new RoutingVerbHandler(logger, dataManager, socketHandler));
-            messageHandler.AddHandler(MessageType.CONNECT, new ConnectVerbHandler(logger, dataManager, socketHandler));
-            messageHandler.AddHandler(MessageType.MESSAGE, new MessageVerbHandler(logger, dataManager, socketHandler));
-            messageHandler.AddHandler(MessageType.CHANNEL, new ChannelVerbHandler(logger, dataManager, socketHandler));
-            messageHandler.AddHandler(MessageType.JOIN, new JoinVerbHandler(logger, dataManager, socketHandler));
-            messageHandler.AddHandler(MessageType.LEAVE, new LeaveVerbHandler(logger, dataManager, socketHandler));
+            var messageHandler = new MessageHandler(this.logger);
+
+			//socket handler here used to create its UDP socket thread handling in the ctor
+			ISocketHandler socketHandler = new SocketHandler(this.logger, this.nodeManager, messageHandler);
+
+            messageHandler.AddHandler(MessageType.HELLO, new HelloVerbHandler(this.logger, this.dataManager, socketHandler));
+            messageHandler.AddHandler(MessageType.ROUTING, new RoutingVerbHandler(this.logger, this.dataManager, socketHandler));
+            messageHandler.AddHandler(MessageType.CONNECT, new ConnectVerbHandler(this.logger, this.dataManager, socketHandler));
+            messageHandler.AddHandler(MessageType.MESSAGE, new MessageVerbHandler(this.logger, this.dataManager, socketHandler));
+            messageHandler.AddHandler(MessageType.CHANNEL, new ChannelVerbHandler(this.logger, this.dataManager, socketHandler));
+            messageHandler.AddHandler(MessageType.JOIN, new JoinVerbHandler(this.logger, this.dataManager, socketHandler));
+            messageHandler.AddHandler(MessageType.LEAVE, new LeaveVerbHandler(this.logger, this.dataManager, socketHandler));
 
             socketHandler.Start();
+			
         }
 
         public event EventHandler NodeChanged;
@@ -56,6 +65,8 @@
         {
             this.NodeChanged?.Invoke(this, e);
         }
+        public IEnumerable<Node> GetNodes(Func<KeyValuePair<Guid, Node>, bool> filter) => this.nodeManager.GetNodes(filter);
+        public IEnumerable<Node> GetNodes() => this.nodeManager.GetNodes();
 
         /**
             this.ErrorMessages = new PtpList<string>();

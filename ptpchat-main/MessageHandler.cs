@@ -52,14 +52,8 @@
             }
         }
 
-        public string BuildMessage(BaseMessage message)
-        {
-            return JsonConvert.SerializeObject(message);
-        }
+        public string BuildMessage(BaseMessage message) => JsonConvert.SerializeObject(message);
 
-        public void AddHandler(MessageType type, IVerbHandler handler)
-        {
-            this.handlers.Add(type, handler);
-        }
+        public void AddHandler(MessageType type, IVerbHandler handler) => this.handlers.Add(type, handler);
     }
 }

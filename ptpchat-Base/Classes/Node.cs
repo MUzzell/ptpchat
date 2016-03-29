@@ -26,6 +26,9 @@
 
         public DateTime? LastSend { get; set; }
 
+        public Boolean IsConnected = false;
+        public Boolean IsStartUpNode = false;
+
         public string Version { get; set; }
 
         public IList<Channel> Channels { get; }

@@ -14,5 +14,7 @@
         bool SendMessage(Guid dstNodeId, byte[] messsage);
 
 		int GetPortForNode(Guid unknownId);
-	}
+
+        void SendConnect();
+    }
 }

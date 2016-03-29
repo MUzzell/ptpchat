@@ -28,28 +28,25 @@
         private const string LogSocketException = "Socket Exception recieved whilst operating on socket: {0}";
 
         private readonly ILogManager logger;
-
-        private IMessageHandler messageHandler;
+        private readonly IMessageHandler messageHandler;
 
         private volatile bool running = true;
 
         private UdpClient Socket { get; }
 
-        public async void Run()
+        public async void Listen()
         {
-            this.logger.Info($"New SocketThread starting, endpoint: {this.Socket.Client.LocalEndPoint}");
+            this.logger.Info($"New SocketThread listening on endpoint: {this.Socket.Client.LocalEndPoint}");
             try
             {
                 while (this.running)
                 {
                     try
                     {
-                        this.logger.Debug("listening on SocketThread");
-
                         var asyncResult = await this.Socket.ReceiveAsync();
-
-                        //nothing ever turns up here? are we getting any messages from the server? nothing on wireshark...
                         var message = Encoding.ASCII.GetString(asyncResult.Buffer);
+
+                        this.logger.Debug($"endpoint:{this.Socket.Client.LocalEndPoint} > Incoming message ");
 
                         this.messageHandler.HandleMessage(message, asyncResult.RemoteEndPoint);
                     }
@@ -65,14 +62,7 @@
             }
         }
 
-        public void SetMessageHandler(IMessageHandler handler) => this.messageHandler = handler;
-
-        // will it work? Who knows, thats the fuuunn.
-        // turns out no it wont.
-        public void Send(IPEndPoint dst, byte[] msg)
-        {
-            this.Socket.SendAsync(msg, msg.Length, dst.Address.ToString(), dst.Port);
-        }
+        public void Send(IPEndPoint dst, byte[] msg) => this.Socket.SendAsync(msg, msg.Length, dst.Address.ToString(), dst.Port);
 
         public void Stop() => this.running = false;
     }

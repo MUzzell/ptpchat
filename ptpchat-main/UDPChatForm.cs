@@ -3,10 +3,13 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Runtime.InteropServices;
     using System.Windows.Forms;
 
-    using PtpChat.Main.Subforms;
     using PtpChat.Utility;
+
+    using PtpChat.Main.UserInterface;
+    using PtpChat.Main.UserInterface.Subforms;
 
     public partial class UDPChatForm : Form
     {
@@ -18,14 +21,15 @@
         private UDPChatForm()
         {
             this.InitializeComponent();
+            this.IsMdiContainer = true;
 
             this.PtpClient = new PTPClient(new ConfigManager());
             this.PtpClient.NodeChanged += this.PtpClient_OnNodesChange;
 
             this.Forms = new List<Form>
                              {
-                                 new ClientsForm(this.PtpClient) { TopLevel = false, Visible = true, FormBorderStyle = FormBorderStyle.None },
-                                 new ServersForm(this.PtpClient) { TopLevel = false, Visible = true, FormBorderStyle = FormBorderStyle.None }
+                                 new NodesForm(this.PtpClient) { TopLevel = false, Visible = true, FormBorderStyle = FormBorderStyle.None },
+                                 new ChannelsForm(this.PtpClient) { TopLevel = false, Visible = true, FormBorderStyle = FormBorderStyle.None }
                              };
 
             //setup the ui manager
@@ -36,8 +40,20 @@
 
         private PTPClient PtpClient { get; }
 
+        private void Nodes_RefreshNodesView(NodesForm existingNodeForm)
+        {
+            existingNodeForm?.RefreshNodes(this.PtpClient);
+        }
+
         private void PtpClient_OnNodesChange(object sender, EventArgs e)
         {
+            UI.Invoke(() =>
+            {
+                this.Nodes_RefreshNodesView(
+                       this.pnl_SubForm.Controls.OfType<NodesForm>().ToList().FirstOrDefault() 
+                    ?? this.Forms.OfType<NodesForm>().ToList().FirstOrDefault()
+                    );
+            });
         }
 
         //private void PtpClient_OnNodesChange(object sender, EventArgs e)
@@ -103,37 +119,38 @@
         //    }
         //}
 
-        private void rTab_Clients_OnSelect(object sender, EventArgs e)
+
+        private void btn_Nodes_Click(object sender, EventArgs e)
         {
-            UI.Invoke(
-                () =>
-                    {
-                        this.pnl_SubForm.Controls.Clear();
+            UI.Invoke(() =>
+                {
+                    this.pnl_SubForm.Visible = true;
+                    this.pnl_SubForm.Controls.Clear();
 
-                        var clientForm = this.Forms.OfType<ClientsForm>().FirstOrDefault();
+                    var existingNodeForm = this.Forms.OfType<NodesForm>().ToList().FirstOrDefault();
+                    this.Nodes_RefreshNodesView(existingNodeForm);
 
-                        if (clientForm != null)
-                        {
-                            this.pnl_SubForm.Controls.Add(clientForm);
-                        }
-                    });
+                    this.pnl_SubForm.Controls.Add(existingNodeForm);
+                });
         }
 
-        private void rTab_Servers_OnSelect(object sender, EventArgs e)
+        private void btn_Channels_Click(object sender, EventArgs e)
         {
-            UI.Invoke(
-                () =>
-                    {
-                        this.pnl_SubForm.Controls.Clear();
+            UI.Invoke(() =>
+               {
+                   this.pnl_SubForm.Visible = true;
 
-                        var serversForm = this.Forms.OfType<ServersForm>().FirstOrDefault();
+                   this.pnl_SubForm.Controls.Clear();
 
-                        if (serversForm != null)
-                        {
-                            this.pnl_SubForm.Controls.Add(serversForm);
-                        }
-                    });
+                   var serversForm = this.Forms.OfType<ChannelsForm>().FirstOrDefault();
+
+                   if (serversForm != null)
+                   {
+                       this.pnl_SubForm.Controls.Add(serversForm);
+                   }
+               });
         }
+
 
         //}
 
