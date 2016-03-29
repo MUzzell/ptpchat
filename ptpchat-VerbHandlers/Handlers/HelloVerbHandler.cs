@@ -37,19 +37,31 @@
                 return false;
             }
 
-            var nodes = this.NodeManager.GetNodes(d => d.Value.NodeId == nodeId).ToList();
+            var node = this.NodeManager.GetNodes(d => d.Value.NodeId == nodeId).FirstOrDefault();
 
-            if (nodes.Count > 0) // Existing Node
+            if (node != null) // Existing Node
             {
-                var node = nodes[0];
                 node.LastSeen = DateTime.Now;
                 node.Version = node.Version ?? message.msg_data.version;
+
+                if (!node.IsConnected)
+                    node.IsConnected = true;
+
                 this.NodeManager.Update(node);
             }
             else //New Node
             {
                 this.NodeManager.Add(
-                    new Node { NodeId = nodeId, Added = DateTime.Now, LastSeen = DateTime.Now, IpAddress = senderEndpoint.Address, Port = senderEndpoint.Port, Version = message.msg_data.version });
+                    new Node
+                    {
+                        NodeId = nodeId,
+                        Added = DateTime.Now,
+                        LastSeen = DateTime.Now,
+                        IpAddress = senderEndpoint.Address,
+                        Port = senderEndpoint.Port,
+                        Version = message.msg_data.version,
+                        IsConnected = true
+                    });
             }
 
             return true;

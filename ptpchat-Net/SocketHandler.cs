@@ -74,19 +74,20 @@
             return true;
         }
 
-        public void Start()
+        public void StartPeriodicHello()
         {
             this.logger.Info(LogHandlerStarting);
 
             foreach (var thread in this.internalThreads.Values)
             {
-                new Task(() => thread.Run()).Start();
+                //start the listeners
+                new Task(() => thread.Listen()).Start();
             }
 
             this.helloTimer = new Timer(this.SendHellos, null, 0, 3000);
         }
 
-        public void Stop()
+        public void StopPeriodicHello()
         {
             this.logger.Info(LogHandlerStopping);
 
@@ -98,7 +99,7 @@
 
         private void SendHellos(object state)
         {
-            var nodes = this.nodeManager.GetNodes(node => node.Value.LastSeen != null).ToList();
+            var nodes = this.nodeManager.GetNodes(node => node.Value.IsConnected || node.Value.IsStartUpNode).ToList();
 
             var hello = new HelloMessage { msg_type = MessageType.HELLO, msg_data = new HelloData { node_id = this.nodeManager.LocalNode.NodeId, version = this.nodeManager.LocalNode.Version } };
 
@@ -110,6 +111,11 @@
             {
                 this.SendMessage(node.IpEndPoint, null, msg);
             }
+        }
+
+        public void SendConnect()
+        {
+
         }
     }
 }

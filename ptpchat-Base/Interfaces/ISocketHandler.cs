@@ -5,12 +5,14 @@
 
     public interface ISocketHandler
     {
-        void Start();
+        void StartPeriodicHello();
 
-        void Stop();
+        void StopPeriodicHello();
 
         bool SendMessage(IPEndPoint dst, IPEndPoint src, byte[] message);
 
         bool SendMessage(Guid dstNodeId, byte[] messsage);
+
+        void SendConnect();
     }
 }

@@ -155,7 +155,7 @@
 
                 if (nodeId == this.NodeManager.LocalNode.NodeId)
                 {
-                    this.logger.Debug("Ignoring out entry in ROUTING message");
+                    this.logger.Debug("Ignoring our entry in ROUTING message");
                     continue;
                 }
 

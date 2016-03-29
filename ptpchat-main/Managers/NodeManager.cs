@@ -1,4 +1,4 @@
-﻿namespace PtpChat.Main
+﻿namespace PtpChat.Main.Managers
 {
     using System;
     using System.Collections.Concurrent;
@@ -10,7 +10,7 @@
     using PtpChat.Base.Interfaces;
     using PtpChat.Utility;
 
-    internal class NodeManager : INodeManager
+    public class NodeManager : INodeManager
     {
         public NodeManager(ILogManager logger, ConfigManager config)
         {
@@ -25,9 +25,7 @@
         }
 
         private const string LogAddedNode = "Added new node, Node ID: {0}";
-
         private const string LogDeletedNode = "Deleted node, Node ID: {0}";
-
         private const string LogUpdatedNode = "Updated node, Node ID: {0}";
 
         private readonly ILogManager logger;
@@ -36,9 +34,7 @@
         private readonly ConcurrentDictionary<Guid, Node> nodes = new ConcurrentDictionary<Guid, Node>();
 
         public event EventHandler NodeAdd;
-
         public event EventHandler NodeDelete;
-
         public event EventHandler NodeUpdate;
 
         public Node LocalNode { get; }
