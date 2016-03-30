@@ -45,6 +45,7 @@
     <Compile Include="Interfaces\IMessageHandler.cs" />
     <Compile Include="Interfaces\IResponseManager.cs" />
     <Compile Include="Interfaces\IVerbHandler.cs" />
+    <Compile Include="Messages\AckMessage.cs" />
     <Compile Include="Messages\BaseMessage.cs" />
     <Compile Include="Messages\ChannelMessage.cs" />
     <Compile Include="Messages\ConnectMessage.cs" />

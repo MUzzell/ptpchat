@@ -10,17 +10,12 @@
     public enum MessageType
     {
         HELLO,
-
         ROUTING,
-
         CONNECT,
-
         MESSAGE,
-
         JOIN,
-
-        LEAVE,
-
-        CHANNEL
-    }
+		LEAVE,
+		CHANNEL,
+		ACK
+	}
 }
