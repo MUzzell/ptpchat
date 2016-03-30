@@ -19,7 +19,7 @@
 
 		private readonly ConcurrentDictionary<Guid, Channel> Channels = new ConcurrentDictionary<Guid, Channel>();
 
-		private readonly ConcurrentDictionary<Guid, Message> Messages = new ConcurrentDictionary<Guid, Message>();
+		private readonly ConcurrentDictionary<Guid, ChatMessage> Messages = new ConcurrentDictionary<Guid, ChatMessage>();
 
 		private readonly ILogManager logger;
 

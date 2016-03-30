@@ -5,5 +5,7 @@
         INodeManager NodeManager { get; }
 
         IChannelManager ChannelManager { get; }
+
+		IResponseManager ResponseManager { get; }
     }
 }

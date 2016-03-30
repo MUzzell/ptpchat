@@ -139,5 +139,29 @@ namespace PtpChat.Utility.Properties {
                 this["ChannelCutoff"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public int MessageCutoff {
+            get {
+                return ((int)(this["MessageCutoff"]));
+            }
+            set {
+                this["MessageCutoff"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
+        public int MaxMessageResendAttempts {
+            get {
+                return ((int)(this["MaxMessageResendAttempts"]));
+            }
+            set {
+                this["MaxMessageResendAttempts"] = value;
+            }
+        }
     }
 }

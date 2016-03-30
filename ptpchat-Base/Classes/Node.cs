@@ -9,7 +9,7 @@
 		public Node()
 		{
 			this.Channels = new List<Channel>();
-			this.Messages = new List<Message>();
+			this.Messages = new List<ChatMessage>();
 		}
 
         public Guid NodeId { get; set; }
@@ -33,7 +33,7 @@
 
         public IList<Channel> Channels { get; }
 
-		public IList<Message> Messages { get; }
+		public IList<ChatMessage> Messages { get; }
 
 		public Guid? SeenThrough { get; set; }
 	}

@@ -26,5 +26,9 @@
 		public TimeSpan NodeCutoff => new TimeSpan(0, 0, 0, Settings.Default.NodeCutoff);
 
 		public TimeSpan ChannelCutoff => new TimeSpan(0, 0, 0, Settings.Default.ChannelCutoff);
+
+		public TimeSpan MessageCutoff => new TimeSpan(0, 0, 0, Settings.Default.MessageCutoff);
+
+		public int MaxMessageResendAttempts => Settings.Default.MaxMessageResendAttempts;
 	}
 }

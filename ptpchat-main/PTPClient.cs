@@ -16,6 +16,7 @@
         private readonly ILogManager logger;
         private readonly INodeManager nodeManager;
         private readonly IChannelManager channelManager;
+		private readonly IResponseManager responseManager;
         private readonly IDataManager dataManager;
 
         public PTPClient(ConfigManager config)
@@ -24,7 +25,8 @@
 
             this.nodeManager = new NodeManager(this.logger, config);
             this.channelManager = new ChannelManager(this.logger, config);
-			this.dataManager = new DataManager(this.channelManager, this.nodeManager);
+			this.responseManager = new ResponseManager(this.logger, config);
+			this.dataManager = new DataManager(this.channelManager, this.nodeManager, responseManager);
 
 			//TODO: remove this when we get a response from the server
 			nodeManager.Add(new Node {
