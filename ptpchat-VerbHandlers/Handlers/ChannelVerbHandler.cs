@@ -8,7 +8,7 @@
 	using Base.Interfaces;
 	using Base.Messages;
 	using Base.Classes;
-
+	using System.Text;
 	public class ChannelVerbHandler : BaseVerbHandler<ChannelMessage>
 	{
 		
@@ -99,17 +99,44 @@
 			
 
 			//Are we in this channel?
-			if (this.ChannelManager.IsNodeInChannel(this.NodeManager.LocalNode.NodeId, message.msg_data.channel_id))
+			if (this.ChannelManager.IsNodeInChannel(this.NodeManager.LocalNode.NodeId, channel.ChannelId))
 			{
 				//Are we listed?
-				if(!memberIds.Contains(this.NodeManager.LocalNode.NodeId))
+				if(!memberIds.Contains(this.NodeManager.LocalNode.NodeId)) //send JOIN
 				{
 					throw new NotImplementedException();
 				}
-				
+				else //connect to other nodes.
+				{
+					var connectToNodes = this.NodeManager.GetNodes(kv => memberIds.Contains(kv.Value.NodeId) && !kv.Value.IsConnected);
+
+					foreach (Node node in connectToNodes)
+					{
+						var connect = new ConnectMessage
+						{
+							msg_data = new ConnectData
+							{
+								src_node_id = this.NodeManager.LocalNode.NodeId,
+								dst_node_id = node.NodeId,
+								src = $"{this.SocketHandler.GetPortForNode(node.NodeId)}",
+								dst = null
+							}
+						};
+						this.SocketHandler.SendMessage(node.SeenThrough.Value, Encoding.ASCII.GetBytes(this.BuildMessage(connect)));
+					}
+				}
 			}
 
-			
+			var ackMsg = new AckMessage
+			{
+				msg_data = new AckData
+				{
+					msg_id = message.msg_data.channel_id
+				}
+			};
+
+			this.SocketHandler.SendMessage(senderEndpoint, null, Encoding.ASCII.GetBytes(this.BuildMessage(ackMsg)));
+
 			return true;
 		}
 

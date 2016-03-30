@@ -3,19 +3,20 @@
 	using System;
 	using System.Collections.Generic;
 
+	using Classes;
+
 	/// <summary>
 	/// This is designed to track all messages that need to guarantee transmission (i.e. have a msg_id element)
 	/// When this program needs to send a message of this nature, it should add it to this manager, which will do
 	///		a) Track when we sent the message
-	///		b) Record the ACK or NACK (well, delete it from this manager)
-	///		c) Mark the message for resend if it has not recieved an ACK or NACK after a period of time.
+	///		b) Record the ACK (well, delete it from this manager)
+	///		c) Mark the message for resend if it has not recieved an ACK after a period of time.
+	///		d) Call an event should a message fail to succeed after a number of attempts
 	/// </summary>
 	public interface IResponseManager
 	{
 		event EventHandler OnAckRecieved;
-
-		event EventHandler OnNackRecieved;
-
+		
 		event EventHandler OnMessageAdded;
 
 		event EventHandler OnMessageSendFail;
@@ -28,19 +29,19 @@
 		/// <param name="msgId">the messageId of the message.</param>
 		/// <param name="message">The raw message to be sent.</param>
 		/// <returns>Indicates the operation was successful, if false, the message should not be sent.</returns>
-		bool AddOrUpdate(Guid msgId, byte[] message);
+		bool AddOrUpdate(Guid msgId, Guid targetNodeId, byte[] message);
 
 		/// <summary>
 		/// Get all messageIds currently stored.
 		/// </summary>
 		/// <returns></returns>
-		IEnumerable<Guid> GetMessages();
+		IEnumerable<ResponseMessage> GetMessages();
 
 		/// <summary>
 		/// Get all outstanding messages (i.e. have passed the response deadline).
 		/// </summary>
 		/// <returns>A collection of messages that are outstanding.</returns>
-		IEnumerable<byte[]> GetOutstandingMessage();
+		IEnumerable<ResponseMessage> GetOutstandingMessages();
 
 		/// <summary>
 		/// This message has been delivered correctly. Remove it and call the event handler.
@@ -49,13 +50,6 @@
 		/// <exception cref="KeyNotFoundException">Thrown if the given msgId does not point to a message.</exception>
 		/// <param name="msgId"></param>
 		void AckRecieved(Guid msgId);
-
-		/// <summary>
-		/// This message has not been delivered correctly. Remove it and call the event handler.
-		/// </summary>
-		/// <exception cref="ArgumentException">Thrown if the given msgId is invalid.</exception>
-		/// <exception cref="KeyNotFoundException">Thrown if the given msgId does not point to a message.</exception>
-		/// <param name="msgId"></param>
-		void NackRecieved(Guid msgId);
+		
 	}
 }

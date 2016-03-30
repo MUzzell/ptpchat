@@ -34,6 +34,7 @@
 
 		private readonly INodeManager nodeManager;
 		private readonly IChannelManager channelManager;
+		private readonly IResponseManager responseManager;
 
 		private Timer heartBeatTimer;
 
@@ -59,6 +60,7 @@
 
             this.nodeManager = dataManager.NodeManager;
 			this.channelManager = dataManager.ChannelManager;
+			this.responseManager = dataManager.ResponseManager;
 
             this.internalThreads.Add(this.localPort, new SocketThread(this.localClient, messageHandler, this.logger));
 
@@ -73,7 +75,7 @@
 			};
 		}
 		
-        public bool SendMessage(Guid dstNodeId, byte[] messsage)
+        public bool SendMessage(Guid dstNodeId, byte[] message)
         {
             var node = this.nodeManager.GetNodes(a => a.Value.NodeId == dstNodeId).FirstOrDefault();
 
@@ -82,7 +84,8 @@
                 return false;
             }
 
-            throw new NotImplementedException();
+			return this.SendMessage(node.IpEndPoint, null, message);
+			
         }
 
         public bool SendMessage(IPEndPoint dst, IPEndPoint src, byte[] message)
@@ -119,6 +122,7 @@
 		{
 			this.SendHellos();
 			this.SendChannels();
+			this.ResendMessages();
 		}
 
         private void SendHellos()
@@ -136,6 +140,15 @@
 				this.nodeManager.Update(node.NodeId, n => n.LastSend = DateTime.Now);
             }
         }
+
+		private void ResendMessages()
+		{
+			foreach (ResponseMessage message in this.responseManager.GetOutstandingMessages())
+			{
+				this.responseManager.AddOrUpdate(message.MsgId, message.TargetNodeId, message.Msg);
+				this.SendMessage(message.TargetNodeId, message.Msg);
+			}
+		}
 
 		private void SendChannels()
 		{

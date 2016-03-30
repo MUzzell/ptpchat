@@ -2,7 +2,7 @@
 {
 	using System;
 
-	public class Message
+	public class ChatMessage
 	{ 
 		public Guid MessageId { get; set; }
 

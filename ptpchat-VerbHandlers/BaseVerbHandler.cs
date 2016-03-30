@@ -11,8 +11,19 @@
     {
 		private const string LogInvalidNodeId = "Invalid Node ID in this message, ignoring";
 		private const string LogSameNodeId = "Recieved message presented this Node's ID! ignoring";
+		private static readonly string LogCannotParseJson = "Unable to deserialise Json message, ignoring";
 
 		protected const string LogInvalidMsgId = "Recieved message with invalid msg_id, ignoring";
+
+		protected ILogManager logger { get; }
+
+		protected INodeManager NodeManager { get; }
+
+		protected IChannelManager ChannelManager { get; }
+
+		protected IResponseManager ResponseManager { get; }
+
+		protected ISocketHandler SocketHandler { get; set; }
 
 		protected BaseVerbHandler(ILogManager logger, IDataManager dataManager, ISocketHandler socketHandler)
         {
@@ -20,17 +31,10 @@
             this.NodeManager = dataManager.NodeManager;
             this.ChannelManager = dataManager.ChannelManager;
             this.SocketHandler = socketHandler;
+			this.ResponseManager = dataManager.ResponseManager;
         }
 
-        private static readonly string LogCannotParseJson = "Unable to deserialise Json message, ignoring";
-
-        protected ILogManager logger { get; }
-
-        protected INodeManager NodeManager { get; }
-
-        protected IChannelManager ChannelManager { get; }
-
-        protected ISocketHandler SocketHandler { get; set; }
+       
 
 		/// <summary>
 		/// Checks that the given NodeId is:
@@ -70,6 +74,8 @@
                 return false;
             }
         }
+
+		protected string BuildMessage(BaseMessage message) => JsonConvert.SerializeObject(message);
 
         protected abstract bool HandleVerb(T message, IPEndPoint senderEndpoint);
     }
