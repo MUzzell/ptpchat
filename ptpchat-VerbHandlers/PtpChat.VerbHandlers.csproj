@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseVerbHandler.cs" />
+    <Compile Include="Handlers\AckVerbHandler.cs" />
     <Compile Include="Handlers\ChannelVerbHandler.cs" />
     <Compile Include="Handlers\JoinVerbHandler.cs" />
     <Compile Include="Handlers\LeaveVerbHandler.cs" />

@@ -55,6 +55,7 @@
             messageHandler.AddHandler(MessageType.CHANNEL, new ChannelVerbHandler(this.logger, this.dataManager, socketHandler));
             messageHandler.AddHandler(MessageType.JOIN, new JoinVerbHandler(this.logger, this.dataManager, socketHandler));
             messageHandler.AddHandler(MessageType.LEAVE, new LeaveVerbHandler(this.logger, this.dataManager, socketHandler));
+			messageHandler.AddHandler(MessageType.ACK, new AckVerbHandler(this.logger, this.dataManager, socketHandler));
 
             socketHandler.Start();
 			

@@ -7,7 +7,7 @@
 	using PtpChat.Base.Interfaces;
 	using PtpChat.Base.Messages;
 	using System;
-	public abstract class BaseVerbHandler<T> : IVerbHandler
+	public abstract class BaseVerbHandler<T> : IVerbHandler where T : BaseMessage
     {
 		private const string LogInvalidNodeId = "Invalid Node ID in this message, ignoring";
 		private const string LogSameNodeId = "Recieved message presented this Node's ID! ignoring";
