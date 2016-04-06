@@ -18,7 +18,6 @@
 		private const string LogUpdatedChannel = "Updated channel, Channel ID: {0}";
 
 		private readonly ConcurrentDictionary<Guid, Channel> Channels = new ConcurrentDictionary<Guid, Channel>();
-
 		private readonly ConcurrentDictionary<Guid, ChatMessage> Messages = new ConcurrentDictionary<Guid, ChatMessage>();
 
 		private readonly ILogManager logger;
