@@ -1,4 +1,4 @@
-﻿namespace PtpChat.Main
+﻿namespace PtpChat.UI
 {
     using System;
     using System.Windows.Forms;
@@ -15,7 +15,7 @@
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new UDPChatForm(new ConfigManager()));
+            Application.Run(new MainForm(new ConfigManager()));
         }
     }
 }

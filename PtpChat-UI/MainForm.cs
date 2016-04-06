@@ -1,24 +1,22 @@
-﻿namespace PtpChat.Main
+﻿namespace PtpChat.UI
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Runtime.InteropServices;
     using System.Windows.Forms;
 
     using PtpChat.Utility;
+    using PtpChat.UI.Subforms;
+	using PtpChat.Main;
 
-    using PtpChat.Main.UserInterface;
-    using PtpChat.Main.UserInterface.Subforms;
-
-    public partial class UDPChatForm : Form
+    public partial class MainForm : Form
     {
-        public UDPChatForm(ConfigManager manager)
+        public MainForm(ConfigManager manager)
             : this()
         {
         }
 
-        private UDPChatForm()
+        private MainForm()
         {
             this.InitializeComponent();
             this.IsMdiContainer = true;
@@ -27,10 +25,10 @@
             UI.Initialize(this);
 
             this.Forms = new List<Form>
-                             {
-                                 new NodesForm(this.PtpClient) { TopLevel = false, Visible = true, FormBorderStyle = FormBorderStyle.None },
-                                 new ChannelsForm(this.PtpClient) { TopLevel = false, Visible = true, FormBorderStyle = FormBorderStyle.None }
-                             };
+            {
+                new NodesForm(this.PtpClient) { TopLevel = false, Visible = true, FormBorderStyle = FormBorderStyle.None },
+                new ChannelsForm() { TopLevel = false, Visible = true, FormBorderStyle = FormBorderStyle.None }
+            };
 
             this.PtpClient = new PTPClient(new ConfigManager());
             this.PtpClient.NodeChanged += this.PtpClient_OnNodesChange;
