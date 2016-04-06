@@ -30,15 +30,23 @@
 		{
 			this.components = new System.ComponentModel.Container();
 			this.dataTreeListView1 = new BrightIdeasSoftware.DataTreeListView();
+			this.olvColumn1 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+			this.olvColumn2 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
 			((System.ComponentModel.ISupportInitialize)(this.dataTreeListView1)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// dataTreeListView1
 			// 
+			this.dataTreeListView1.AllColumns.Add(this.olvColumn1);
+			this.dataTreeListView1.AllColumns.Add(this.olvColumn2);
 			this.dataTreeListView1.CellEditUseWholeCell = false;
+			this.dataTreeListView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.olvColumn1,
+            this.olvColumn2});
 			this.dataTreeListView1.DataSource = null;
 			this.dataTreeListView1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.dataTreeListView1.EmptyListMsg = "No Channels";
+			this.dataTreeListView1.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.dataTreeListView1.HighlightBackgroundColor = System.Drawing.Color.Empty;
 			this.dataTreeListView1.HighlightForegroundColor = System.Drawing.Color.Empty;
 			this.dataTreeListView1.Location = new System.Drawing.Point(0, 0);
@@ -50,6 +58,17 @@
 			this.dataTreeListView1.UseCompatibleStateImageBehavior = false;
 			this.dataTreeListView1.View = System.Windows.Forms.View.Details;
 			this.dataTreeListView1.VirtualMode = true;
+			this.dataTreeListView1.SelectedIndexChanged += new System.EventHandler(this.dataTreeListView1_SelectedIndexChanged);
+			// 
+			// olvColumn1
+			// 
+			this.olvColumn1.AspectName = "ChannelName";
+			this.olvColumn1.Text = "Name";
+			// 
+			// olvColumn2
+			// 
+			this.olvColumn2.AspectName = "Members";
+			this.olvColumn2.Text = "Members";
 			// 
 			// ChannelListTab
 			// 
@@ -66,5 +85,7 @@
 		#endregion
 
 		private BrightIdeasSoftware.DataTreeListView dataTreeListView1;
+		private BrightIdeasSoftware.OLVColumn olvColumn1;
+		private BrightIdeasSoftware.OLVColumn olvColumn2;
 	}
 }

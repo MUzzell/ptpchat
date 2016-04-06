@@ -10,16 +10,11 @@ using System.Windows.Forms;
 
 namespace PtpChat.UI.Subforms
 {
-	public partial class ChannelListTab : UserControl
+	public partial class ChannelTab : UserControl
 	{
-		public ChannelListTab()
+		public ChannelTab()
 		{
 			InitializeComponent();
-		}
-
-		private void dataTreeListView1_SelectedIndexChanged(object sender, EventArgs e)
-		{
-
 		}
 	}
 }

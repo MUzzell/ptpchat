@@ -408,6 +408,7 @@
 			this.LeftTabControl_ChannelList.Name = "LeftTabControl_ChannelList";
 			this.LeftTabControl_ChannelList.Size = new System.Drawing.Size(270, 645);
 			this.LeftTabControl_ChannelList.TabIndex = 0;
+			this.LeftTabControl_ChannelList.Load += new System.EventHandler(this.LeftTabControl_ChannelList_Load);
 			// 
 			// MainForm
 			// 

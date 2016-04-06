@@ -11,10 +11,12 @@
 
     public partial class MainForm : Form
     {
-        public MainForm(ConfigManager manager)
+		
+		private PTPClient PtpClient { get; }
+
+		public MainForm(ConfigManager manager)
             : this()
-        {
-        }
+        { }
 
         private MainForm()
         {
@@ -23,20 +25,10 @@
 
             //setup the ui manager
             UI.Initialize(this);
-
-            this.Forms = new List<Form>
-            {
-                new NodesForm(this.PtpClient) { TopLevel = false, Visible = true, FormBorderStyle = FormBorderStyle.None },
-                new ChannelsForm() { TopLevel = false, Visible = true, FormBorderStyle = FormBorderStyle.None }
-            };
-
+			
             this.PtpClient = new PTPClient(new ConfigManager());
             this.PtpClient.NodeChanged += this.PtpClient_OnNodesChange;
         }
-
-        private List<Form> Forms { get; }
-
-        private PTPClient PtpClient { get; }
 
         private void Nodes_RefreshNodesView(NodesForm existingNodeForm)
         {
@@ -47,12 +39,7 @@
         {
             UI.Invoke(() =>
             {
-				/*
-                this.Nodes_RefreshNodesView(
-                       this.pnl_SubForm.Controls.OfType<NodesForm>().ToList().FirstOrDefault() 
-                    ?? this.Forms.OfType<NodesForm>().ToList().FirstOrDefault()
-                    );
-				*/
+				LeftTabControl_NodeList.RefreshNodeList();
             });
         }
 
@@ -156,6 +143,11 @@
         }
 
 		private void MainForm_Load(object sender, EventArgs e)
+		{
+
+		}
+
+		private void LeftTabControl_ChannelList_Load(object sender, EventArgs e)
 		{
 
 		}

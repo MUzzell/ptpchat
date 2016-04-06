@@ -16,5 +16,10 @@ namespace PtpChat.UI.Subforms
 		{
 			InitializeComponent();
 		}
+
+		public void RefreshNodeList()
+		{
+
+		}
 	}
 }

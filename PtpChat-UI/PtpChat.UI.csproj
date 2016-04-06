@@ -67,6 +67,12 @@
     <Compile Include="Subforms\ChannelsForm.Designer.cs">
       <DependentUpon>ChannelsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Subforms\ChannelTab.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Subforms\ChannelTab.Designer.cs">
+      <DependentUpon>ChannelTab.cs</DependentUpon>
+    </Compile>
     <Compile Include="Subforms\NodesForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -100,6 +106,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Subforms\ChannelsForm.resx">
       <DependentUpon>ChannelsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Subforms\ChannelTab.resx">
+      <DependentUpon>ChannelTab.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Subforms\NodesForm.resx">
       <DependentUpon>NodesForm.cs</DependentUpon>
