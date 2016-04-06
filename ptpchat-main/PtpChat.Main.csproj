@@ -82,10 +82,10 @@
     <Compile Include="UserInterface\UI.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UDPChatForm.cs">
+    <Compile Include="UserInterface\UDPChatForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UDPChatForm.Designer.cs">
+    <Compile Include="UserInterface\UDPChatForm.Designer.cs">
       <DependentUpon>UDPChatForm.cs</DependentUpon>
     </Compile>
     <EmbeddedResource Include="UserInterface\Subforms\NodesForm.resx">
@@ -104,7 +104,7 @@
     <EmbeddedResource Include="UserInterface\Subforms\ChannelsForm.resx">
       <DependentUpon>ChannelsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UDPChatForm.resx">
+    <EmbeddedResource Include="UserInterface\UDPChatForm.resx">
       <DependentUpon>UDPChatForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
