@@ -1,4 +1,4 @@
-﻿namespace PtpChat.Main.UserInterface.Subforms
+﻿namespace PtpChat.UI.Subforms
 {
     partial class NodesForm
     {

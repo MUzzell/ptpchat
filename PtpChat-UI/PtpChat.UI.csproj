@@ -33,6 +33,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ObjectListView, Version=2.9.0.25611, Culture=neutral, PublicKeyToken=b1c5bf581481bcd4, processorArchitecture=MSIL">
+      <HintPath>..\packages\ObjectListView.Official.2.9.0\lib\net20\ObjectListView.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -46,14 +50,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Form1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Subforms\ChannelsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Subforms\ChannelsForm.Designer.cs">
+      <DependentUpon>ChannelsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Subforms\NodesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Subforms\NodesForm.Designer.cs">
+      <DependentUpon>NodesForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UDPChatForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UDPChatForm.Designer.cs">
+      <DependentUpon>UDPChatForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -63,6 +80,16 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Subforms\ChannelsForm.resx">
+      <DependentUpon>ChannelsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Subforms\NodesForm.resx">
+      <DependentUpon>NodesForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UDPChatForm.resx">
+      <DependentUpon>UDPChatForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -75,6 +102,20 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ptpchat-Base\PtpChat.Base.csproj">
+      <Project>{50487d52-36a9-4b44-aa8a-b5cf5688e3d0}</Project>
+      <Name>PtpChat.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ptpchat-Main\PtpChat.Main.csproj">
+      <Project>{45084864-ea6e-426c-8e8a-eb55841f1ebb}</Project>
+      <Name>PtpChat.Main</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ptpchat-Utility\PtpChat.Utility.csproj">
+      <Project>{56d98466-8cfa-46c8-a40f-229eeb5d2c87}</Project>
+      <Name>PtpChat.Utility</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

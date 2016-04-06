@@ -1,16 +1,17 @@
-﻿namespace PtpChat.Main.UserInterface.Subforms
+﻿namespace PtpChat.UI.Subforms
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Linq;
-    using System.Windows.Forms;
+	using System;
+	using System.Collections.Generic;
+	using System.ComponentModel;
+	using System.Linq;
+	using System.Windows.Forms;
 
-    using BrightIdeasSoftware;
+	using BrightIdeasSoftware;
 
-    using PtpChat.Base.Classes;
+	using Base.Classes;
+	using Main;
 
-    public partial class NodesForm : Form
+	public partial class NodesForm : Form
     {
         public PTPClient ptpClient;
 

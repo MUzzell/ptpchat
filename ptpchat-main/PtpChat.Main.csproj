@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{45084864-EA6E-426C-8E8A-EB55841F1EBB}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PtpChat.Main</RootNamespace>
     <AssemblyName>PtpChat.Main</AssemblyName>
@@ -46,13 +46,12 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="ObjectListView, Version=2.9.0.25611, Culture=neutral, PublicKeyToken=b1c5bf581481bcd4, processorArchitecture=MSIL">
-      <HintPath>..\packages\ObjectListView.Official.2.9.0\lib\net20\ObjectListView.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -62,35 +61,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Managers\ResponseManager.cs" />
-    <Compile Include="UserInterface\Subforms\NodesForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UserInterface\Subforms\NodesForm.Designer.cs">
-      <DependentUpon>NodesForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Managers\ChannelManager.cs" />
     <Compile Include="Managers\DataManager.cs" />
     <Compile Include="MessageHandler.cs" />
     <Compile Include="Managers\NodeManager.cs" />
     <Compile Include="PTPClient.cs" />
-    <Compile Include="UserInterface\Subforms\ChannelsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UserInterface\Subforms\ChannelsForm.Designer.cs">
-      <DependentUpon>ChannelsForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UserInterface\UI.cs" />
-    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UserInterface\UDPChatForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UserInterface\UDPChatForm.Designer.cs">
-      <DependentUpon>UDPChatForm.cs</DependentUpon>
-    </Compile>
-    <EmbeddedResource Include="UserInterface\Subforms\NodesForm.resx">
-      <DependentUpon>NodesForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -101,12 +77,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="UserInterface\Subforms\ChannelsForm.resx">
-      <DependentUpon>ChannelsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UserInterface\UDPChatForm.resx">
-      <DependentUpon>UDPChatForm.cs</DependentUpon>
-    </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\DataSources\NodeManager.datasource" />
     <None Include="Properties\Settings.settings">
