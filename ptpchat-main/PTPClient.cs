@@ -17,7 +17,8 @@
         private readonly INodeManager nodeManager;
         private readonly IChannelManager channelManager;
 		private readonly IResponseManager responseManager;
-        private readonly IDataManager dataManager;
+
+		public readonly IDataManager dataManager;
 
         public PTPClient(ConfigManager config)
         {

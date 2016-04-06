@@ -65,7 +65,9 @@
 			// olvColumn2
 			// 
 			this.olvColumn2.AspectName = "Name";
+			this.olvColumn2.FillsFreeSpace = true;
 			this.olvColumn2.Text = "Name";
+			this.olvColumn2.Width = 354;
 			// 
 			// NodeListTab
 			// 

@@ -1,20 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace PtpChat.UI.Subforms
+﻿namespace PtpChat.UI.Subforms
 {
-	public partial class ChannelListTab : UserControl
+	using System;
+	using System.Windows.Forms;
+
+	using Base.Interfaces;
+	using Base.EventArguements;
+
+	public partial class ChannelListTab : UserControl, IEventManager
 	{
+		private IChannelManager channelManager { get; set; }
+
 		public ChannelListTab()
 		{
 			InitializeComponent();
+		}
+
+		public IDataManager DataManager
+		{
+			set
+			{
+				this.channelManager = value.ChannelManager;
+			}
 		}
 
 		private void dataTreeListView1_SelectedIndexChanged(object sender, EventArgs e)

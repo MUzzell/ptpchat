@@ -27,22 +27,16 @@
             UI.Initialize(this);
 			
             this.PtpClient = new PTPClient(new ConfigManager());
-            this.PtpClient.NodeChanged += this.PtpClient_OnNodesChange;
+
+			LeftTabControl_NodeList.DataManager = PtpClient.dataManager;
+
         }
 
         private void Nodes_RefreshNodesView(NodesForm existingNodeForm)
         {
             existingNodeForm?.RefreshNodes(this.PtpClient);
         }
-
-        private void PtpClient_OnNodesChange(object sender, EventArgs e)
-        {
-            UI.Invoke(() =>
-            {
-				LeftTabControl_NodeList.RefreshNodeList();
-            });
-        }
-
+		
         //private void PtpClient_OnNodesChange(object sender, EventArgs e)
         //{
         //    var eventArgs = (NodeEventArgs)e;
