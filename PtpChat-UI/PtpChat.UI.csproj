@@ -64,11 +64,11 @@
     <Compile Include="Subforms\NodesForm.Designer.cs">
       <DependentUpon>NodesForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="UDPChatForm.cs">
+    <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UDPChatForm.Designer.cs">
-      <DependentUpon>UDPChatForm.cs</DependentUpon>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="UI.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -86,8 +86,8 @@
     <EmbeddedResource Include="Subforms\NodesForm.resx">
       <DependentUpon>NodesForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UDPChatForm.resx">
-      <DependentUpon>UDPChatForm.cs</DependentUpon>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

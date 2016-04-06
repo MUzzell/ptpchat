@@ -15,7 +15,7 @@
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new UDPChatForm(new ConfigManager()));
+            Application.Run(new MainForm(new ConfigManager()));
         }
     }
 }

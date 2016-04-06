@@ -3,21 +3,20 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Runtime.InteropServices;
     using System.Windows.Forms;
 
     using PtpChat.Utility;
     using PtpChat.UI.Subforms;
 	using PtpChat.Main;
 
-    public partial class UDPChatForm : Form
+    public partial class MainForm : Form
     {
-        public UDPChatForm(ConfigManager manager)
+        public MainForm(ConfigManager manager)
             : this()
         {
         }
 
-        private UDPChatForm()
+        private MainForm()
         {
             this.InitializeComponent();
             this.IsMdiContainer = true;
