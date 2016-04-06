@@ -1,38 +1,44 @@
 ﻿namespace PtpChat.Main.Managers
 {
-	using System;
-	using System.Linq;
-	using System.Threading;
-	using System.Collections.Generic;
-	using System.Collections.Concurrent;
+    using System;
+    using System.Linq;
+    using System.Threading;
+    using System.Collections.Generic;
+    using System.Collections.Concurrent;
 
-	using PtpChat.Base.Classes;
-	using PtpChat.Base.Interfaces;
-	using PtpChat.Utility;
-	using Base.EventArguements;
+    using PtpChat.Base.Classes;
+    using PtpChat.Base.Interfaces;
+    using PtpChat.Utility;
+    using Base.EventArguements;
 
-	public class ChannelManager : IChannelManager
+    using PtpChat.Base.Messages;
+
+    public class ChannelManager : IChannelManager
     {
-		private const string LogAddedChannel = "Added new channel, Channel ID: {0}";
-		private const string LogDeletedChannel = "Deleted channel, Channel ID: {0}";
-		private const string LogUpdatedChannel = "Updated channel, Channel ID: {0}";
+        private const string LogAddedChannel = "Added new channel, Channel ID: {0}";
+        private const string LogDeletedChannel = "Deleted channel, Channel ID: {0}";
+        private const string LogUpdatedChannel = "Updated channel, Channel ID: {0}";
 
-		private readonly ConcurrentDictionary<Guid, Channel> Channels = new ConcurrentDictionary<Guid, Channel>();
-		private readonly ConcurrentDictionary<Guid, ChatMessage> Messages = new ConcurrentDictionary<Guid, ChatMessage>();
+        private const string LogMessageRecieved = "message recieved, Channel ID: {0}";
 
-		private readonly ILogManager logger;
 
-		private readonly TimeSpan ChannelCutoff;
+        private readonly ConcurrentDictionary<Guid, Channel> Channels = new ConcurrentDictionary<Guid, Channel>();
 
-		private Timer ProcessTimer;
+        private readonly ILogManager logger;
 
-		public event EventHandler ChannelAdd;
-		public event EventHandler ChannelDelete;
-		public event EventHandler ChannelUpdate;
+        private readonly TimeSpan ChannelCutoff;
 
-		private static object updateLock = new object();
+        private Timer ProcessTimer;
 
-		public ChannelManager(ILogManager logger, ConfigManager config)
+        public event EventHandler ChannelAdd;
+        public event EventHandler ChannelDelete;
+        public event EventHandler ChannelUpdate;
+
+        public event EventHandler MessageRecieved;
+
+        private static object updateLock = new object();
+
+        public ChannelManager(ILogManager logger, ConfigManager config)
         {
             if (logger == null)
             {
@@ -40,103 +46,135 @@
             }
 
             this.logger = logger;
-			this.ChannelCutoff = config.ChannelCutoff;
+            this.ChannelCutoff = config.ChannelCutoff;
         }
-		
-		private void ProcessChannels(object state)
-		{
-			foreach (Channel channel in this.GetChannels(n => n.Value.LastTransmission < DateTime.Now.Subtract(this.ChannelCutoff)))
-			{
-				channel.IsUpToDate = false;
-			}
-		}
-		
-		public bool IsNodeInChannel(Guid channelId, Guid nodeId)
-		{
-			if (!this.Channels.ContainsKey(channelId))
-			{
-				return false;
-			}
 
-			return this.Channels[channelId].Nodes.Contains(nodeId);
-		}
+        private void ProcessChannels(object state)
+        {
+            foreach (Channel channel in this.GetChannels(n => n.Value.LastTransmission < DateTime.Now.Subtract(this.ChannelCutoff)))
+            {
+                channel.IsUpToDate = false;
+            }
+        }
 
-		public void Add(Channel channel)
-		{
-			if (!this.Channels.TryAdd(channel.ChannelId, channel))
-			{
-				throw new InvalidOperationException("Add, Channel is already present");
-			}
+        public bool IsNodeInChannel(Guid channelId, Guid nodeId)
+        {
+            if (!this.Channels.ContainsKey(channelId))
+            {
+                return false;
+            }
 
-			this.ChannelAdd?.Invoke(this, new ChannelEventArgs { Channel = channel });
+            return this.Channels[channelId].Nodes.Contains(nodeId);
+        }
 
-			this.logger.Info(string.Format(LogAddedChannel, channel.ChannelId));
-		}
+        public void Add(Channel channel)
+        {
+            if (!this.Channels.TryAdd(channel.ChannelId, channel))
+            {
+                throw new InvalidOperationException("Add, Channel is already present");
+            }
 
-		public Channel Delete(Channel channel)
-		{
-			if (channel?.ChannelId == null)
-			{
-				throw new ArgumentNullException(nameof(channel), @"channel or its ID is null");
-			}
+            this.ChannelAdd?.Invoke(this, new ChannelEventArgs { Channel = channel });
 
-			return this.Delete(channel.ChannelId);
-		}
+            this.logger.Info(string.Format(LogAddedChannel, channel.ChannelId));
+        }
 
-		public Channel Delete(Guid channelId)
-		{
-			if (channelId == null || channelId == Guid.Empty)
-			{
-				throw new ArgumentNullException(nameof(channelId), @"Invalid channelId");
-			}
+        public Channel Delete(Channel channel)
+        {
+            if (channel?.ChannelId == null)
+            {
+                throw new ArgumentNullException(nameof(channel), @"channel or its ID is null");
+            }
 
-			Channel outChannel;
-			if (!this.Channels.TryRemove(channelId, out outChannel))
-			{
-				throw new InvalidOperationException("Delete, NodeID not present");
-			}
+            return this.Delete(channel.ChannelId);
+        }
 
-			this.logger.Info(string.Format(LogDeletedChannel, outChannel.ChannelId));
+        public Channel Delete(Guid channelId)
+        {
+            if (channelId == null || channelId == Guid.Empty)
+            {
+                throw new ArgumentNullException(nameof(channelId), @"Invalid channelId");
+            }
 
-			this.ChannelDelete?.Invoke(this, new ChannelEventArgs { Channel = outChannel });
+            Channel outChannel;
+            if (!this.Channels.TryRemove(channelId, out outChannel))
+            {
+                throw new InvalidOperationException("Delete, NodeID not present");
+            }
 
-			return outChannel;
-		}
+            this.logger.Info(string.Format(LogDeletedChannel, outChannel.ChannelId));
 
-		public void Update(Guid channelId, Action<Channel> updateFunc)
-		{
-			if (channelId == Guid.Empty || updateFunc == null)
-			{
-				throw new ArgumentNullException(@"channelId or updateFunc is null");
-			}
+            this.ChannelDelete?.Invoke(this, new ChannelEventArgs { Channel = outChannel });
 
-			Channel currentChannel, channel;
+            return outChannel;
+        }
 
-			if (!this.Channels.TryGetValue(channelId, out currentChannel))
-			{
-				throw new InvalidOperationException("Update, could not find Node");
-			}
+        public void Update(Guid channelId, Action<Channel> updateFunc)
+        {
+            if (channelId == Guid.Empty || updateFunc == null)
+            {
+                throw new ArgumentNullException(@"channelId or updateFunc is null");
+            }
 
-			lock (ChannelManager.updateLock)
-			{
-				channel = this.Channels[channelId];
-				updateFunc(channel);
+            Channel currentChannel, channel;
 
-				if (!this.Channels.TryUpdate(channelId, channel, currentChannel))
-				{
-					throw new InvalidOperationException("Update, unable to update node");
-				}
+            if (!this.Channels.TryGetValue(channelId, out currentChannel))
+            {
+                throw new InvalidOperationException("Update, could not find Node");
+            }
 
-			}
+            lock (ChannelManager.updateLock)
+            {
+                channel = this.Channels[channelId];
+                updateFunc(channel);
 
-			this.ChannelUpdate?.Invoke(this, new ChannelEventArgs { Channel = channel });
+                if (!this.Channels.TryUpdate(channelId, channel, currentChannel))
+                {
+                    throw new InvalidOperationException("Update, unable to update node");
+                }
 
-			this.logger.Info(string.Format(LogUpdatedChannel, channelId));
-		}
+            }
 
-		public IEnumerable<Channel> GetChannels(Func<KeyValuePair<Guid, Channel>, bool> filter) => this.Channels.Where(filter).Select(n => n.Value);
+            this.ChannelUpdate?.Invoke(this, new ChannelEventArgs { Channel = channel });
 
-		public IEnumerable<Channel> GetChannels() => this.Channels.Select(n => n.Value);
-		
-	}
+            this.logger.Info(string.Format(LogUpdatedChannel, channelId));
+        }
+
+        public void HandleMessageForChannel(MessageData messageData)
+        {
+            if (messageData.channel_id == null || messageData.channel_id == Guid.Empty)
+            {
+                throw new ArgumentNullException(nameof(messageData.channel_id), @"Invalid channelId");
+            }
+
+            var channel = this.Channels.FirstOrDefault(c => c.Value.ChannelId != messageData.channel_id).Value;
+
+            //does the channel exist? 
+            if (channel == null)
+            {
+                throw new InvalidOperationException("MESSAGE recieved for unknown Channel");
+            }
+
+            var newMessage = new ChatMessage
+                                 {
+                                     ChannelId = messageData.channel_id,
+                                     DateSent = messageData.timestamp,
+                                     MessageContent = messageData.message,
+                                     MessageId = Guid.NewGuid(),
+                                     SenderId = messageData.node_id
+                                 };
+            
+
+            this.Update(messageData.channel_id, recipientChannel => recipientChannel.AddMessage(newMessage));
+
+            this.MessageRecieved?.Invoke(this, new ChannelMessageEventArgs { Channel = channel, ChatMessage = newMessage });
+
+            this.logger.Info(string.Format(LogMessageRecieved, channel.ChannelId));
+        }
+
+        public IEnumerable<Channel> GetChannels(Func<KeyValuePair<Guid, Channel>, bool> filter) => this.Channels.Where(filter).Select(n => n.Value);
+
+        public IEnumerable<Channel> GetChannels() => this.Channels.Select(n => n.Value);
+
+    }
 }

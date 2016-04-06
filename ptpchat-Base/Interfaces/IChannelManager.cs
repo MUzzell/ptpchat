@@ -4,8 +4,10 @@
 
 	using Classes;
 	using System;
-	
-	public interface IChannelManager
+
+	using PtpChat.Base.Messages;
+
+    public interface IChannelManager
 	{
 		/// <summary>
 		/// Checks that the given ChannelId is in the given Channel, according to this ChannelManager
@@ -16,17 +18,18 @@
 		bool IsNodeInChannel(Guid nodeId, Guid channelId);
 
 		event EventHandler ChannelAdd;
-
 		event EventHandler ChannelDelete;
-
 		event EventHandler ChannelUpdate;
 
-		/// <summary>
-		/// Attempt to add the given Channel.
-		/// Throws an ArgumentException if unable to do so, such as if the ChannelId already exists.
-		/// <param name="channel">The new channel to be added, will be compared against its ChannelId.</param>
-		/// </summary>
-		void Add(Channel channel);
+        event EventHandler MessageRecieved;
+
+
+        /// <summary>
+        /// Attempt to add the given Channel.
+        /// Throws an ArgumentException if unable to do so, such as if the ChannelId already exists.
+        /// <param name="channel">The new channel to be added, will be compared against its ChannelId.</param>
+        /// </summary>
+        void Add(Channel channel);
 
 		/// <summary>
 		/// Attempt to delete the given Channel.
@@ -49,6 +52,8 @@
 		/// <param name="updateFunc">The function that will edit the parameters of the target channel.</param>
 		/// </summary>
 		void Update(Guid channelId, Action<Channel> updateFunc);
+
+	    void HandleMessageForChannel(MessageData messageData);
 
 		IEnumerable<Channel> GetChannels();
 

@@ -39,6 +39,7 @@
     <Compile Include="Classes\ChatMessage.cs" />
     <Compile Include="Classes\ResponseMessage.cs" />
     <Compile Include="EventArguements\ChannelEventArgs.cs" />
+    <Compile Include="EventArguements\ChannelMessageEventArgs.cs" />
     <Compile Include="EventArguements\ResponseEventArgs.cs" />
     <Compile Include="Interfaces\IChannelManager.cs" />
     <Compile Include="Interfaces\IDataManager.cs" />

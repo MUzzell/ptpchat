@@ -5,20 +5,31 @@
 
     public class Channel
     {
+        private readonly IList<ChatMessage> Messages;
+
         public Guid ChannelId { get; set; }
-
-        public IList<Guid> Nodes { get; set; }
-
         public string ChannelName { get; set; }
 
         public bool Closed { get; set; }
 
-        public IList<Guid> Messages { get; set; }
+        public IList<Guid> Nodes { get; set; }
 
-		public DateTime Added { get; set; }
+        public DateTime Added { get; }
+        public DateTime LastTransmission { get; set; }
 
-		public DateTime LastTransmission { get; set; }
+        public bool IsUpToDate { get; set; }
 
-		public bool IsUpToDate { get; set; }
-	}
+        public Channel()
+        {
+            this.Messages = new List<ChatMessage>();
+            this.Added = DateTime.Now;
+        }
+
+        public void AddMessage(ChatMessage message)
+        {
+            this.Messages.Add(message);
+        }
+
+        public IList<ChatMessage> GetMessages() => this.Messages;
+    }
 }

@@ -31,7 +31,7 @@
 			if (!CheckNodeId(nodeId))
 				return false;
 
-			var data = message.msg_data;
+            var data = message.msg_data;
 
 			if (data.channel_id == Guid.Empty)
 			{
@@ -82,13 +82,12 @@
 			{
 				channel = new Channel
 				{
-					Added = DateTime.Now,
 					ChannelId = data.channel_id,
 					ChannelName = data.channel,
 					Closed = data.closed,
 					IsUpToDate = true,
 					LastTransmission = DateTime.Now,
-					Nodes = memberIds.ToList()
+					Nodes = memberIds.ToList(),
 				};
 				this.ChannelManager.Add(channel);
 			}
