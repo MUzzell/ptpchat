@@ -42,7 +42,9 @@
     <Compile Include="EventArguements\ChannelMessageEventArgs.cs" />
     <Compile Include="EventArguements\ResponseEventArgs.cs" />
     <Compile Include="Interfaces\IChannelEventHandler.cs" />
+    <Compile Include="Interfaces\IChannelTabHandler.cs" />
     <Compile Include="Interfaces\IChannelManager.cs" />
+    <Compile Include="Interfaces\IChannelTab.cs" />
     <Compile Include="Interfaces\IDataManager.cs" />
     <Compile Include="Interfaces\IEventManager.cs" />
     <Compile Include="Interfaces\IMessageHandler.cs" />

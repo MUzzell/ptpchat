@@ -60,6 +60,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChannelTabHandler.cs" />
     <Compile Include="Managers\ResponseManager.cs" />
     <Compile Include="Managers\ChannelManager.cs" />
     <Compile Include="Managers\DataManager.cs" />

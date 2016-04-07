@@ -1,39 +1,62 @@
 ﻿namespace PtpChat.UI
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Windows.Forms;
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
+	using System.Windows.Forms;
 
-    using PtpChat.Utility;
-    using PtpChat.UI.Subforms;
+	using PtpChat.Utility;
+	using PtpChat.UI.Subforms;
 	using PtpChat.Main;
+	using Base.EventArguements;
 
-    public partial class MainForm : Form
+	public partial class MainForm : Form
     {
 		
 		private PTPClient PtpClient { get; }
 
 		public MainForm(ConfigManager manager)
-            : this()
-        { }
-
-        private MainForm()
-        {
+		{
             this.InitializeComponent();
             this.IsMdiContainer = true;
 
             //setup the ui manager
             UI.Initialize(this);
 			
-            this.PtpClient = new PTPClient(new ConfigManager());
+            this.PtpClient = new PTPClient(manager);
 
 			LeftTabControl_NodeList.DataManager = PtpClient.dataManager;
+
+			this.PtpClient.ChannelAdded += ChannelAdded;
 
 			//I don't like this..
 			// It feels bad
 			SyslogTab.SetupLogging(PtpClient.logger);
+
+			//Testing only
+			this.ChannelAdded(this, new ChannelEventArgs
+			{
+				Channel = PtpClient.dataManager.ChannelManager.GetChannels().First()
+			});
         }
+
+		private void ChannelAdded(object sender, EventArgs e)
+		{
+			if (e.GetType() != typeof(ChannelEventArgs))
+			{
+				throw new ArgumentException("ChannelAdded did not recieve ChannelEventArgs object");
+			}
+
+			ChannelEventArgs ce = (ChannelEventArgs)e;
+
+			ChannelTab ctab = new ChannelTab(ce.Channel, this.PtpClient.ChannelTabHandler);
+			this.PtpClient.ChannelTabHandler.AddChannelTab(ce.Channel.ChannelId, ctab);
+			string title = ce.Channel.ChannelName;
+			TabPage newTab = new TabPage(title);
+			newTab.Controls.Add(ctab);
+			ctab.Dock = DockStyle.Fill;
+			RightTabControl.TabPages.Add(newTab);
+		}
 
         private void Nodes_RefreshNodesView(NodesForm existingNodeForm)
         {

@@ -19,6 +19,7 @@
 
 		public readonly Logger logger;
 		public readonly IDataManager dataManager;
+		public readonly IChannelTabHandler ChannelTabHandler;
 
         public PTPClient(ConfigManager config)
         {
@@ -28,7 +29,7 @@
             this.channelManager = new ChannelManager(this.logger, config);
 			this.responseManager = new ResponseManager(this.logger, config);
 			this.dataManager = new DataManager(this.channelManager, this.nodeManager, responseManager);
-
+			
 			//TODO: remove this when we get a response from the server
 			nodeManager.Add(new Node {
 				IpAddress = config.InitialServerAddress,
@@ -52,7 +53,9 @@
 			//socket handler here used to create its UDP socket thread handling in the ctor
 			ISocketHandler socketHandler = new SocketHandler(this.logger, this.dataManager, messageHandler);
 
-            messageHandler.AddHandler(MessageType.HELLO, new HelloVerbHandler(this.logger, this.dataManager, socketHandler));
+			this.ChannelTabHandler = new ChannelTabHandler(logger, channelManager, socketHandler);
+
+			messageHandler.AddHandler(MessageType.HELLO, new HelloVerbHandler(this.logger, this.dataManager, socketHandler));
             messageHandler.AddHandler(MessageType.ROUTING, new RoutingVerbHandler(this.logger, this.dataManager, socketHandler));
             messageHandler.AddHandler(MessageType.CONNECT, new ConnectVerbHandler(this.logger, this.dataManager, socketHandler));
             messageHandler.AddHandler(MessageType.MESSAGE, new MessageVerbHandler(this.logger, this.dataManager, socketHandler));
