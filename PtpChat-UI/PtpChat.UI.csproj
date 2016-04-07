@@ -146,6 +146,10 @@
       <Project>{56d98466-8cfa-46c8-a40f-229eeb5d2c87}</Project>
       <Name>PtpChat.Utility</Name>
     </ProjectReference>
+    <ProjectReference Include="..\PtpChat.Utility.UI\PtpChat.Utility.UI.csproj">
+      <Project>{18c8ece4-22b8-4315-89c7-963f7ddecbff}</Project>
+      <Name>PtpChat.Utility.UI</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -13,11 +13,11 @@
 
     public class PTPClient
     {
-        private readonly ILogManager logger;
         private readonly INodeManager nodeManager;
         private readonly IChannelManager channelManager;
 		private readonly IResponseManager responseManager;
 
+		public readonly Logger logger;
 		public readonly IDataManager dataManager;
 
         public PTPClient(ConfigManager config)
@@ -68,7 +68,9 @@
         {
             this.NodeChanged?.Invoke(this, e);
         }
+
         public IEnumerable<Node> GetNodes(Func<KeyValuePair<Guid, Node>, bool> filter) => this.nodeManager.GetNodes(filter);
+
         public IEnumerable<Node> GetNodes() => this.nodeManager.GetNodes();
 
         /**

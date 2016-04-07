@@ -63,11 +63,12 @@
 			this.SC_Main = new System.Windows.Forms.SplitContainer();
 			this.TabControl_Left = new System.Windows.Forms.TabControl();
 			this.LeftTabControl_Tab1 = new System.Windows.Forms.TabPage();
-			this.LeftTabControl_Tab2 = new System.Windows.Forms.TabPage();
-			this.RightTabControl = new System.Windows.Forms.TabControl();
-			this.RightTabControl_Syslog = new System.Windows.Forms.TabPage();
 			this.LeftTabControl_NodeList = new PtpChat.UI.Subforms.NodeListTab();
+			this.LeftTabControl_Tab2 = new System.Windows.Forms.TabPage();
 			this.LeftTabControl_ChannelList = new PtpChat.UI.Subforms.ChannelListTab();
+			this.RightTabControl = new System.Windows.Forms.TabControl();
+			this.RightTabControl_Tab1 = new System.Windows.Forms.TabPage();
+			this.SyslogTab = new PtpChat.Utility.UI.SyslogTab();
 			this.menuStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.SC_Main)).BeginInit();
 			this.SC_Main.Panel1.SuspendLayout();
@@ -77,6 +78,7 @@
 			this.LeftTabControl_Tab1.SuspendLayout();
 			this.LeftTabControl_Tab2.SuspendLayout();
 			this.RightTabControl.SuspendLayout();
+			this.RightTabControl_Tab1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// menuStrip1
@@ -362,6 +364,14 @@
 			this.LeftTabControl_Tab1.Text = "Nodes";
 			this.LeftTabControl_Tab1.UseVisualStyleBackColor = true;
 			// 
+			// LeftTabControl_NodeList
+			// 
+			this.LeftTabControl_NodeList.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.LeftTabControl_NodeList.Location = new System.Drawing.Point(3, 3);
+			this.LeftTabControl_NodeList.Name = "LeftTabControl_NodeList";
+			this.LeftTabControl_NodeList.Size = new System.Drawing.Size(270, 645);
+			this.LeftTabControl_NodeList.TabIndex = 0;
+			// 
 			// LeftTabControl_Tab2
 			// 
 			this.LeftTabControl_Tab2.Controls.Add(this.LeftTabControl_ChannelList);
@@ -373,34 +383,6 @@
 			this.LeftTabControl_Tab2.Text = "Channels";
 			this.LeftTabControl_Tab2.UseVisualStyleBackColor = true;
 			// 
-			// RightTabControl
-			// 
-			this.RightTabControl.Controls.Add(this.RightTabControl_Syslog);
-			this.RightTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.RightTabControl.Location = new System.Drawing.Point(0, 0);
-			this.RightTabControl.Name = "RightTabControl";
-			this.RightTabControl.SelectedIndex = 0;
-			this.RightTabControl.Size = new System.Drawing.Size(987, 677);
-			this.RightTabControl.TabIndex = 0;
-			// 
-			// RightTabControl_Syslog
-			// 
-			this.RightTabControl_Syslog.Location = new System.Drawing.Point(4, 22);
-			this.RightTabControl_Syslog.Name = "RightTabControl_Syslog";
-			this.RightTabControl_Syslog.Padding = new System.Windows.Forms.Padding(3);
-			this.RightTabControl_Syslog.Size = new System.Drawing.Size(979, 651);
-			this.RightTabControl_Syslog.TabIndex = 0;
-			this.RightTabControl_Syslog.Text = "Log";
-			this.RightTabControl_Syslog.UseVisualStyleBackColor = true;
-			// 
-			// LeftTabControl_NodeList
-			// 
-			this.LeftTabControl_NodeList.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.LeftTabControl_NodeList.Location = new System.Drawing.Point(3, 3);
-			this.LeftTabControl_NodeList.Name = "LeftTabControl_NodeList";
-			this.LeftTabControl_NodeList.Size = new System.Drawing.Size(270, 645);
-			this.LeftTabControl_NodeList.TabIndex = 0;
-			// 
 			// LeftTabControl_ChannelList
 			// 
 			this.LeftTabControl_ChannelList.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -409,6 +391,35 @@
 			this.LeftTabControl_ChannelList.Size = new System.Drawing.Size(270, 645);
 			this.LeftTabControl_ChannelList.TabIndex = 0;
 			this.LeftTabControl_ChannelList.Load += new System.EventHandler(this.LeftTabControl_ChannelList_Load);
+			// 
+			// RightTabControl
+			// 
+			this.RightTabControl.Controls.Add(this.RightTabControl_Tab1);
+			this.RightTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.RightTabControl.Location = new System.Drawing.Point(0, 0);
+			this.RightTabControl.Name = "RightTabControl";
+			this.RightTabControl.SelectedIndex = 0;
+			this.RightTabControl.Size = new System.Drawing.Size(987, 677);
+			this.RightTabControl.TabIndex = 0;
+			// 
+			// RightTabControl_Tab1
+			// 
+			this.RightTabControl_Tab1.Controls.Add(this.SyslogTab);
+			this.RightTabControl_Tab1.Location = new System.Drawing.Point(4, 22);
+			this.RightTabControl_Tab1.Name = "RightTabControl_Tab1";
+			this.RightTabControl_Tab1.Padding = new System.Windows.Forms.Padding(3);
+			this.RightTabControl_Tab1.Size = new System.Drawing.Size(979, 651);
+			this.RightTabControl_Tab1.TabIndex = 0;
+			this.RightTabControl_Tab1.Text = "Log";
+			this.RightTabControl_Tab1.UseVisualStyleBackColor = true;
+			// 
+			// SyslogTab
+			// 
+			this.SyslogTab.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.SyslogTab.Location = new System.Drawing.Point(3, 3);
+			this.SyslogTab.Name = "SyslogTab";
+			this.SyslogTab.Size = new System.Drawing.Size(973, 645);
+			this.SyslogTab.TabIndex = 0;
 			// 
 			// MainForm
 			// 
@@ -432,6 +443,7 @@
 			this.LeftTabControl_Tab1.ResumeLayout(false);
 			this.LeftTabControl_Tab2.ResumeLayout(false);
 			this.RightTabControl.ResumeLayout(false);
+			this.RightTabControl_Tab1.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -440,7 +452,7 @@
 		#endregion
 		private System.Windows.Forms.SplitContainer SC_Main;
 		private System.Windows.Forms.TabControl RightTabControl;
-		private System.Windows.Forms.TabPage RightTabControl_Syslog;
+		private System.Windows.Forms.TabPage RightTabControl_Tab1;
 		private System.Windows.Forms.MenuStrip menuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
@@ -478,5 +490,6 @@
 		private System.Windows.Forms.StatusStrip statusStrip1;
 		private Subforms.NodeListTab LeftTabControl_NodeList;
 		private Subforms.ChannelListTab LeftTabControl_ChannelList;
+		private Utility.UI.SyslogTab SyslogTab;
 	}
 }

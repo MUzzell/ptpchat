@@ -30,6 +30,7 @@
 
 			LeftTabControl_NodeList.DataManager = PtpClient.dataManager;
 
+			SyslogTab.SetupLogging(PtpClient.logger);
         }
 
         private void Nodes_RefreshNodesView(NodesForm existingNodeForm)

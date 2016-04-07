@@ -6,29 +6,39 @@
     using NLog;
     using NLog.Config;
     using NLog.Targets;
+	using NLog.Windows.Forms;
 
     using PtpChat.Base.Interfaces;
 
     public class Logger : ILogManager
     {
+
+		public readonly ColoredConsoleTarget ConsoleTarget;
+		public readonly FileTarget FileTarget;
+		public readonly RichTextBoxTarget FormTarget;
+
         public Logger(ConfigManager config, string logName)
         {
-            var consoleTarget = new ColoredConsoleTarget { Layout = @"${date:format=HH\:mm\:ss} ${level:uppercase=true} ${message}" };
+            ConsoleTarget = new ColoredConsoleTarget { Layout = @"${date:format=HH\:mm\:ss} ${level:uppercase=true} ${message}" };
 
-            var fileTarget = new FileTarget
-                                 {
-                                     Layout = @"${date:format=yyyy-MM-dd HH\:mm\:ss} ${level:uppercase=true} ${message}",
-                                     FileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), config.DefaultLoggingFile)
-                                 };
+            FileTarget = new FileTarget
+            {
+                Layout = @"${date:format=yyyy-MM-dd HH\:mm\:ss} ${level:uppercase=true} ${message}",
+                FileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), config.DefaultLoggingFile)
+            };
+
+			FormTarget = new RichTextBoxTarget { Layout = @"${date:format=HH\:mm\:ss} ${level:uppercase=true} ${message}", SupportLinks = true };
 
             var loggerConfig = new LoggingConfiguration();
-            loggerConfig.AddTarget("console", consoleTarget);
-            loggerConfig.AddTarget("file", fileTarget);
+            loggerConfig.AddTarget("console", ConsoleTarget);
+            loggerConfig.AddTarget("file", FileTarget);
+			loggerConfig.AddTarget("form", FormTarget);
 
-            loggerConfig.LoggingRules.Add(new LoggingRule("*", config.IsLoggingEnabled ? LogLevel.Debug : LogLevel.Off, consoleTarget));
-            loggerConfig.LoggingRules.Add(new LoggingRule("*", config.IsLoggingEnabled ? LogLevel.Debug : LogLevel.Off, fileTarget));
+            loggerConfig.LoggingRules.Add(new LoggingRule("*", config.IsLoggingEnabled ? LogLevel.Debug : LogLevel.Off, ConsoleTarget));
+            loggerConfig.LoggingRules.Add(new LoggingRule("*", config.IsLoggingEnabled ? LogLevel.Debug : LogLevel.Off, FileTarget));
+			loggerConfig.LoggingRules.Add(new LoggingRule("*", config.IsLoggingEnabled ? LogLevel.Debug : LogLevel.Off, FormTarget));
 
-            LogManager.Configuration = loggerConfig;
+			LogManager.Configuration = loggerConfig;
 
             this.internalLogger = LogManager.GetLogger(logName);
         }
