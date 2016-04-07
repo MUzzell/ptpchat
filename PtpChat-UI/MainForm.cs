@@ -30,6 +30,8 @@
 
 			LeftTabControl_NodeList.DataManager = PtpClient.dataManager;
 
+			//I don't like this..
+			// It feels bad
 			SyslogTab.SetupLogging(PtpClient.logger);
         }
 

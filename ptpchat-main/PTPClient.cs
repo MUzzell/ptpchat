@@ -44,6 +44,9 @@
             this.nodeManager.NodeUpdate += this.NodeManager_NodeChanged;
             this.nodeManager.NodeDelete += this.NodeManager_NodeChanged;
 
+			this.channelManager.ChannelAdd += this.ChannelManager_ChannelAdded;
+			this.channelManager.ChannelUpdate += this.ChannelManager_ChannelUpdate;
+
             var messageHandler = new MessageHandler(this.logger);
 
 			//socket handler here used to create its UDP socket thread handling in the ctor
@@ -59,15 +62,41 @@
 			messageHandler.AddHandler(MessageType.ACK, new AckVerbHandler(this.logger, this.dataManager, socketHandler));
 
             socketHandler.Start();
+
+			//This is a temporary change, for testing channels and messages
+			this.channelManager.Add(new Channel
+			{
+				ChannelId = Guid.Parse("82ae2035-55b8-4223-af24-c538731d6119"),
+				ChannelName = "Test Channel",
+				Closed = false,
+				LastTransmission = DateTime.Now,
+				Nodes = new List<Guid>()
+				{
+					this.nodeManager.LocalNode.NodeId
+				},
+				IsUpToDate = true
+			});
 			
         }
 
         public event EventHandler NodeChanged;
+		public event EventHandler ChannelAdded;
+		public event EventHandler ChannelUpdate;
 
         private void NodeManager_NodeChanged(object sender, EventArgs e)
         {
             this.NodeChanged?.Invoke(this, e);
         }
+
+		private void ChannelManager_ChannelAdded(object sender , EventArgs e)
+		{
+			this.ChannelAdded?.Invoke(this, e);
+		}
+
+		private void ChannelManager_ChannelUpdate(object sender, EventArgs e)
+		{
+			this.ChannelUpdate?.Invoke(this, e);
+		}
 
         public IEnumerable<Node> GetNodes(Func<KeyValuePair<Guid, Node>, bool> filter) => this.nodeManager.GetNodes(filter);
 

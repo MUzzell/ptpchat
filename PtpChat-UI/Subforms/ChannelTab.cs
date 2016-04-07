@@ -1,20 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace PtpChat.UI.Subforms
+﻿namespace PtpChat.UI.Subforms
 {
-	public partial class ChannelTab : UserControl
+	using System;
+	using System.Windows.Forms;
+
+	using Base.Interfaces;
+
+	public partial class ChannelTab : UserControl, IChannelEventHandler
 	{
 		public ChannelTab()
 		{
 			InitializeComponent();
 		}
+
+		private void ChannelTab_BtnSubmit_Click(object sender, EventArgs e)
+		{
+
+		}
+		
 	}
 }
