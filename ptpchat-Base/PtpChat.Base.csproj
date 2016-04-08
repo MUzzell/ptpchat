@@ -47,6 +47,7 @@
     <Compile Include="Interfaces\IDataManager.cs" />
     <Compile Include="Interfaces\IEventManager.cs" />
     <Compile Include="Interfaces\IMessageHandler.cs" />
+    <Compile Include="Interfaces\IOutgoingMessageManager.cs" />
     <Compile Include="Interfaces\IResponseManager.cs" />
     <Compile Include="Interfaces\IVerbHandler.cs" />
     <Compile Include="Messages\AckMessage.cs" />

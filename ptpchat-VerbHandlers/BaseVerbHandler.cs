@@ -1,42 +1,56 @@
 ﻿namespace PtpChat.VerbHandlers
 {
+    using System;
     using System.Net;
 
     using Newtonsoft.Json;
 
     using PtpChat.Base.Interfaces;
     using PtpChat.Base.Messages;
-    using System;
-    using System.Collections.Generic;
 
-    public abstract class BaseVerbHandler<T> : IVerbHandler where T : BaseMessage
+    public abstract class BaseVerbHandler<T> : IVerbHandler
+        where T : BaseMessage
     {
-        private const string LogInvalidNodeId = "Invalid Node ID in this message, ignoring";
-        private const string LogSameNodeId = "Recieved message presented this Node's ID! ignoring";
+        protected const string LogInvalidMsgId = "Recieved message with invalid msg_id, ignoring";
+
         private static readonly string LogCannotParseJson = "Unable to deserialise Json message, ignoring";
 
-        protected const string LogInvalidMsgId = "Recieved message with invalid msg_id, ignoring";
+        private const string LogInvalidNodeId = "Invalid Node ID in this message, ignoring";
+
+        private const string LogSameNodeId = "Recieved message presented this Node's ID! ignoring";
+
+        protected IChannelManager ChannelManager { get; }
 
         protected ILogManager logger { get; }
 
         protected INodeManager NodeManager { get; }
 
-        protected IChannelManager ChannelManager { get; }
-
         protected IResponseManager ResponseManager { get; }
 
-        protected ISocketHandler SocketHandler { get; set; }
+        protected IOutgoingMessageManager OutgoingMessageManager { get; set; }
 
-        protected BaseVerbHandler(ILogManager logger, IDataManager dataManager, ISocketHandler socketHandler)
+        protected BaseVerbHandler(ILogManager logger, IDataManager dataManager, IOutgoingMessageManager outMessageManager)
         {
             this.logger = logger;
             this.NodeManager = dataManager.NodeManager;
             this.ChannelManager = dataManager.ChannelManager;
-            this.SocketHandler = socketHandler;
+            this.OutgoingMessageManager = outMessageManager;
             this.ResponseManager = dataManager.ResponseManager;
         }
 
-
+        public bool HandleMessage(string msgJson, IPEndPoint senderEndpoint)
+        {
+            try
+            {
+                var message = JsonConvert.DeserializeObject<T>(msgJson);
+                return this.HandleVerb(message, senderEndpoint);
+            }
+            catch (JsonException)
+            {
+                this.logger.Warning(BaseVerbHandler<BaseMessage>.LogCannotParseJson);
+                return false;
+            }
+        }
 
         /// <summary>
         /// Checks that the given NodeId is:
@@ -61,20 +75,6 @@
             }
 
             return true;
-        }
-
-        public bool HandleMessage(string msgJson, IPEndPoint senderEndpoint)
-        {
-            try
-            {
-                var message = JsonConvert.DeserializeObject<T>(msgJson);
-                return this.HandleVerb(message, senderEndpoint);
-            }
-            catch (JsonException)
-            {
-                this.logger.Warning(BaseVerbHandler<BaseMessage>.LogCannotParseJson);
-                return false;
-            }
         }
 
         protected string BuildMessage(BaseMessage message) => JsonConvert.SerializeObject(message);

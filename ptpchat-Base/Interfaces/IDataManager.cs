@@ -2,10 +2,10 @@
 {
     public interface IDataManager
     {
-        INodeManager NodeManager { get; }
-
         IChannelManager ChannelManager { get; }
 
-		IResponseManager ResponseManager { get; }
+        INodeManager NodeManager { get; }
+
+        IResponseManager ResponseManager { get; }
     }
 }

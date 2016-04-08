@@ -6,35 +6,36 @@
 
     public class Node
     {
-		public Node()
-		{
-			this.Channels = new List<Channel>();
-			this.Messages = new List<ChatMessage>();
-		}
+        public bool IsConnected = false;
 
-        public Guid NodeId { get; set; }
-
-        public IPAddress IpAddress { get; set; }
-
-        public int Port { get; set; }
-
-        public IPEndPoint IpEndPoint => new IPEndPoint(this.IpAddress, this.Port);
-
-        public DateTime? LastRecieve { get; set; }
-
-        public DateTime? Added { get; set; }
-
-        public DateTime? LastSend { get; set; }
-
-        public Boolean IsConnected = false;
-        public Boolean IsStartUpNode = false;
-
-        public string Version { get; set; }
+        public bool IsStartUpNode = false;
 
         public IList<Channel> Channels { get; }
 
-		public IList<ChatMessage> Messages { get; }
+        public IPEndPoint IpEndPoint => new IPEndPoint(this.IpAddress, this.Port);
 
-		public Guid? SeenThrough { get; set; }
-	}
+        public IList<ChatMessage> Messages { get; }
+
+        public DateTime? Added { get; set; }
+
+        public IPAddress IpAddress { get; set; }
+
+        public DateTime? LastRecieve { get; set; }
+
+        public DateTime? LastSend { get; set; }
+
+        public Guid NodeId { get; set; }
+
+        public int Port { get; set; }
+
+        public Guid? SeenThrough { get; set; }
+
+        public string Version { get; set; }
+
+        public Node()
+        {
+            this.Channels = new List<Channel>();
+            this.Messages = new List<ChatMessage>();
+        }
+    }
 }

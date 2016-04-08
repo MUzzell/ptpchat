@@ -1,17 +1,17 @@
 ﻿namespace PtpChat.Base.Classes
 {
-	using System;
+    using System;
 
-	public class ChatMessage
-	{ 
-		public Guid MessageId { get; set; }
+    public class ChatMessage
+    {
+        public Guid ChannelId { get; set; }
 
-		public string MessageContent { get; set; }
+        public DateTime DateSent { get; set; }
 
-		public DateTime DateSent { get; set; }
+        public string MessageContent { get; set; }
 
-		public Guid ChannelId { get; set; }
+        public Guid MessageId { get; set; }
 
-		public Guid SenderId { get; set; }
-	}
+        public Guid SenderId { get; set; }
+    }
 }

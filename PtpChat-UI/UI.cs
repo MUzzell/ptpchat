@@ -1,6 +1,5 @@
 ﻿namespace PtpChat.UI
 {
-	
     using System;
     using System.Windows.Forms;
 

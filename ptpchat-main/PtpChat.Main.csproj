@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChannelTabHandler.cs" />
+    <Compile Include="Managers\OutgoingMessageManager.cs" />
     <Compile Include="Managers\ResponseManager.cs" />
     <Compile Include="Managers\ChannelManager.cs" />
     <Compile Include="Managers\DataManager.cs" />

@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PtpChat.Base.EventArguements
+﻿namespace PtpChat.Base.EventArguements
 {
+    using System;
+
     using PtpChat.Base.Classes;
 
     public class ChannelMessageEventArgs : EventArgs
     {
-        public ChatMessage ChatMessage { get; set; }
         public Channel Channel { get; set; }
+
+        public ChatMessage ChatMessage { get; set; }
     }
 }

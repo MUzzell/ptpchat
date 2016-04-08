@@ -7,28 +7,28 @@
 
     public class ConfigManager
     {
-        public IPAddress InitialServerAddress => IPAddress.Parse(Settings.Default.DefaultServer_Host);
-
-		public int InitialServerPort => Settings.Default.DefaultServer_Port;
-
-        public Guid InitialServerGuid => Guid.Parse(Settings.Default.DefaultServer_Guid);
-
-        public string DefaultLoggingFile => Settings.Default.DefaultLoggingFile;
+        public TimeSpan ChannelCutoff => new TimeSpan(0, 0, 0, Settings.Default.ChannelCutoff);
 
         public string DefaultApplicationFolder => Settings.Default.DefaultApplicationFolder;
 
-        public bool IsLoggingEnabled => Settings.Default.IsLoggingEnabled;
+        public string DefaultLoggingFile => Settings.Default.DefaultLoggingFile;
 
-        public string LocalNodeVersion => Settings.Default.LocalNodeVersion;
+        public IPAddress InitialServerAddress => IPAddress.Parse(Settings.Default.DefaultServer_Host);
+
+        public Guid InitialServerGuid => Guid.Parse(Settings.Default.DefaultServer_Guid);
+
+        public int InitialServerPort => Settings.Default.DefaultServer_Port;
+
+        public bool IsLoggingEnabled => Settings.Default.IsLoggingEnabled;
 
         public Guid LocalNodeId => Guid.NewGuid();
 
-		public TimeSpan NodeCutoff => new TimeSpan(0, 0, 0, Settings.Default.NodeCutoff);
+        public string LocalNodeVersion => Settings.Default.LocalNodeVersion;
 
-		public TimeSpan ChannelCutoff => new TimeSpan(0, 0, 0, Settings.Default.ChannelCutoff);
+        public int MaxMessageResendAttempts => Settings.Default.MaxMessageResendAttempts;
 
-		public TimeSpan MessageCutoff => new TimeSpan(0, 0, 0, Settings.Default.MessageCutoff);
+        public TimeSpan MessageCutoff => new TimeSpan(0, 0, 0, Settings.Default.MessageCutoff);
 
-		public int MaxMessageResendAttempts => Settings.Default.MaxMessageResendAttempts;
-	}
+        public TimeSpan NodeCutoff => new TimeSpan(0, 0, 0, Settings.Default.NodeCutoff);
+    }
 }

@@ -1,26 +1,28 @@
 ﻿namespace PtpChat.VerbHandlers.Handlers
 {
-	using System;
-	using System.Collections.Generic;
-	using System.Linq;
-	using System.Net;
-	using System.Text;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Net;
 
-	using PtpChat.Base.Classes;
-	using PtpChat.Base.Interfaces;
-	using PtpChat.Base.Messages;
+    using PtpChat.Base.Classes;
+    using PtpChat.Base.Interfaces;
+    using PtpChat.Base.Messages;
 
-	public class MessageVerbHandler : BaseVerbHandler<MessageMessage>
+    public class MessageVerbHandler : BaseVerbHandler<MessageMessage>
     {
         private const string LogInvalidChannelId = "MESSAGE message contained invalid channel_id, ignoring message";
+
         private const string LogInvalidChannelName = "MESSAGE message contained invalid channel name, ignoring message";
-        private const string LogInvalidMessage = "MESSAGE message contained invalid message, ignoring message";
-        private const string LogInvalidNoMembers = "MESSAGE Message contained no recipients, ignoring message";
+
         private const string LogInvalidMemberEntry = "MESSAGE Message contained invalid recipient entry, ignoring recipient entry";
 
+        private const string LogInvalidMessage = "MESSAGE message contained invalid message, ignoring message";
 
-        public MessageVerbHandler(ILogManager logger, IDataManager dataManager, ISocketHandler socketHandler)
-            : base(logger, dataManager, socketHandler)
+        private const string LogInvalidNoMembers = "MESSAGE Message contained no recipients, ignoring message";
+
+        public MessageVerbHandler(ILogManager logger, IDataManager dataManager, IOutgoingMessageManager outgoingMessageManager)
+            : base(logger, dataManager, outgoingMessageManager)
         {
         }
 
@@ -31,7 +33,9 @@
             var data = message.msg_data;
 
             if (!this.CheckNodeId(data.node_id))
+            {
                 return false;
+            }
 
             if (data.msg_id == Guid.Empty)
             {
@@ -64,38 +68,20 @@
             }
 
             var recipientIds = this.ParseRecipientList(data.recipient);
-			
-			var newMessage = new ChatMessage
-			{
-				ChannelId = data.channel_id,
-				DateSent = data.timestamp,
-				MessageContent = data.message,
-				MessageId = data.msg_id,
-				SenderId = data.node_id
-			};
 
+            var newMessage = new ChatMessage { ChannelId = data.channel_id, DateSent = data.timestamp, MessageContent = data.message, MessageId = data.msg_id, SenderId = data.node_id };
 
-			//is this message for us?
-			if (recipientIds.Contains(this.NodeManager.LocalNode.NodeId))
+            //is this message for us?
+            if (recipientIds.Contains(this.NodeManager.LocalNode.NodeId))
             {
                 this.ChannelManager.HandleMessageForChannel(newMessage);
             }
-            else
-            {
-                //send it on?
-            }
 
-			var ackMsg = new AckMessage
-			{
-				msg_data = new AckData
-				{
-					msg_id = message.msg_data.msg_id
-				}
-			};
+            var ackMsg = new AckMessage { msg_data = new AckData { msg_id = message.msg_data.msg_id } };
 
-			this.SocketHandler.SendMessage(senderEndpoint, null, Encoding.ASCII.GetBytes(this.BuildMessage(ackMsg)));
+            this.OutgoingMessageManager.SendAck(senderEndpoint, ackMsg);
 
-			return true;
+            return true;
         }
 
         private IEnumerable<Guid> ParseRecipientList(IEnumerable<Dictionary<string, string>> members)

@@ -8,8 +8,8 @@
 
     public class JoinVerbHandler : BaseVerbHandler<JoinMessage>
     {
-        public JoinVerbHandler(ILogManager logger, IDataManager dataManager, ISocketHandler socketHandler)
-            : base(logger, dataManager, socketHandler)
+        public JoinVerbHandler(ILogManager logger, IDataManager dataManager, IOutgoingMessageManager outgoingMessageManager)
+            : base(logger, dataManager, outgoingMessageManager)
         {
         }
 

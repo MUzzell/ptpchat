@@ -10,15 +10,14 @@
 
     public class HelloVerbHandler : BaseVerbHandler<HelloMessage>
     {
-		
-		public HelloVerbHandler(ILogManager logger, IDataManager dataManager, ISocketHandler socketHandler)
-            : base( logger, dataManager, socketHandler)
-        {
-        }
-
         private const string LogInvalidNodeId = "Invalid Node ID in HELLO message, ignoring";
 
         private const string LogSameNodeId = "Recieved Hello presented this Node's ID! ignoring";
+
+        public HelloVerbHandler(ILogManager logger, IDataManager dataManager, IOutgoingMessageManager outgoingMessageManager)
+            : base(logger, dataManager, outgoingMessageManager)
+        {
+        }
 
         protected override bool HandleVerb(HelloMessage message, IPEndPoint senderEndpoint)
         {
@@ -26,31 +25,37 @@
 
             var nodeId = message.msg_data.node_id;
 
-			if (!CheckNodeId(nodeId))
-				return false;
+            if (!this.CheckNodeId(nodeId))
+            {
+                return false;
+            }
 
             var node = this.NodeManager.GetNodes(d => d.Value.NodeId == nodeId).FirstOrDefault();
 
             if (node != null) // Existing Node
             {
-                this.NodeManager.Update(node.NodeId, n =>
-				{
-					n.LastRecieve = DateTime.Now;
-					n.Version = node.Version ?? message.msg_data.version;
-					node.IsConnected = true;
-				});
+                this.NodeManager.Update(
+                    node.NodeId,
+                    n =>
+                        {
+                            n.LastRecieve = DateTime.Now;
+                            n.Version = node.Version ?? message.msg_data.version;
+                            node.IsConnected = true;
+                        });
             }
             else //New Node
             {
-				this.NodeManager.Add(new Node {
-					NodeId = nodeId,
-					Added = DateTime.Now,
-					LastRecieve = DateTime.Now,
-					IpAddress = senderEndpoint.Address,
-					Port = senderEndpoint.Port,
-					Version = message.msg_data.version,
-					IsConnected = true
-				});
+                this.NodeManager.Add(
+                    new Node
+                        {
+                            NodeId = nodeId,
+                            Added = DateTime.Now,
+                            LastRecieve = DateTime.Now,
+                            IpAddress = senderEndpoint.Address,
+                            Port = senderEndpoint.Port,
+                            Version = message.msg_data.version,
+                            IsConnected = true
+                        });
             }
 
             return true;

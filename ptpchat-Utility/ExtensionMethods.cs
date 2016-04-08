@@ -1,26 +1,26 @@
 ﻿namespace PtpChat.Utility
 {
-	using System;
-	using System.Collections.Generic;
-	using System.Net;
-	using System.Text.RegularExpressions;
+    using System;
+    using System.Collections.Generic;
+    using System.Net;
+    using System.Text.RegularExpressions;
 
-	public class ExtensionMethods
+    public class ExtensionMethods
     {
         //private const string IPv4Pattern = @"^((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))?(?:\:([0-9]{1,5}))?$";
 
-		public static List<Dictionary<string, string>> BuildNodeIdList(IList<Guid> nodeIds)
-		{
-			List<Dictionary<string, string>> list = new List<Dictionary<string, string>>();
+        public static List<Dictionary<string, string>> BuildNodeIdList(IList<Guid> nodeIds)
+        {
+            var list = new List<Dictionary<string, string>>();
 
-			foreach (Guid nodeId in nodeIds)
-			{
-				var item = new Dictionary<string, string>();
-				item.Add("node_id", nodeId.ToString());
-				list.Add(item);
-			}
-			return list;
-		}
+            foreach (var nodeId in nodeIds)
+            {
+                var item = new Dictionary<string, string>();
+                item.Add("node_id", nodeId.ToString());
+                list.Add(item);
+            }
+            return list;
+        }
 
         public static IPEndPoint ParseEndpoint(string endpointstring)
         {

@@ -8,8 +8,8 @@
 
     public class LeaveVerbHandler : BaseVerbHandler<LeaveMessage>
     {
-        public LeaveVerbHandler(ILogManager logger, IDataManager dataManager, ISocketHandler socketHandler)
-            : base(logger, dataManager, socketHandler)
+        public LeaveVerbHandler(ILogManager logger, IDataManager dataManager, IOutgoingMessageManager outgoingMessageManager)
+            : base(logger, dataManager, outgoingMessageManager)
         {
         }
 

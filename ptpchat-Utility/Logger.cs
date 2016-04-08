@@ -6,44 +6,45 @@
     using NLog;
     using NLog.Config;
     using NLog.Targets;
-	using NLog.Windows.Forms;
+    using NLog.Windows.Forms;
 
     using PtpChat.Base.Interfaces;
 
     public class Logger : ILogManager
     {
+        public readonly ColoredConsoleTarget ConsoleTarget;
 
-		public readonly ColoredConsoleTarget ConsoleTarget;
-		public readonly FileTarget FileTarget;
-		public readonly RichTextBoxTarget FormTarget;
+        public readonly FileTarget FileTarget;
+
+        public readonly RichTextBoxTarget FormTarget;
+
+        private readonly NLog.Logger internalLogger;
 
         public Logger(ConfigManager config, string logName)
         {
-            ConsoleTarget = new ColoredConsoleTarget { Layout = @"${date:format=HH\:mm\:ss} ${level:uppercase=true} ${message}" };
+            this.ConsoleTarget = new ColoredConsoleTarget { Layout = @"${date:format=HH\:mm\:ss} ${level:uppercase=true} ${message}" };
 
-            FileTarget = new FileTarget
-            {
-                Layout = @"${date:format=yyyy-MM-dd HH\:mm\:ss} ${level:uppercase=true} ${message}",
-                FileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), config.DefaultLoggingFile)
-            };
+            this.FileTarget = new FileTarget
+                                  {
+                                      Layout = @"${date:format=yyyy-MM-dd HH\:mm\:ss} ${level:uppercase=true} ${message}",
+                                      FileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), config.DefaultLoggingFile)
+                                  };
 
-			FormTarget = new RichTextBoxTarget { Layout = @"${date:format=HH\:mm\:ss} ${level:uppercase=true} ${message}", SupportLinks = true };
+            this.FormTarget = new RichTextBoxTarget { Layout = @"${date:format=HH\:mm\:ss} ${level:uppercase=true} ${message}", SupportLinks = true };
 
             var loggerConfig = new LoggingConfiguration();
-            loggerConfig.AddTarget("console", ConsoleTarget);
-            loggerConfig.AddTarget("file", FileTarget);
-			loggerConfig.AddTarget("form", FormTarget);
+            loggerConfig.AddTarget("console", this.ConsoleTarget);
+            loggerConfig.AddTarget("file", this.FileTarget);
+            loggerConfig.AddTarget("form", this.FormTarget);
 
-            loggerConfig.LoggingRules.Add(new LoggingRule("*", config.IsLoggingEnabled ? LogLevel.Debug : LogLevel.Off, ConsoleTarget));
-            loggerConfig.LoggingRules.Add(new LoggingRule("*", config.IsLoggingEnabled ? LogLevel.Debug : LogLevel.Off, FileTarget));
-			loggerConfig.LoggingRules.Add(new LoggingRule("*", config.IsLoggingEnabled ? LogLevel.Debug : LogLevel.Off, FormTarget));
+            loggerConfig.LoggingRules.Add(new LoggingRule("*", config.IsLoggingEnabled ? LogLevel.Debug : LogLevel.Off, this.ConsoleTarget));
+            loggerConfig.LoggingRules.Add(new LoggingRule("*", config.IsLoggingEnabled ? LogLevel.Debug : LogLevel.Off, this.FileTarget));
+            loggerConfig.LoggingRules.Add(new LoggingRule("*", config.IsLoggingEnabled ? LogLevel.Debug : LogLevel.Off, this.FormTarget));
 
-			LogManager.Configuration = loggerConfig;
+            LogManager.Configuration = loggerConfig;
 
             this.internalLogger = LogManager.GetLogger(logName);
         }
-
-        private readonly NLog.Logger internalLogger;
 
         public void Fatal(string message, Exception exception = null)
         {

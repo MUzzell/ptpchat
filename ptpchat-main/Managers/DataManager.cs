@@ -6,6 +6,12 @@
 
     public class DataManager : IDataManager
     {
+        private IChannelManager channelManager { get; }
+
+        private INodeManager nodeManager { get; }
+
+        private IResponseManager postMaster { get; }
+
         public DataManager(IChannelManager channelManager, INodeManager nodeManager, IResponseManager postMaster)
         {
             if (channelManager == null || nodeManager == null)
@@ -15,20 +21,13 @@
 
             this.channelManager = channelManager;
             this.nodeManager = nodeManager;
-			this.postMaster = postMaster;
+            this.postMaster = postMaster;
         }
-
-        private IChannelManager channelManager { get; }
-
-        private INodeManager nodeManager { get; }
-
-		private IResponseManager postMaster { get; }
 
         public IChannelManager ChannelManager => this.channelManager;
 
         public INodeManager NodeManager => this.nodeManager;
 
-		public IResponseManager ResponseManager => this.postMaster;
-		
-	}
+        public IResponseManager ResponseManager => this.postMaster;
+    }
 }

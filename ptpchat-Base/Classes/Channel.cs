@@ -7,17 +7,19 @@
     {
         private readonly IList<ChatMessage> Messages;
 
+        public DateTime Added { get; }
+
         public Guid ChannelId { get; set; }
+
         public string ChannelName { get; set; }
 
         public bool Closed { get; set; }
 
-        public IList<Guid> Nodes { get; set; }
+        public bool IsUpToDate { get; set; }
 
-        public DateTime Added { get; }
         public DateTime LastTransmission { get; set; }
 
-        public bool IsUpToDate { get; set; }
+        public IList<Guid> Nodes { get; set; }
 
         public Channel()
         {

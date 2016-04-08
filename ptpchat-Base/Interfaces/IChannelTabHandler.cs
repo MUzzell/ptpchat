@@ -1,15 +1,15 @@
 ﻿namespace PtpChat.Base.Interfaces
 {
-	using System;
+    using System;
 
-	using Classes;
+    using PtpChat.Base.Classes;
 
-	public interface IChannelTabHandler
-	{
-		void AddChannelTab(Guid channelId, IChannelTab channelTab);
+    public interface IChannelTabHandler
+    {
+        void AddChannelTab(Guid channelId, IChannelTab channelTab);
 
-		void SendMessage(Guid channelId, string message);
+        void SendMessage(Guid channelId, string message);
 
-		void MessageRecieved(ChatMessage message);
-	}
+        void MessageRecieved(ChatMessage message);
+    }
 }

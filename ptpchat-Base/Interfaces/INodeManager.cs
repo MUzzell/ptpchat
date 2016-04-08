@@ -42,20 +42,20 @@
         /// </summary>
         Node Delete(Guid nodeId);
 
-		/// <summary>
-		/// Get a single node that would be suitable for sending a CONNECT Message 
-		/// </summary>
-		/// <param name="nodeId">The ID of the node we wish to send a CONNECT to.</param>
-		/// <returns>The Node that is considered siutable.</returns>
-		Node GetNodeForConnect(Guid nodeId);
+        /// <summary>
+        /// Get a single node that would be suitable for sending a CONNECT Message 
+        /// </summary>
+        /// <param name="nodeId">The ID of the node we wish to send a CONNECT to.</param>
+        /// <returns>The Node that is considered siutable.</returns>
+        Node GetNodeForConnect(Guid nodeId);
 
-		/// <summary>
-		/// Updates the node which has the given nodeId, using the funtion provided to edit its attributs.
-		/// Throws an ArgumentException if unable to do so, such as if the Node does not exists.
-		/// <param name="nodeId">The id of the node to be updated.</param>
-		/// <param name="updateFunc">The function that will edit the parameters of the target node.</param>
-		/// </summary>
-		void Update(Guid nodeId, Action<Node> updateFunc);
+        /// <summary>
+        /// Updates the node which has the given nodeId, using the funtion provided to edit its attributs.
+        /// Throws an ArgumentException if unable to do so, such as if the Node does not exists.
+        /// <param name="nodeId">The id of the node to be updated.</param>
+        /// <param name="updateFunc">The function that will edit the parameters of the target node.</param>
+        /// </summary>
+        void Update(Guid nodeId, Action<Node> updateFunc);
 
         IEnumerable<Node> GetNodes();
 

@@ -11,21 +11,20 @@
 
     public class RoutingVerbHandler : BaseVerbHandler<RoutingMessage>
     {
-
-        public RoutingVerbHandler(ILogManager logger, IDataManager dataManager, ISocketHandler socketHandler)
-            : base(logger, dataManager, socketHandler)
-        {
-        }
-
-        private const string LogInvalidSenderId = "Invalid Sender Node ID in ROUTING message, ignoring";
-
-        private const string LogSameNodeId = "Recieved ROUTING sender's Node ID presented this Node's ID! ignoring";
+        private const string LogInvalidIP = "NodeList in Routing message contained IP address that didn't parse, ignoring entry";
 
         private const string LogInvalidNodeList = "Recieved Invalid nodes list in ROUTING message, ignoring";
 
         private const string LogInvalidNodesEntry = "NodeList in Routing message contained invalid NodeId, ignoring entry";
 
-        private const string LogInvalidIP = "NodeList in Routing message contained IP address that didn't parse, ignoring entry";
+        private const string LogInvalidSenderId = "Invalid Sender Node ID in ROUTING message, ignoring";
+
+        private const string LogSameNodeId = "Recieved ROUTING sender's Node ID presented this Node's ID! ignoring";
+
+        public RoutingVerbHandler(ILogManager logger, IDataManager dataManager, IOutgoingMessageManager outgoingMessageManager)
+            : base(logger, dataManager, outgoingMessageManager)
+        {
+        }
 
         /*
         public void ParseBaseMessage(string messageJson)
@@ -119,10 +118,12 @@
 
             var nodes = message.msg_data.nodes;
 
-			if (!CheckNodeId(senderId))
-				return false;
+            if (!this.CheckNodeId(senderId))
+            {
+                return false;
+            }
 
-			if (nodes == null)
+            if (nodes == null)
             {
                 this.logger.Warning(LogInvalidNodeList);
                 return false;
@@ -171,17 +172,9 @@
 
                 if (!this.NodeManager.GetNodes(d => d.Value.NodeId == nodeId).Any())
                 {
-					// not seen, add. else, ignore
-					this.NodeManager.Add(new Node
-					{
-						NodeId = nodeId,
-						SeenThrough = senderId,
-						IpAddress = address.Address,
-						Port = address.Port,
-						Version = null,
-						Added = DateTime.Now,
-						LastRecieve = null
-                    });
+                    // not seen, add. else, ignore
+                    this.NodeManager.Add(
+                        new Node { NodeId = nodeId, SeenThrough = senderId, IpAddress = address.Address, Port = address.Port, Version = null, Added = DateTime.Now, LastRecieve = null });
                 }
             }
 

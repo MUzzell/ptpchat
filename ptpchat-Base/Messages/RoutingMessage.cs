@@ -10,8 +10,8 @@
 
     public class RoutingData
     {
-        public List<Dictionary<string, string>> nodes { get; set; }
-
         public Guid node_id { get; set; }
+
+        public List<Dictionary<string, string>> nodes { get; set; }
     }
 }

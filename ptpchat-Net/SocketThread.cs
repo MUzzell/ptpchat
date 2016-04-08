@@ -7,8 +7,18 @@
 
     using PtpChat.Base.Interfaces;
 
-    internal class SocketThread
+    public class SocketThread
     {
+        private const string LogArgumentException = "Argument Exception recieved whilst parsing recieved data: {0}";
+        private const string LogSocketException = "Socket Exception recieved whilst operating on socket: {0}";
+
+        private readonly ILogManager logger;
+        private readonly IMessageHandler messageHandler;
+
+        private volatile bool running = true;
+
+        private UdpClient Socket { get; }
+
         public SocketThread(UdpClient socket, IMessageHandler messageHandler, ILogManager logger)
         {
             this.Socket = socket;
@@ -22,17 +32,6 @@
             this.messageHandler = messageHandler;
             this.logger = logger;
         }
-
-        private const string LogArgumentException = "Argument Exception recieved whilst parsing recieved data: {0}";
-
-        private const string LogSocketException = "Socket Exception recieved whilst operating on socket: {0}";
-
-        private readonly ILogManager logger;
-        private readonly IMessageHandler messageHandler;
-
-        private volatile bool running = true;
-
-        private UdpClient Socket { get; }
 
         public async void Listen()
         {

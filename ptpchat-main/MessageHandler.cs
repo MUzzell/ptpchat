@@ -12,6 +12,14 @@
 
     internal class MessageHandler : IMessageHandler
     {
+        private static readonly string LogCannotParseJson = "Unable to deserialise Json message, ignoring";
+
+        private static readonly string LogUnexpectedError = "Unexpected error";
+
+        private readonly Dictionary<MessageType, IVerbHandler> handlers;
+
+        private readonly ILogManager logger;
+
         public MessageHandler(ILogManager logger)
         {
             this.logger = logger;
@@ -25,14 +33,6 @@
                     return settings;
                 };
         }
-
-        private static readonly string LogCannotParseJson = "Unable to deserialise Json message, ignoring";
-
-        private static readonly string LogUnexpectedError = "Unexpected error";
-
-        private readonly Dictionary<MessageType, IVerbHandler> handlers;
-
-        private readonly ILogManager logger;
 
         public void HandleMessage(string messageJson, IPEndPoint senderEndpoint)
         {

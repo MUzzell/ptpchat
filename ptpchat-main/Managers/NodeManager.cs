@@ -1,40 +1,36 @@
 ﻿namespace PtpChat.Main.Managers
 {
-	using System;
-	using System.Collections.Concurrent;
-	using System.Collections.Generic;
-	using System.Threading;
-	using System.Linq;
+    using System;
+    using System.Collections.Concurrent;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading;
 
-	using PtpChat.Base.Classes;
-	using PtpChat.Base.EventArguements;
-	using PtpChat.Base.Interfaces;
-	using PtpChat.Utility;
+    using PtpChat.Base.Classes;
+    using PtpChat.Base.EventArguements;
+    using PtpChat.Base.Interfaces;
+    using PtpChat.Utility;
 
-	public class NodeManager : INodeManager
+    public class NodeManager : INodeManager
     {
-		private const string LogAddedNode = "Added new node, Node ID: {0}";
-		private const string LogDeletedNode = "Deleted node, Node ID: {0}";
-		private const string LogUpdatedNode = "Updated node, Node ID: {0}";
+        private const string LogAddedNode = "Added new node, Node ID: {0}";
 
-		private readonly ILogManager logger;
+        private const string LogDeletedNode = "Deleted node, Node ID: {0}";
 
-		//Can set the 'concurrency level'? why does # of threads matter?
-		private readonly ConcurrentDictionary<Guid, Node> nodes = new ConcurrentDictionary<Guid, Node>();
+        private const string LogUpdatedNode = "Updated node, Node ID: {0}";
 
-		private readonly Timer ProcessTimer;
+        public static object updateLock = new object();
 
-		private readonly TimeSpan NodeCutoff; 
+        private readonly ILogManager logger;
 
-		public event EventHandler NodeAdd;
-		public event EventHandler NodeDelete;
-		public event EventHandler NodeUpdate;
+        private readonly TimeSpan NodeCutoff;
 
-		public Node LocalNode { get; }
+        //Can set the 'concurrency level'? why does # of threads matter?
+        private readonly ConcurrentDictionary<Guid, Node> nodes = new ConcurrentDictionary<Guid, Node>();
 
-		public static object updateLock = new object();
+        private readonly Timer ProcessTimer;
 
-		public NodeManager(ILogManager logger, ConfigManager config)
+        public NodeManager(ILogManager logger, ConfigManager config)
         {
             if (logger == null)
             {
@@ -45,18 +41,18 @@
 
             this.LocalNode = new Node { NodeId = config.LocalNodeId, Version = config.LocalNodeVersion };
 
-			this.ProcessTimer = new Timer(this.ProcessNodes, null, 10000, 5000);
+            this.ProcessTimer = new Timer(this.ProcessNodes, null, 10000, 5000);
 
-			this.NodeCutoff = config.NodeCutoff;
+            this.NodeCutoff = config.NodeCutoff;
         }
-		
-		private void ProcessNodes(object state)
-		{
-			foreach (Node node in this.GetNodes(n => n.Value.IsConnected && n.Value.LastRecieve < DateTime.Now.Subtract(this.NodeCutoff)))
-			{
-				node.IsConnected = false;
-			}
-		}
+
+        public event EventHandler NodeAdd;
+
+        public event EventHandler NodeDelete;
+
+        public event EventHandler NodeUpdate;
+
+        public Node LocalNode { get; }
 
         public void Add(Node node)
         {
@@ -114,33 +110,37 @@
                 throw new InvalidOperationException("Update, could not find Node");
             }
 
-			lock (NodeManager.updateLock)
-			{
-				node = this.nodes[nodeId];
-				updateFunc(node);
+            lock (updateLock)
+            {
+                node = this.nodes[nodeId];
+                updateFunc(node);
 
-				if (!this.nodes.TryUpdate(nodeId, node, currentNode))
-				{
-					throw new InvalidOperationException("Update, unable to update node");
-				}
-				
-			}
-			
+                if (!this.nodes.TryUpdate(nodeId, node, currentNode))
+                {
+                    throw new InvalidOperationException("Update, unable to update node");
+                }
+            }
+
             this.NodeUpdate?.Invoke(this, new NodeEventArgs { Node = node });
 
             this.logger.Info(string.Format(LogUpdatedNode, nodeId));
         }
 
-		public Node GetNodeForConnect(Guid nodeId)
-		{
-			throw new NotImplementedException();
-		}
+        public Node GetNodeForConnect(Guid nodeId)
+        {
+            throw new NotImplementedException();
+        }
 
-		public IEnumerable<Node> GetNodes(Func<KeyValuePair<Guid, Node>, bool> filter) => this.nodes.Where(filter).Select(n => n.Value);
+        public IEnumerable<Node> GetNodes(Func<KeyValuePair<Guid, Node>, bool> filter) => this.nodes.Where(filter).Select(n => n.Value);
 
         public IEnumerable<Node> GetNodes() => this.nodes.Select(n => n.Value);
 
-		
-
-	}
+        private void ProcessNodes(object state)
+        {
+            foreach (var node in this.GetNodes(n => n.Value.IsConnected && n.Value.LastRecieve < DateTime.Now.Subtract(this.NodeCutoff)))
+            {
+                node.IsConnected = false;
+            }
+        }
+    }
 }

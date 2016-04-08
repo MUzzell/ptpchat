@@ -6,15 +6,6 @@
 
     public class SocketManager : INotifyPropertyChanged
     {
-        public SocketManager()
-        {
-        }
-
-        public SocketManager(IPEndPoint localEndpoint)
-        {
-            this.LocalEndpoint = localEndpoint;
-        }
-
         private IPEndPoint destinationEndpoint;
 
         //the node id of the guy we're connected to
@@ -29,23 +20,6 @@
         //our node id
         private Guid localNodeId;
 
-        public bool IsServerConnection { get; set; }
-
-        public bool IsSocketListening
-        {
-            get { return this.isSocketListening; }
-            set
-            {
-                if (this.isSocketListening == value)
-                {
-                    return;
-                }
-
-                this.isSocketListening = value;
-                this.OnPropertyChanged(new PropertyChangedEventArgs("IsSocketListening"));
-            }
-        }
-
         public IPEndPoint DestinationEndpoint
         {
             get { return this.destinationEndpoint; }
@@ -58,36 +32,6 @@
 
                 this.destinationEndpoint = value;
                 this.OnPropertyChanged(new PropertyChangedEventArgs("DestinationEndpoint"));
-            }
-        }
-
-        public IPEndPoint LocalEndpoint
-        {
-            get { return this.localEndpoint; }
-            set
-            {
-                if (Equals(this.localEndpoint, value))
-                {
-                    return;
-                }
-
-                this.localEndpoint = value;
-                this.OnPropertyChanged(new PropertyChangedEventArgs("LocalEndpoint"));
-            }
-        }
-
-        public DateTime LastHelloRecieved
-        {
-            get { return this.lastHelloRecieved; }
-            set
-            {
-                if (this.lastHelloRecieved == value)
-                {
-                    return;
-                }
-
-                this.lastHelloRecieved = value;
-                this.OnPropertyChanged(new PropertyChangedEventArgs("LastHelloRecieved"));
             }
         }
 
@@ -106,6 +50,53 @@
             }
         }
 
+        public bool IsServerConnection { get; set; }
+
+        public bool IsSocketListening
+        {
+            get { return this.isSocketListening; }
+            set
+            {
+                if (this.isSocketListening == value)
+                {
+                    return;
+                }
+
+                this.isSocketListening = value;
+                this.OnPropertyChanged(new PropertyChangedEventArgs("IsSocketListening"));
+            }
+        }
+
+        public DateTime LastHelloRecieved
+        {
+            get { return this.lastHelloRecieved; }
+            set
+            {
+                if (this.lastHelloRecieved == value)
+                {
+                    return;
+                }
+
+                this.lastHelloRecieved = value;
+                this.OnPropertyChanged(new PropertyChangedEventArgs("LastHelloRecieved"));
+            }
+        }
+
+        public IPEndPoint LocalEndpoint
+        {
+            get { return this.localEndpoint; }
+            set
+            {
+                if (Equals(this.localEndpoint, value))
+                {
+                    return;
+                }
+
+                this.localEndpoint = value;
+                this.OnPropertyChanged(new PropertyChangedEventArgs("LocalEndpoint"));
+            }
+        }
+
         public Guid LocalNodeId
         {
             get { return this.localNodeId; }
@@ -119,6 +110,15 @@
                 this.localNodeId = value;
                 this.OnPropertyChanged(new PropertyChangedEventArgs("NodeId"));
             }
+        }
+
+        public SocketManager()
+        {
+        }
+
+        public SocketManager(IPEndPoint localEndpoint)
+        {
+            this.LocalEndpoint = localEndpoint;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

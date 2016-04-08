@@ -10,13 +10,7 @@
 
     public class MessageData
     {
-        public Guid msg_id { get; set; }
-
-        public Guid node_id { get; set; }
-
-        public List<Dictionary<string, string>> recipient { get; set; }
-
-        public DateTime timestamp { get; set; }
+        public List<Dictionary<string, string>> attachment { get; set; }
 
         public string channel { get; set; }
 
@@ -24,6 +18,12 @@
 
         public string message { get; set; }
 
-        public List<Dictionary<string, string>> attachment { get; set; }
+        public Guid msg_id { get; set; }
+
+        public Guid node_id { get; set; }
+
+        public List<Dictionary<string, string>> recipient { get; set; }
+
+        public DateTime timestamp { get; set; }
     }
 }

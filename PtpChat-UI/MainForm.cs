@@ -1,68 +1,63 @@
 ﻿namespace PtpChat.UI
 {
-	using System;
-	using System.Collections.Generic;
-	using System.Linq;
-	using System.Windows.Forms;
+    using System;
+    using System.Linq;
+    using System.Windows.Forms;
 
-	using PtpChat.Utility;
-	using PtpChat.UI.Subforms;
-	using PtpChat.Main;
-	using Base.EventArguements;
+    using PtpChat.Base.EventArguements;
+    using PtpChat.Main;
+    using PtpChat.UI.Subforms;
+    using PtpChat.Utility;
 
-	public partial class MainForm : Form
+    public partial class MainForm : Form
     {
-		
-		private PTPClient PtpClient { get; }
+        private PTPClient PtpClient { get; }
 
-		public MainForm(ConfigManager manager)
-		{
+        public MainForm(ConfigManager manager)
+        {
             this.InitializeComponent();
             this.IsMdiContainer = true;
 
             //setup the ui manager
             UI.Initialize(this);
-			
+
             this.PtpClient = new PTPClient(manager);
 
-			LeftTabControl_NodeList.DataManager = PtpClient.dataManager;
+            this.LeftTabControl_NodeList.DataManager = this.PtpClient.dataManager;
 
-			this.PtpClient.ChannelAdded += ChannelAdded;
+            this.PtpClient.ChannelAdded += this.ChannelAdded;
 
-			//I don't like this..
-			// It feels bad
-			SyslogTab.SetupLogging(PtpClient.logger);
+            //I don't like this..
+            // It feels bad
+            this.SyslogTab.SetupLogging(this.PtpClient.logger);
 
-			//Testing only
-			this.ChannelAdded(this, new ChannelEventArgs
-			{
-				Channel = PtpClient.dataManager.ChannelManager.GetChannels().First()
-			});
+            //Testing only
+            this.ChannelAdded(this, new ChannelEventArgs { Channel = this.PtpClient.dataManager.ChannelManager.GetChannels().First() });
         }
-
-		private void ChannelAdded(object sender, EventArgs e)
-		{
-			if (e.GetType() != typeof(ChannelEventArgs))
-			{
-				throw new ArgumentException("ChannelAdded did not recieve ChannelEventArgs object");
-			}
-
-			ChannelEventArgs ce = (ChannelEventArgs)e;
-
-			ChannelTab ctab = new ChannelTab(ce.Channel, this.PtpClient.ChannelTabHandler);
-			this.PtpClient.ChannelTabHandler.AddChannelTab(ce.Channel.ChannelId, ctab);
-			string title = ce.Channel.ChannelName;
-			TabPage newTab = new TabPage(title);
-			newTab.Controls.Add(ctab);
-			ctab.Dock = DockStyle.Fill;
-			RightTabControl.TabPages.Add(newTab);
-		}
 
         private void Nodes_RefreshNodesView(NodesForm existingNodeForm)
         {
             existingNodeForm?.RefreshNodes(this.PtpClient);
         }
-		
+
+        private void ChannelAdded(object sender, EventArgs e)
+        {
+            if (e.GetType() != typeof(ChannelEventArgs))
+            {
+                throw new ArgumentException("ChannelAdded did not recieve ChannelEventArgs object");
+            }
+
+            var ce = (ChannelEventArgs)e;
+
+            var ctab = new ChannelTab(ce.Channel, this.PtpClient.ChannelTabHandler);
+            this.PtpClient.ChannelTabHandler.AddChannelTab(ce.Channel.ChannelId, ctab);
+            var title = ce.Channel.ChannelName;
+            var newTab = new TabPage(title);
+            newTab.Controls.Add(ctab);
+            ctab.Dock = DockStyle.Fill;
+            this.RightTabControl.TabPages.Add(newTab);
+        }
+
         //private void PtpClient_OnNodesChange(object sender, EventArgs e)
         //{
         //    var eventArgs = (NodeEventArgs)e;
@@ -126,12 +121,12 @@
         //    }
         //}
 
-
         private void btn_Nodes_Click(object sender, EventArgs e)
         {
-            UI.Invoke(() =>
-                {
-					/*
+            UI.Invoke(
+                () =>
+                    {
+                        /*
                     this.pnl_SubForm.Visible = true;
                     this.pnl_SubForm.Controls.Clear();
 
@@ -140,14 +135,15 @@
 
                     this.pnl_SubForm.Controls.Add(existingNodeForm);
 					*/
-                });
+                    });
         }
 
         private void btn_Channels_Click(object sender, EventArgs e)
         {
-            UI.Invoke(() =>
-               {
-				   /*
+            UI.Invoke(
+                () =>
+                    {
+                        /*
                    this.pnl_SubForm.Visible = true;
 
                    this.pnl_SubForm.Controls.Clear();
@@ -159,157 +155,154 @@
                        this.pnl_SubForm.Controls.Add(serversForm);
                    }
 				   */
-               });
+                    });
         }
 
-		private void MainForm_Load(object sender, EventArgs e)
-		{
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+        }
 
-		}
+        private void LeftTabControl_ChannelList_Load(object sender, EventArgs e)
+        {
+        }
 
-		private void LeftTabControl_ChannelList_Load(object sender, EventArgs e)
-		{
+        //}
 
-		}
+        ////#########
+        ////Event Handlers
+        ////#########
+        //private void ErrorMessages_OnAdd(object sender, string error)
+        //{
 
+        //    UI.Invoke(() => this.listBox_ErrorLog.Items.Add(error));
 
-		//}
+        //private void ClientSocketManagers_OnAdd(object sender, SocketManager socketManager)
+        //{
+        //    //once we've added them to our clients list, we set up the onchange event
+        //    //so the UI will update with any changes to the socket manager
+        //    socketManager.PropertyChanged += this.ClientSocketManagers_PropertyChanged;
 
-		////#########
-		////Event Handlers
-		////#########
-		//private void ErrorMessages_OnAdd(object sender, string error)
-		//{
+        //    UI.Invoke(
+        //        () =>
+        //            {
+        //                try
+        //                {
+        //                    var castList = this.grid_Clients.Rows.Cast<DataGridViewRow>().ToList();
 
-		//    UI.Invoke(() => this.listBox_ErrorLog.Items.Add(error));
+        //                    var rowToupdate = castList.FirstOrDefault(r => r.Cells["clients_NodeIdCol"].Value.Equals(socketManager.DestinationNodeId));
 
-		//private void ClientSocketManagers_OnAdd(object sender, SocketManager socketManager)
-		//{
-		//    //once we've added them to our clients list, we set up the onchange event
-		//    //so the UI will update with any changes to the socket manager
-		//    socketManager.PropertyChanged += this.ClientSocketManagers_PropertyChanged;
+        //                    if (rowToupdate == null)
+        //                    {
+        //                        this.grid_Clients.Rows.Add(
+        //                            socketManager.DestinationNodeId,
+        //                            socketManager.DestinationEndpoint.Address,
+        //                            socketManager.DestinationEndpoint.Port,
+        //                            socketManager.LastHelloRecieved != DateTime.MinValue ? socketManager.LastHelloRecieved.ToLocalTime().ToShortTimeString() : "--",
+        //                            socketManager.LastHelloRecieved != DateTime.MinValue ? "Connectable" : "Not Connectable");
+        //                    }
 
-		//    UI.Invoke(
-		//        () =>
-		//            {
-		//                try
-		//                {
-		//                    var castList = this.grid_Clients.Rows.Cast<DataGridViewRow>().ToList();
+        //                }
+        //                catch (Exception ex)
+        //                {
+        //                }
+        //            });
+        //}
 
-		//                    var rowToupdate = castList.FirstOrDefault(r => r.Cells["clients_NodeIdCol"].Value.Equals(socketManager.DestinationNodeId));
+        //private void ServerSocketManagers_OnAdd(object sender, SocketManager socketManager)
+        //{
+        //    //once we've added them to our server list, we set up the onchange event
+        //    //so the UI will update with any changes to the socket manager
+        //    socketManager.PropertyChanged += this.ServerSocketManagers_PropertyChanged;
 
-		//                    if (rowToupdate == null)
-		//                    {
-		//                        this.grid_Clients.Rows.Add(
-		//                            socketManager.DestinationNodeId,
-		//                            socketManager.DestinationEndpoint.Address,
-		//                            socketManager.DestinationEndpoint.Port,
-		//                            socketManager.LastHelloRecieved != DateTime.MinValue ? socketManager.LastHelloRecieved.ToLocalTime().ToShortTimeString() : "--",
-		//                            socketManager.LastHelloRecieved != DateTime.MinValue ? "Connectable" : "Not Connectable");
-		//                    }
+        //    UI.Invoke(
+        //        () =>
+        //            {
+        //                try
+        //                {
+        //                    var castList = this.grid_Servers.Rows.Cast<DataGridViewRow>().ToList();
 
-		//                }
-		//                catch (Exception ex)
-		//                {
-		//                }
-		//            });
-		//}
+        //                    var rowToupdate = castList.FirstOrDefault(r => r.Cells["servers_NodeIdCol"].Value.Equals(socketManager.DestinationNodeId));
 
-		//private void ServerSocketManagers_OnAdd(object sender, SocketManager socketManager)
-		//{
-		//    //once we've added them to our server list, we set up the onchange event
-		//    //so the UI will update with any changes to the socket manager
-		//    socketManager.PropertyChanged += this.ServerSocketManagers_PropertyChanged;
+        //                    if (rowToupdate == null)
+        //                    {
+        //                        this.grid_Servers.Rows.Add(
+        //                            socketManager.DestinationNodeId,
+        //                            socketManager.DestinationEndpoint.Address,
+        //                            socketManager.DestinationEndpoint.Port,
+        //                            socketManager.LastHelloRecieved.ToShortTimeString());
+        //                    }
+        //                }
+        //                catch (Exception ex)
+        //                {
+        //                }
+        //            });
+        //}
 
-		//    UI.Invoke(
-		//        () =>
-		//            {
-		//                try
-		//                {
-		//                    var castList = this.grid_Servers.Rows.Cast<DataGridViewRow>().ToList();
+        //private void ClientSocketManagers_PropertyChanged(object sender, PropertyChangedEventArgs args)
+        //{
+        //    var socketManager = (SocketManager)sender;
 
-		//                    var rowToupdate = castList.FirstOrDefault(r => r.Cells["servers_NodeIdCol"].Value.Equals(socketManager.DestinationNodeId));
+        //    UI.Invoke(
+        //        () =>
+        //            {
+        //                try
+        //                {
+        //                    var castList = this.grid_Clients.Rows.Cast<DataGridViewRow>().ToList();
 
-		//                    if (rowToupdate == null)
-		//                    {
-		//                        this.grid_Servers.Rows.Add(
-		//                            socketManager.DestinationNodeId,
-		//                            socketManager.DestinationEndpoint.Address,
-		//                            socketManager.DestinationEndpoint.Port,
-		//                            socketManager.LastHelloRecieved.ToShortTimeString());
-		//                    }
-		//                }
-		//                catch (Exception ex)
-		//                {
-		//                }
-		//            });
-		//}
+        //                    var rowToupdate = castList.FirstOrDefault(r => r.Cells["clients_NodeIdCol"].Value.Equals(socketManager.DestinationNodeId))
+        //                                      ?? castList.FirstOrDefault(r => r.Cells["clients_IpAddressCol"].Value.Equals(socketManager.DestinationEndpoint.Address));
 
-		//private void ClientSocketManagers_PropertyChanged(object sender, PropertyChangedEventArgs args)
-		//{
-		//    var socketManager = (SocketManager)sender;
+        //                    if (rowToupdate == null)
+        //                    {
+        //                        return;
+        //                    }
 
-		//    UI.Invoke(
-		//        () =>
-		//            {
-		//                try
-		//                {
-		//                    var castList = this.grid_Clients.Rows.Cast<DataGridViewRow>().ToList();
+        //                    this.grid_Clients.Rows[rowToupdate.Index].Cells[0].Value = socketManager.DestinationNodeId;
+        //                    this.grid_Clients.Rows[rowToupdate.Index].Cells[1].Value = socketManager.DestinationEndpoint.Address;
+        //                    this.grid_Clients.Rows[rowToupdate.Index].Cells[2].Value = socketManager.DestinationEndpoint.Port;
+        //                    this.grid_Clients.Rows[rowToupdate.Index].Cells[3].Value = socketManager.LastHelloRecieved.ToLocalTime();
 
-		//                    var rowToupdate = castList.FirstOrDefault(r => r.Cells["clients_NodeIdCol"].Value.Equals(socketManager.DestinationNodeId))
-		//                                      ?? castList.FirstOrDefault(r => r.Cells["clients_IpAddressCol"].Value.Equals(socketManager.DestinationEndpoint.Address));
+        //                    this.grid_Clients.Rows[rowToupdate.Index].Cells[4].Value = socketManager.LastHelloRecieved != DateTime.MinValue ? "Connectable" : "Not Connectable";
+        //                }
+        //                catch (Exception ex)
+        //                {
+        //                }
+        //            });
+        //}
 
-		//                    if (rowToupdate == null)
-		//                    {
-		//                        return;
-		//                    }
+        //private void ClientSocketManagers_SelectionChanged(object sender, EventArgs e)
+        //{
+        //    //if client socket manager is selected, show connect button, else hide it
+        //}
 
-		//                    this.grid_Clients.Rows[rowToupdate.Index].Cells[0].Value = socketManager.DestinationNodeId;
-		//                    this.grid_Clients.Rows[rowToupdate.Index].Cells[1].Value = socketManager.DestinationEndpoint.Address;
-		//                    this.grid_Clients.Rows[rowToupdate.Index].Cells[2].Value = socketManager.DestinationEndpoint.Port;
-		//                    this.grid_Clients.Rows[rowToupdate.Index].Cells[3].Value = socketManager.LastHelloRecieved.ToLocalTime();
+        //private void ServerSocketManagers_PropertyChanged(object sender, PropertyChangedEventArgs args)
+        //{
+        //    var socketManager = (SocketManager)sender;
 
-		//                    this.grid_Clients.Rows[rowToupdate.Index].Cells[4].Value = socketManager.LastHelloRecieved != DateTime.MinValue ? "Connectable" : "Not Connectable";
-		//                }
-		//                catch (Exception ex)
-		//                {
-		//                }
-		//            });
-		//}
+        //    UI.Invoke(
+        //        () =>
+        //            {
+        //                try
+        //                {
+        //                    var castList = this.grid_Servers.Rows.Cast<DataGridViewRow>().ToList();
 
-		//private void ClientSocketManagers_SelectionChanged(object sender, EventArgs e)
-		//{
-		//    //if client socket manager is selected, show connect button, else hide it
-		//}
+        //                    var rowToupdate = castList.FirstOrDefault(r => r.Cells["servers_NodeIdCol"].Value.Equals(socketManager.DestinationNodeId))
+        //                                      ?? castList.FirstOrDefault(r => r.Cells["servers_IpAddressCol"].Value.Equals(socketManager.DestinationEndpoint.Address));
 
-		//private void ServerSocketManagers_PropertyChanged(object sender, PropertyChangedEventArgs args)
-		//{
-		//    var socketManager = (SocketManager)sender;
+        //                    if (rowToupdate == null)
+        //                    {
+        //                        return;
+        //                    }
 
-		//    UI.Invoke(
-		//        () =>
-		//            {
-		//                try
-		//                {
-		//                    var castList = this.grid_Servers.Rows.Cast<DataGridViewRow>().ToList();
-
-		//                    var rowToupdate = castList.FirstOrDefault(r => r.Cells["servers_NodeIdCol"].Value.Equals(socketManager.DestinationNodeId))
-		//                                      ?? castList.FirstOrDefault(r => r.Cells["servers_IpAddressCol"].Value.Equals(socketManager.DestinationEndpoint.Address));
-
-		//                    if (rowToupdate == null)
-		//                    {
-		//                        return;
-		//                    }
-
-		//                    this.grid_Servers.Rows[rowToupdate.Index].Cells[0].Value = socketManager.DestinationNodeId;
-		//                    this.grid_Servers.Rows[rowToupdate.Index].Cells[1].Value = socketManager.DestinationEndpoint.Address;
-		//                    this.grid_Servers.Rows[rowToupdate.Index].Cells[2].Value = socketManager.DestinationEndpoint.Port;
-		//                    this.grid_Servers.Rows[rowToupdate.Index].Cells[3].Value = socketManager.LastHelloRecieved.ToLocalTime();
-		//                }
-		//                catch (Exception ex)
-		//                {
-		//                }
-		//            });
-		//}
-	}
+        //                    this.grid_Servers.Rows[rowToupdate.Index].Cells[0].Value = socketManager.DestinationNodeId;
+        //                    this.grid_Servers.Rows[rowToupdate.Index].Cells[1].Value = socketManager.DestinationEndpoint.Address;
+        //                    this.grid_Servers.Rows[rowToupdate.Index].Cells[2].Value = socketManager.DestinationEndpoint.Port;
+        //                    this.grid_Servers.Rows[rowToupdate.Index].Cells[3].Value = socketManager.LastHelloRecieved.ToLocalTime();
+        //                }
+        //                catch (Exception ex)
+        //                {
+        //                }
+        //            });
+        //}
+    }
 }

@@ -1,25 +1,30 @@
 ﻿namespace PtpChat.Main
 {
-	using System;
-	using System.Collections.Generic;
+    using System;
+    using System.Collections.Generic;
+    using System.Threading;
 
-	using PtpChat.Base.Classes;
-	using PtpChat.Base.Interfaces;
-	using PtpChat.Base.Messages;
-	using PtpChat.Main.Managers;
-	using PtpChat.Net;
-	using PtpChat.Utility;
-	using PtpChat.VerbHandlers.Handlers;
-	using Base.EventArguements;
-	public class PTPClient
+    using PtpChat.Base.Classes;
+    using PtpChat.Base.EventArguements;
+    using PtpChat.Base.Interfaces;
+    using PtpChat.Base.Messages;
+    using PtpChat.Main.Managers;
+    using PtpChat.Net;
+    using PtpChat.Utility;
+    using PtpChat.VerbHandlers.Handlers;
+
+    public class PTPClient
     {
-        private readonly INodeManager nodeManager;
-        private readonly IChannelManager channelManager;
-		private readonly IResponseManager responseManager;
+        public readonly IChannelTabHandler ChannelTabHandler;
+        public readonly IDataManager dataManager;
+        public readonly Logger logger;
+        public readonly IOutgoingMessageManager OutgoingMessageManager;
 
-		public readonly Logger logger;
-		public readonly IDataManager dataManager;
-		public readonly IChannelTabHandler ChannelTabHandler;
+        private readonly IChannelManager channelManager;
+        private readonly INodeManager nodeManager;
+        private readonly IResponseManager responseManager;
+
+        private Timer heartBeatTimer;
 
         public PTPClient(ConfigManager config)
         {
@@ -27,95 +32,89 @@
 
             this.nodeManager = new NodeManager(this.logger, config);
             this.channelManager = new ChannelManager(this.logger, config);
-			this.responseManager = new ResponseManager(this.logger, config);
-			this.dataManager = new DataManager(this.channelManager, this.nodeManager, responseManager);
-			
-			//TODO: remove this when we get a response from the server
-			nodeManager.Add(new Node {
-				IpAddress = config.InitialServerAddress,
-				NodeId = config.InitialServerGuid,
-				Port = config.InitialServerPort,
-				Added = DateTime.Now,
-				LastRecieve = DateTime.Now,
-				IsConnected = true,
-				IsStartUpNode = true
-			});
-			
+            this.responseManager = new ResponseManager(this.logger, config);
+            this.dataManager = new DataManager(this.channelManager, this.nodeManager, this.responseManager);
+
+            //TODO: remove this when we get a response from the server
+            this.nodeManager.Add(
+                new Node
+                    {
+                        IpAddress = config.InitialServerAddress,
+                        NodeId = config.InitialServerGuid,
+                        Port = config.InitialServerPort,
+                        Added = DateTime.Now,
+                        LastRecieve = DateTime.Now,
+                        IsConnected = true,
+                        IsStartUpNode = true
+                    });
+
             this.nodeManager.NodeAdd += this.NodeManager_NodeChanged;
             this.nodeManager.NodeUpdate += this.NodeManager_NodeChanged;
             this.nodeManager.NodeDelete += this.NodeManager_NodeChanged;
 
-			this.channelManager.ChannelAdd += this.ChannelManager_ChannelAdded;
-			this.channelManager.ChannelUpdate += this.ChannelManager_ChannelUpdate;
-			this.channelManager.MessageRecieved += this.ChannelManager_MessageRecieved;
+            this.channelManager.ChannelAdd += this.ChannelManager_ChannelAdded;
+            this.channelManager.ChannelUpdate += this.ChannelManager_ChannelUpdate;
+            this.channelManager.MessageRecieved += this.ChannelManager_MessageRecieved;
 
             var messageHandler = new MessageHandler(this.logger);
 
-			//socket handler here used to create its UDP socket thread handling in the ctor
-			ISocketHandler socketHandler = new SocketHandler(this.logger, this.dataManager, messageHandler);
+            //socket handler here used to create its UDP socket thread handling in the ctor
+            ISocketHandler socketHandler = new SocketHandler(this.logger, this.dataManager, messageHandler);
 
-			this.ChannelTabHandler = new ChannelTabHandler(logger, dataManager, messageHandler, socketHandler);
+            this.ChannelTabHandler = new ChannelTabHandler(this.logger, this.dataManager, messageHandler, socketHandler);
 
-			messageHandler.AddHandler(MessageType.HELLO, new HelloVerbHandler(this.logger, this.dataManager, socketHandler));
-            messageHandler.AddHandler(MessageType.ROUTING, new RoutingVerbHandler(this.logger, this.dataManager, socketHandler));
-            messageHandler.AddHandler(MessageType.CONNECT, new ConnectVerbHandler(this.logger, this.dataManager, socketHandler));
-            messageHandler.AddHandler(MessageType.MESSAGE, new MessageVerbHandler(this.logger, this.dataManager, socketHandler));
-            messageHandler.AddHandler(MessageType.CHANNEL, new ChannelVerbHandler(this.logger, this.dataManager, socketHandler));
-            messageHandler.AddHandler(MessageType.JOIN, new JoinVerbHandler(this.logger, this.dataManager, socketHandler));
-            messageHandler.AddHandler(MessageType.LEAVE, new LeaveVerbHandler(this.logger, this.dataManager, socketHandler));
-			messageHandler.AddHandler(MessageType.ACK, new AckVerbHandler(this.logger, this.dataManager, socketHandler));
+            this.OutgoingMessageManager = new OutgoingMessageManager(this.logger, this.dataManager, socketHandler);
 
-            socketHandler.Start();
+            messageHandler.AddHandler(MessageType.HELLO, new HelloVerbHandler(this.logger, this.dataManager, this.OutgoingMessageManager));
+            messageHandler.AddHandler(MessageType.ROUTING, new RoutingVerbHandler(this.logger, this.dataManager, this.OutgoingMessageManager));
+            messageHandler.AddHandler(MessageType.CONNECT, new ConnectVerbHandler(this.logger, this.dataManager, this.OutgoingMessageManager));
+            messageHandler.AddHandler(MessageType.MESSAGE, new MessageVerbHandler(this.logger, this.dataManager, this.OutgoingMessageManager));
+            messageHandler.AddHandler(MessageType.CHANNEL, new ChannelVerbHandler(this.logger, this.dataManager, this.OutgoingMessageManager));
+            messageHandler.AddHandler(MessageType.JOIN, new JoinVerbHandler(this.logger, this.dataManager, this.OutgoingMessageManager));
+            messageHandler.AddHandler(MessageType.LEAVE, new LeaveVerbHandler(this.logger, this.dataManager, this.OutgoingMessageManager));
+            messageHandler.AddHandler(MessageType.ACK, new AckVerbHandler(this.logger, this.dataManager, this.OutgoingMessageManager));
 
-			//This is a temporary change, for testing channels and messages
-			this.channelManager.Add(new Channel
-			{
-				ChannelId = Guid.Parse("82ae2035-55b8-4223-af24-c538731d6119"),
-				ChannelName = "Test Channel",
-				Closed = false,
-				LastTransmission = DateTime.Now,
-				Nodes = new List<Guid>()
-				{
-					this.nodeManager.LocalNode.NodeId
-				},
-				IsUpToDate = true
-			});
-			
+            this.heartBeatTimer = new Timer(this.OutgoingMessageManager.DoHeartBeat, null, 0, 3000);
+
+            //This is a temporary change, for testing channels and messages
+            this.channelManager.Add(
+                new Channel
+                    {
+                        ChannelId = Guid.Parse("82ae2035-55b8-4223-af24-c538731d6119"),
+                        ChannelName = "Test Channel",
+                        Closed = false,
+                        LastTransmission = DateTime.Now,
+                        Nodes = new List<Guid> { this.nodeManager.LocalNode.NodeId },
+                        IsUpToDate = true
+                    });
         }
 
         public event EventHandler NodeChanged;
-		public event EventHandler ChannelAdded;
-		public event EventHandler ChannelUpdate;
 
-        private void NodeManager_NodeChanged(object sender, EventArgs e)
-        {
-            this.NodeChanged?.Invoke(this, e);
-        }
+        public event EventHandler ChannelAdded;
 
-		private void ChannelManager_ChannelAdded(object sender , EventArgs e)
-		{
-			this.ChannelAdded?.Invoke(this, e);
-		}
-
-		private void ChannelManager_ChannelUpdate(object sender, EventArgs e)
-		{
-			this.ChannelUpdate?.Invoke(this, e);
-		}
-
-		private void ChannelManager_MessageRecieved(object sender, EventArgs e)
-		{
-			if (e.GetType() != typeof(ChannelMessageEventArgs))
-			{
-				throw new InvalidOperationException($"Cannot use MessageRecieved on an {e.GetType()} object");
-			}
-			ChannelMessageEventArgs ce = (ChannelMessageEventArgs)e;
-
-			this.ChannelTabHandler.MessageRecieved(ce.ChatMessage);
-		}
+        public event EventHandler ChannelUpdate;
 
         public IEnumerable<Node> GetNodes(Func<KeyValuePair<Guid, Node>, bool> filter) => this.nodeManager.GetNodes(filter);
 
         public IEnumerable<Node> GetNodes() => this.nodeManager.GetNodes();
+
+        private void NodeManager_NodeChanged(object sender, EventArgs e) => this.NodeChanged?.Invoke(this, e);
+
+        private void ChannelManager_ChannelAdded(object sender, EventArgs e) => this.ChannelAdded?.Invoke(this, e);
+
+        private void ChannelManager_ChannelUpdate(object sender, EventArgs e) => this.ChannelUpdate?.Invoke(this, e);
+
+        private void ChannelManager_MessageRecieved(object sender, EventArgs e)
+        {
+            if (e.GetType() != typeof(ChannelMessageEventArgs))
+            {
+                throw new InvalidOperationException($"Cannot use MessageRecieved on an {e.GetType()} object");
+            }
+            var ce = (ChannelMessageEventArgs)e;
+
+            this.ChannelTabHandler.MessageRecieved(ce.ChatMessage);
+        }
 
         /**
             this.ErrorMessages = new PtpList<string>();
