@@ -1,15 +1,16 @@
 ﻿namespace PtpChat.VerbHandlers.Handlers
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net;
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
+	using System.Net;
+	using System.Text;
 
-    using PtpChat.Base.Classes;
-    using PtpChat.Base.Interfaces;
-    using PtpChat.Base.Messages;
+	using PtpChat.Base.Classes;
+	using PtpChat.Base.Interfaces;
+	using PtpChat.Base.Messages;
 
-    public class MessageVerbHandler : BaseVerbHandler<MessageMessage>
+	public class MessageVerbHandler : BaseVerbHandler<MessageMessage>
     {
         private const string LogInvalidChannelId = "MESSAGE message contained invalid channel_id, ignoring message";
         private const string LogInvalidChannelName = "MESSAGE message contained invalid channel name, ignoring message";
@@ -63,18 +64,38 @@
             }
 
             var recipientIds = this.ParseRecipientList(data.recipient);
+			
+			var newMessage = new ChatMessage
+			{
+				ChannelId = data.channel_id,
+				DateSent = data.timestamp,
+				MessageContent = data.message,
+				MessageId = data.msg_id,
+				SenderId = data.node_id
+			};
 
-            //is this message for us?
-            if (recipientIds.Contains(this.NodeManager.LocalNode.NodeId))
+
+			//is this message for us?
+			if (recipientIds.Contains(this.NodeManager.LocalNode.NodeId))
             {
-                this.ChannelManager.HandleMessageForChannel(data);
+                this.ChannelManager.HandleMessageForChannel(newMessage);
             }
             else
             {
                 //send it on?
             }
 
-            return true;
+			var ackMsg = new AckMessage
+			{
+				msg_data = new AckData
+				{
+					msg_id = message.msg_data.msg_id
+				}
+			};
+
+			this.SocketHandler.SendMessage(senderEndpoint, null, Encoding.ASCII.GetBytes(this.BuildMessage(ackMsg)));
+
+			return true;
         }
 
         private IEnumerable<Guid> ParseRecipientList(IEnumerable<Dictionary<string, string>> members)

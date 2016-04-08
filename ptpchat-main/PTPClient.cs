@@ -1,17 +1,17 @@
 ﻿namespace PtpChat.Main
 {
-    using System;
-    using System.Collections.Generic;
+	using System;
+	using System.Collections.Generic;
 
-    using PtpChat.Base.Classes;
-    using PtpChat.Base.Interfaces;
-    using PtpChat.Base.Messages;
-    using PtpChat.Main.Managers;
-    using PtpChat.Net;
-    using PtpChat.Utility;
-    using PtpChat.VerbHandlers.Handlers;
-
-    public class PTPClient
+	using PtpChat.Base.Classes;
+	using PtpChat.Base.Interfaces;
+	using PtpChat.Base.Messages;
+	using PtpChat.Main.Managers;
+	using PtpChat.Net;
+	using PtpChat.Utility;
+	using PtpChat.VerbHandlers.Handlers;
+	using Base.EventArguements;
+	public class PTPClient
     {
         private readonly INodeManager nodeManager;
         private readonly IChannelManager channelManager;
@@ -47,13 +47,14 @@
 
 			this.channelManager.ChannelAdd += this.ChannelManager_ChannelAdded;
 			this.channelManager.ChannelUpdate += this.ChannelManager_ChannelUpdate;
+			this.channelManager.MessageRecieved += this.ChannelManager_MessageRecieved;
 
             var messageHandler = new MessageHandler(this.logger);
 
 			//socket handler here used to create its UDP socket thread handling in the ctor
 			ISocketHandler socketHandler = new SocketHandler(this.logger, this.dataManager, messageHandler);
 
-			this.ChannelTabHandler = new ChannelTabHandler(logger, channelManager, socketHandler);
+			this.ChannelTabHandler = new ChannelTabHandler(logger, dataManager, messageHandler, socketHandler);
 
 			messageHandler.AddHandler(MessageType.HELLO, new HelloVerbHandler(this.logger, this.dataManager, socketHandler));
             messageHandler.AddHandler(MessageType.ROUTING, new RoutingVerbHandler(this.logger, this.dataManager, socketHandler));
@@ -99,6 +100,17 @@
 		private void ChannelManager_ChannelUpdate(object sender, EventArgs e)
 		{
 			this.ChannelUpdate?.Invoke(this, e);
+		}
+
+		private void ChannelManager_MessageRecieved(object sender, EventArgs e)
+		{
+			if (e.GetType() != typeof(ChannelMessageEventArgs))
+			{
+				throw new InvalidOperationException($"Cannot use MessageRecieved on an {e.GetType()} object");
+			}
+			ChannelMessageEventArgs ce = (ChannelMessageEventArgs)e;
+
+			this.ChannelTabHandler.MessageRecieved(ce.ChatMessage);
 		}
 
         public IEnumerable<Node> GetNodes(Func<KeyValuePair<Guid, Node>, bool> filter) => this.nodeManager.GetNodes(filter);

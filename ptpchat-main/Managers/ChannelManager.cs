@@ -139,35 +139,26 @@
 
             this.logger.Info(string.Format(LogUpdatedChannel, channelId));
         }
+		
 
-        public void HandleMessageForChannel(MessageData messageData)
+        public void HandleMessageForChannel(ChatMessage message)
         {
-            if (messageData.channel_id == null || messageData.channel_id == Guid.Empty)
-            {
-                throw new ArgumentNullException(nameof(messageData.channel_id), @"Invalid channelId");
-            }
-
-            var channel = this.Channels.FirstOrDefault(c => c.Value.ChannelId != messageData.channel_id).Value;
-
-            //does the channel exist? 
-            if (channel == null)
-            {
-                throw new InvalidOperationException("MESSAGE recieved for unknown Channel");
-            }
-
-            var newMessage = new ChatMessage
-                                 {
-                                     ChannelId = messageData.channel_id,
-                                     DateSent = messageData.timestamp,
-                                     MessageContent = messageData.message,
-                                     MessageId = Guid.NewGuid(),
-                                     SenderId = messageData.node_id
-                                 };
             
+			if (message == null || message.MessageContent == null || message.MessageId == Guid.Empty)
+			{
+				throw new ArgumentNullException(nameof(message), @"Invalid message object");
+			}
 
-            this.Update(messageData.channel_id, recipientChannel => recipientChannel.AddMessage(newMessage));
+			var channel = this.Channels.FirstOrDefault(c => c.Value.ChannelId == message.ChannelId).Value;
 
-            this.MessageRecieved?.Invoke(this, new ChannelMessageEventArgs { Channel = channel, ChatMessage = newMessage });
+			if (channel == null)
+			{
+				throw new InvalidOperationException("Sending message for unknown Channel");
+			}
+
+			this.Update(message.ChannelId, c => c.AddMessage(message));
+			
+            this.MessageRecieved?.Invoke(this, new ChannelMessageEventArgs { Channel = channel, ChatMessage = message });
 
             this.logger.Info(string.Format(LogMessageRecieved, channel.ChannelId));
         }

@@ -53,7 +53,11 @@
 		/// </summary>
 		void Update(Guid channelId, Action<Channel> updateFunc);
 
-	    void HandleMessageForChannel(MessageData messageData);
+		/// <summary>
+		/// Called to register a message with a channel. Use or both handling recived messgages and messages being sent.
+		/// </summary>
+		/// <param name="message">The Message itself.</param>
+		void HandleMessageForChannel(ChatMessage message);
 
 		IEnumerable<Channel> GetChannels();
 

@@ -28,50 +28,16 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.ChannelTab_Messages = new BrightIdeasSoftware.DataListView();
+			this.ChannelTab_TextPanel = new System.Windows.Forms.Panel();
+			this.ChannelTab_TextEntry = new System.Windows.Forms.TextBox();
+			this.ChannelTab_BtnSubmit = new System.Windows.Forms.Button();
+			this.ChannelTab_Messages = new BrightIdeasSoftware.ObjectListView();
 			this.olvColumn1 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
 			this.olvColumn2 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-			this.ChannelTab_TextPanel = new System.Windows.Forms.Panel();
-			this.ChannelTab_BtnSubmit = new System.Windows.Forms.Button();
-			this.ChannelTab_TextEntry = new System.Windows.Forms.TextBox();
-			((System.ComponentModel.ISupportInitialize)(this.ChannelTab_Messages)).BeginInit();
+			this.olvColumn3 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
 			this.ChannelTab_TextPanel.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.ChannelTab_Messages)).BeginInit();
 			this.SuspendLayout();
-			// 
-			// ChannelTab_Messages
-			// 
-			this.ChannelTab_Messages.AllColumns.Add(this.olvColumn1);
-			this.ChannelTab_Messages.AllColumns.Add(this.olvColumn2);
-			this.ChannelTab_Messages.CellEditUseWholeCell = false;
-			this.ChannelTab_Messages.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.olvColumn1,
-            this.olvColumn2});
-			this.ChannelTab_Messages.Cursor = System.Windows.Forms.Cursors.Default;
-			this.ChannelTab_Messages.DataSource = null;
-			this.ChannelTab_Messages.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.ChannelTab_Messages.EmptyListMsg = "No Messages";
-			this.ChannelTab_Messages.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-			this.ChannelTab_Messages.HighlightBackgroundColor = System.Drawing.Color.Empty;
-			this.ChannelTab_Messages.HighlightForegroundColor = System.Drawing.Color.Empty;
-			this.ChannelTab_Messages.Location = new System.Drawing.Point(0, 0);
-			this.ChannelTab_Messages.Name = "ChannelTab_Messages";
-			this.ChannelTab_Messages.Size = new System.Drawing.Size(591, 392);
-			this.ChannelTab_Messages.TabIndex = 0;
-			this.ChannelTab_Messages.UseCompatibleStateImageBehavior = false;
-			this.ChannelTab_Messages.View = System.Windows.Forms.View.Details;
-			// 
-			// olvColumn1
-			// 
-			this.olvColumn1.AspectName = "Member";
-			this.olvColumn1.Groupable = false;
-			this.olvColumn1.Text = "Name";
-			// 
-			// olvColumn2
-			// 
-			this.olvColumn2.AspectName = "Message";
-			this.olvColumn2.FillsFreeSpace = true;
-			this.olvColumn2.Groupable = false;
-			this.olvColumn2.Text = "Message";
 			// 
 			// ChannelTab_TextPanel
 			// 
@@ -82,6 +48,15 @@
 			this.ChannelTab_TextPanel.Name = "ChannelTab_TextPanel";
 			this.ChannelTab_TextPanel.Size = new System.Drawing.Size(591, 48);
 			this.ChannelTab_TextPanel.TabIndex = 1;
+			// 
+			// ChannelTab_TextEntry
+			// 
+			this.ChannelTab_TextEntry.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.ChannelTab_TextEntry.Location = new System.Drawing.Point(0, 0);
+			this.ChannelTab_TextEntry.Multiline = true;
+			this.ChannelTab_TextEntry.Name = "ChannelTab_TextEntry";
+			this.ChannelTab_TextEntry.Size = new System.Drawing.Size(525, 48);
+			this.ChannelTab_TextEntry.TabIndex = 2;
 			// 
 			// ChannelTab_BtnSubmit
 			// 
@@ -94,14 +69,46 @@
 			this.ChannelTab_BtnSubmit.UseVisualStyleBackColor = true;
 			this.ChannelTab_BtnSubmit.Click += new System.EventHandler(this.ChannelTab_BtnSubmit_Click);
 			// 
-			// ChannelTab_TextEntry
+			// ChannelTab_Messages
 			// 
-			this.ChannelTab_TextEntry.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.ChannelTab_TextEntry.Location = new System.Drawing.Point(0, 0);
-			this.ChannelTab_TextEntry.Multiline = true;
-			this.ChannelTab_TextEntry.Name = "ChannelTab_TextEntry";
-			this.ChannelTab_TextEntry.Size = new System.Drawing.Size(525, 48);
-			this.ChannelTab_TextEntry.TabIndex = 2;
+			this.ChannelTab_Messages.AllColumns.Add(this.olvColumn1);
+			this.ChannelTab_Messages.AllColumns.Add(this.olvColumn2);
+			this.ChannelTab_Messages.AllColumns.Add(this.olvColumn3);
+			this.ChannelTab_Messages.CellEditUseWholeCell = false;
+			this.ChannelTab_Messages.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.olvColumn1,
+            this.olvColumn2,
+            this.olvColumn3});
+			this.ChannelTab_Messages.Cursor = System.Windows.Forms.Cursors.Default;
+			this.ChannelTab_Messages.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.ChannelTab_Messages.EmptyListMsg = "No Messages";
+			this.ChannelTab_Messages.HighlightBackgroundColor = System.Drawing.Color.Empty;
+			this.ChannelTab_Messages.HighlightForegroundColor = System.Drawing.Color.Empty;
+			this.ChannelTab_Messages.Location = new System.Drawing.Point(0, 0);
+			this.ChannelTab_Messages.Name = "ChannelTab_Messages";
+			this.ChannelTab_Messages.Size = new System.Drawing.Size(591, 392);
+			this.ChannelTab_Messages.TabIndex = 2;
+			this.ChannelTab_Messages.UseCompatibleStateImageBehavior = false;
+			this.ChannelTab_Messages.View = System.Windows.Forms.View.Details;
+			// 
+			// olvColumn1
+			// 
+			this.olvColumn1.AspectName = "Member";
+			this.olvColumn1.Groupable = false;
+			this.olvColumn1.Text = "Name";
+			// 
+			// olvColumn2
+			// 
+			this.olvColumn2.AspectName = "Time";
+			this.olvColumn2.Groupable = false;
+			this.olvColumn2.Text = "Time";
+			// 
+			// olvColumn3
+			// 
+			this.olvColumn3.AspectName = "Message";
+			this.olvColumn3.FillsFreeSpace = true;
+			this.olvColumn3.Groupable = false;
+			this.olvColumn3.Text = "Message";
 			// 
 			// ChannelTab
 			// 
@@ -112,20 +119,20 @@
 			this.Controls.Add(this.ChannelTab_TextPanel);
 			this.Name = "ChannelTab";
 			this.Size = new System.Drawing.Size(591, 440);
-			((System.ComponentModel.ISupportInitialize)(this.ChannelTab_Messages)).EndInit();
 			this.ChannelTab_TextPanel.ResumeLayout(false);
 			this.ChannelTab_TextPanel.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.ChannelTab_Messages)).EndInit();
 			this.ResumeLayout(false);
 
 		}
 
 		#endregion
-
-		private BrightIdeasSoftware.DataListView ChannelTab_Messages;
-		private BrightIdeasSoftware.OLVColumn olvColumn1;
-		private BrightIdeasSoftware.OLVColumn olvColumn2;
 		private System.Windows.Forms.Panel ChannelTab_TextPanel;
 		private System.Windows.Forms.Button ChannelTab_BtnSubmit;
 		private System.Windows.Forms.TextBox ChannelTab_TextEntry;
+		private BrightIdeasSoftware.ObjectListView ChannelTab_Messages;
+		private BrightIdeasSoftware.OLVColumn olvColumn1;
+		private BrightIdeasSoftware.OLVColumn olvColumn2;
+		private BrightIdeasSoftware.OLVColumn olvColumn3;
 	}
 }

@@ -130,7 +130,7 @@
 			{
 				msg_data = new AckData
 				{
-					msg_id = message.msg_data.channel_id
+					msg_id = message.msg_data.msg_id
 				}
 			};
 
