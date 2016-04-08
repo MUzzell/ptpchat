@@ -1,19 +1,20 @@
 ﻿namespace PtpChat.UI.Subforms
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Drawing;
-    using System.Windows.Forms;
+	using System;
+	using System.Collections.Generic;
+	using System.Drawing;
+	using System.Windows.Forms;
+	using System.Linq;
 
-    using PtpChat.Base.EventArguements;
-    using PtpChat.Base.Interfaces;
+	using PtpChat.Base.EventArguements;
+	using PtpChat.Base.Interfaces;
 
-    public partial class NodeListTab : UserControl, IEventManager
+	public partial class NodeListTab : UserControl, IEventManager
     {
         private readonly ILogManager Logger;
         private readonly ISocketHandler SocketHandler;
 
-        private INodeManager nodeManager { get; set; }
+        private INodeManager NodeManager { get; set; }
 
         public NodeListTab()
         {
@@ -24,31 +25,31 @@
         {
             set
             {
-                this.nodeManager = value.NodeManager;
-                this.nodeManager.NodeAdd += this.RefreshNodeList;
-                this.nodeManager.NodeUpdate += this.RefreshNodeList;
+                this.NodeManager = value.NodeManager;
+                this.NodeManager.NodeAdd += this.RefreshNodeList;
+                this.NodeManager.NodeUpdate += this.RefreshNodeList;
 
-                var nodes = this.nodeManager.GetNodes();
-                IList<NodeView> nodeList = new List<NodeView>();
-
-                foreach (var node in nodes)
-                {
-                    nodeList.Add(new NodeView { Name = node.NodeId.ToString(), Status = node.IsConnected ? " " : "  " });
-                }
-
-                UI.Invoke(() => this.NodesTab_DataListView.SetObjects(nodeList));
+                var nodes = this.NodeManager.GetNodes().ToList();
+                
+                UI.Invoke(() => this.NodeListTab_Nodes.SetObjects(nodes));
             }
         }
 
-        private NodeView GetSelectedNodeView() => this.NodesTab_DataListView?.FocusedObject as NodeView;
+        private NodeView GetSelectedNodeView() => this.NodeListTab_Nodes?.FocusedObject as NodeView;
+
+		public void NewNode(object sender, EventArgs e)
+		{
+			var nodes = this.NodeManager.GetNodes().ToList();
+
+			UI.Invoke(() => this.NodeListTab_Nodes.UpdateObjects(nodes));
+		}
 
         public void RefreshNodeList(object sender, EventArgs e)
         {
-            var node = (e as NodeEventArgs).Node;
+			var nodes = this.NodeManager.GetNodes().ToList();
 
-            var nodeView = new NodeView { Name = node.NodeId.ToString(), Status = node.IsConnected ? " " : "  " };
+			UI.Invoke(() => this.NodeListTab_Nodes.UpdateObjects(nodes));
 
-            this.NodesTab_DataListView.UpdateObject(nodeView);
         }
 
         //public object OnlineImageGetter(object rowObject)
@@ -62,7 +63,7 @@
         {
             if (e.Button == MouseButtons.Right)
             {
-                this.RightClickContextMenu.Show(this.NodesTab_DataListView, new Point(e.X, e.Y));
+                this.RightClickContextMenu.Show(this.NodeListTab_Nodes, new Point(e.X, e.Y));
             }
         }
 
@@ -71,7 +72,7 @@
             //open connect for selected node
             var clickedNodeView = this.GetSelectedNodeView();
 
-            var node = this.nodeManager.GetNodes(a => a.Value.NodeId == Guid.Parse(clickedNodeView.Name));
+            var node = this.NodeManager.GetNodes(a => a.Value.NodeId == Guid.Parse(clickedNodeView.Name));
 
             //this.DataManager.NodeManager.
         }

@@ -37,5 +37,7 @@
             this.Channels = new List<Channel>();
             this.Messages = new List<ChatMessage>();
         }
+
+		public string Status { get { return this.IsConnected ? "Online" : "Offline"; } }
     }
 }

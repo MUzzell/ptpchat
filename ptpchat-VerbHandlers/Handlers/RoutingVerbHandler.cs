@@ -174,7 +174,15 @@
                 {
                     // not seen, add. else, ignore
                     this.NodeManager.Add(
-                        new Node { NodeId = nodeId, SeenThrough = senderId, IpAddress = address.Address, Port = address.Port, Version = null, Added = DateTime.Now, LastRecieve = null });
+                        new Node
+						{
+							NodeId = nodeId,
+							SeenThrough = senderId,
+							IpAddress = address.Address,
+							Port = address.Port, Version = null,
+							Added = DateTime.Now,
+							LastRecieve = null
+						});
                 }
             }
 
