@@ -21,9 +21,23 @@
 
         public bool IsLoggingEnabled => Settings.Default.IsLoggingEnabled;
 
-        public Guid LocalNodeId => Guid.NewGuid();
+		public Guid LocalNodeId
+		{
+			get
+			{
+				if (String.IsNullOrWhiteSpace(Settings.Default.LocalNodeId))
+				{
+					var localNodeId = Guid.NewGuid();
+					Settings.Default.LocalNodeId = localNodeId.ToString();
+					Settings.Default.Save();
+					return localNodeId;
+				}
+				return Guid.Parse(Settings.Default.LocalNodeId);
+				
+			}
+		}
 
-        public string LocalNodeVersion => Settings.Default.LocalNodeVersion;
+public string LocalNodeVersion => Settings.Default.LocalNodeVersion;
 
         public int MaxMessageResendAttempts => Settings.Default.MaxMessageResendAttempts;
 
