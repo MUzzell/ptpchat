@@ -90,6 +90,7 @@
             this.olvColumn2});
 			this.NodeListTab_Nodes.Cursor = System.Windows.Forms.Cursors.Default;
 			this.NodeListTab_Nodes.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.NodeListTab_Nodes.FullRowSelect = true;
 			this.NodeListTab_Nodes.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.NodeListTab_Nodes.HighlightBackgroundColor = System.Drawing.Color.Empty;
 			this.NodeListTab_Nodes.HighlightForegroundColor = System.Drawing.Color.Empty;
@@ -99,6 +100,9 @@
 			this.NodeListTab_Nodes.TabIndex = 1;
 			this.NodeListTab_Nodes.UseCompatibleStateImageBehavior = false;
 			this.NodeListTab_Nodes.View = System.Windows.Forms.View.Details;
+			this.NodeListTab_Nodes.SelectedIndexChanged += new System.EventHandler(this.NodeListTab_Nodes_SelectedIndexChanged);
+			this.NodeListTab_Nodes.CellRightClick += new System.EventHandler<CellRightClickEventArgs>(this.NodeListTab_Nodes_RightMouseClick);
+			this.NodeListTab_Nodes.DoubleClick += new System.EventHandler(this.NodeListTab_Nodes_DoubleMouseClick);
 			// 
 			// olvColumn1
 			// 
