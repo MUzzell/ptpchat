@@ -3,6 +3,7 @@
     using System;
     using System.Linq;
     using System.Net;
+    using System.Runtime.CompilerServices;
     using System.Text;
 
     using Newtonsoft.Json;
@@ -14,10 +15,6 @@
 
     public class OutgoingMessageManager : IOutgoingMessageManager
     {
-        private const string LogHandlerStarting = "SocketHandler starting";
-
-        private const string LogHandlerStopping = "SocketHandler stopping";
-
         private readonly IChannelManager channelManager;
 
         private readonly ILogManager logger;
@@ -28,19 +25,26 @@
 
         private ISocketHandler SocketHandler { get; }
 
-        public OutgoingMessageManager(ILogManager logger, IDataManager dataManager, ISocketHandler socketHandler)
+        public int DefaultTimeToLive { get; }
+
+        public OutgoingMessageManager(ILogManager logger, IDataManager dataManager, ISocketHandler socketHandler, int defaultTtl)
         {
             this.SocketHandler = socketHandler;
             this.logger = logger;
-
             this.channelManager = dataManager.ChannelManager;
             this.responseManager = dataManager.ResponseManager;
             this.nodeManager = dataManager.NodeManager;
+
+            this.DefaultTimeToLive = defaultTtl > 0 ? defaultTtl : 32;
         }
 
         public void SendHello(Node node, HelloMessage helloMessage) => this.SendHello(node.IpEndPoint, helloMessage);
 
-        public void SendHello(IPEndPoint endpoint, HelloMessage connectMessage) => this.Send(endpoint, connectMessage);
+        public void SendHello(IPEndPoint endpoint, HelloMessage connectMessage)
+        {
+            this.MessageTTLOne(connectMessage);
+            this.Send(endpoint, connectMessage);
+        }
 
         public void SendConnect(Node node, ConnectMessage connectMessage) => this.SendConnect(node.IpEndPoint, connectMessage);
 
@@ -48,15 +52,27 @@
 
         public void SendMessage(Node node, MessageMessage messageMessage) => this.SendMessage(node.IpEndPoint, messageMessage);
 
-        public void SendMessage(IPEndPoint endpoint, MessageMessage messageMessage) => this.Send(endpoint, messageMessage);
+        public void SendMessage(IPEndPoint endpoint, MessageMessage messageMessage)
+        {
+            this.MessageTTLDefault(messageMessage);
+            this.Send(endpoint, messageMessage);
+        }
 
         public void SendChannel(Node node, ChannelMessage channelMessage) => this.SendChannel(node.IpEndPoint, channelMessage);
 
-        public void SendChannel(IPEndPoint endpoint, ChannelMessage messageMessage) => this.Send(endpoint, messageMessage);
+        public void SendChannel(IPEndPoint endpoint, ChannelMessage channelMessage)
+        {
+            this.SetMessageFlood(channelMessage);
+            this.Send(endpoint, channelMessage);
+        }
 
         public void SendAck(Node node, AckMessage ackMessage) => this.SendAck(node.IpEndPoint, ackMessage);
 
-        public void SendAck(IPEndPoint endpoint, AckMessage ackMessage) => this.Send(endpoint, ackMessage);
+        public void SendAck(IPEndPoint endpoint, AckMessage ackMessage)
+        {
+            this.MessageTTLOne(ackMessage);
+            this.Send(endpoint, ackMessage);
+        }
 
         public void SendHeartBeatHelloToNodes()
         {
@@ -135,6 +151,24 @@
         public int GetPortForNode(Guid unknownId)
         {
             return 42;
+        }
+
+        private void MessageTTLOne(BaseMessage message)
+        {
+            message.ttl = 1;
+            message.flood = false;
+        }
+
+        private void MessageTTLDefault(BaseMessage message)
+        {
+            message.ttl = this.DefaultTimeToLive;
+            message.flood = false;
+        }
+
+        private void SetMessageFlood(BaseMessage message)
+        {
+            message.ttl = this.DefaultTimeToLive;
+            message.flood = true;
         }
 
         private string SerialiseObject(BaseMessage message) => JsonConvert.SerializeObject(message);

@@ -163,5 +163,17 @@ namespace PtpChat.Utility.Properties {
                 this["MaxMessageResendAttempts"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("32")]
+        public int DefaultTTL {
+            get {
+                return ((int)(this["DefaultTTL"]));
+            }
+            set {
+                this["DefaultTTL"] = value;
+            }
+        }
     }
 }

@@ -63,7 +63,7 @@
 
             this.ChannelTabHandler = new ChannelTabHandler(this.logger, this.dataManager, messageHandler, socketHandler);
 
-            this.OutgoingMessageManager = new OutgoingMessageManager(this.logger, this.dataManager, socketHandler);
+            this.OutgoingMessageManager = new OutgoingMessageManager(this.logger, this.dataManager, socketHandler, config.DefaultTTL);
 
             messageHandler.AddHandler(MessageType.HELLO, new HelloVerbHandler(this.logger, this.dataManager, this.OutgoingMessageManager));
             messageHandler.AddHandler(MessageType.ROUTING, new RoutingVerbHandler(this.logger, this.dataManager, this.OutgoingMessageManager));
