@@ -100,7 +100,6 @@
 			this.NodeListTab_Nodes.TabIndex = 1;
 			this.NodeListTab_Nodes.UseCompatibleStateImageBehavior = false;
 			this.NodeListTab_Nodes.View = System.Windows.Forms.View.Details;
-			this.NodeListTab_Nodes.SelectedIndexChanged += new System.EventHandler(this.NodeListTab_Nodes_SelectedIndexChanged);
 			this.NodeListTab_Nodes.CellRightClick += new System.EventHandler<CellRightClickEventArgs>(this.NodeListTab_Nodes_RightMouseClick);
 			this.NodeListTab_Nodes.DoubleClick += new System.EventHandler(this.NodeListTab_Nodes_DoubleMouseClick);
 			// 

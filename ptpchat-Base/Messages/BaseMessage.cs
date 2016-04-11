@@ -4,6 +4,8 @@
     {
         public object msg_data { get; set; }
 
+        public int ttl { get; set; }
+
         public MessageType msg_type { get; set; }
     }
 

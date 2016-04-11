@@ -72,6 +72,7 @@
 
             var node = this.NodeManager.GetNodes(a => a.Value.NodeId == clickedNodeView.NodeId);
 
+            //this.DataManager.ChannelManager.Add(new Channel() {});
             //this.DataManager.NodeManager.
         }
 
@@ -85,10 +86,6 @@
         {
         }
 
-		private void NodeListTab_Nodes_SelectedIndexChanged(object sender, EventArgs e)
-		{
-
-		}
 	}
 
 	internal class NodeView
