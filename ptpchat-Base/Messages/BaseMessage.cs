@@ -6,6 +6,8 @@
 
         public int ttl { get; set; }
 
+        public bool flood { get; set; }
+
         public MessageType msg_type { get; set; }
     }
 
