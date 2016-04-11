@@ -14,18 +14,32 @@ All of this is subject to change at any time, as this project is very much in th
 
 ###Message Format 
 
-Messages will be transferred in JSON. At the head, a message will contain one or two keys, dependent on the verb being sent. `msg_type` is required for all messages, `msg_data` is not required for all messages. Should a received JSON message not contain a `msg_data` element, it should be treated as null (or None). All other elements in the head should be ignored. These two keys are:
+Messages will be transferred in JSON. At the head, a message will contain four keys, All other elements in the head should be ignored. These keys are:
 
 1. `msg_type`, containing the verb.
 2. `msg_data`, containing a JSON object holding the data relevant to the message being sent. 
+3. `ttl`, containing the current time to live value as an integer for this message.
+4. `flood`, describing if this message should be flooded to the whole network (i.e. all other connected nodes)
 
-Both keys, and all verb-specific keys inside `msg_data`, must be in lower-case.
+All keys, and all verb-specific keys inside `msg_data`, must be in lower-case.
 
 ###Data Types
 
+####*ttl*
+
+The `ttl` attribute is used to monitor how a message is broadcast around the network of nodes, its behaviour is similar to the TTL value in the Internet Protocol (IP). It is used to allow a node to re-transmit a received message to the intended node, or to the node that might be able to better handle this message (how this is decided is not figured out yet). `ttl` Is a single integer value set to define the number of permitted hops remaining for this message. The `ttl` should be reduced by one and then rebroadcast.
+
+Certain messages require a specific `ttl` to be applied, as the message's purpose may only be for the intended neighbouring node. In other cases, the TTL can be of any number, defaulting to **32**. See the message formats to view which messages use a TTL of 1 or a TTL of any (marked as 32 in this document).
+
+####*flood*
+
+The `flood` attribute is used to broadcast this message to all connected nodes. It is a single boolean value of either *true* or *false* and should be used on a subset of messages. Upon receiving a message that has `flood` set to *true*, the message should be rebroadcast (and its `ttl` reduced by one) to all neighbouring nodes. 
+
+The `flood` attribute is only set to true on a subset of messages. See the message formats to veiw which messages has this attribute set to true.
+
 ####*node_id*
 
-The `node_id` attribute is used in multiple messages and acts as the identifier of nodes (and 'should' be unique). `node_id` is single GUID identifier and must remain the same throughout the node's lifetime. Whilst this identifies the node in question, it does not validate the node. 
+The `node_id` attribute is used in multiple messages and acts as the identifier of nodes (and 'should' be unique). `node_id` Is single GUID identifier and must remain the same throughout the node's lifetime. Whilst this identifies the node in question, it does not validate the node. 
 
 ####*version*
 
@@ -35,13 +49,15 @@ The `version` attribute is used in the **HELLO** message and is an optional stri
 
 The `address` attribute used in some messages specifies a socket to be used for connecting to nodes. The contents will be in the standard socket notation of <HOST>:<PORT>.
 
-
 ###Verbs
 
 #####HELLO
 
 ```json
 {
+    "ttl" : 1,
+    "flood" : false,
+    
     "msg_type":"HELLO",
     "msg_data":
     {
@@ -60,6 +76,9 @@ This is a periodic message that is sent between nodes. Its purpose is to notify 
 
 ```json
 {
+    "ttl" : 1,
+    "flood" : false,
+    
     "msg_type":"ACK", 
     "msg_data": 
     { 
@@ -76,6 +95,9 @@ Sent after GETCERTIFICATE, CERTIFICATE, GETKEY, KEY, MESSAGE messages, used to n
 
 ```json
 {
+    "ttl" : 32,
+    "flood" : true,
+    
     "msg_type":"JOIN", 
     "msg_data": 
     { 
@@ -100,6 +122,9 @@ JOIN Messages are sent to notify other user of a channel that a new node is join
 
 ```json
 {
+    "ttl" : 32,
+    "flood" : true,
+    
     "msg_type" : "CHANNEL", 
     "msg_data" : 
     { 
@@ -129,6 +154,9 @@ CHANNEL messages are used to maintain available channels between nodes. A CHANNE
 
 ```json
 {
+    "ttl" : 32,
+    "flood" : true,
+    
     "msg_type":"JOIN", 
     "msg_data": 
     { 
@@ -153,6 +181,9 @@ Sent to all members of a channel that the sending user is leaving the channel. A
 
 ```json
 {
+    "ttl" : 32,
+    "flood" : false,
+    
     "msg_type":"GETCERTIFICATE",
     "msg_data":
     {
@@ -171,6 +202,9 @@ This message is used to request the certificate of the recipient, as to identify
 
 ```json
 {
+    "ttl" : 32,
+    "flood" : false,
+    
     "msg_type" : "CERTIFICATE",
     "msg_data" :
     {
@@ -194,6 +228,9 @@ Nodes *should* keep a record of certs against `node_id's` and store them locally
 
 ```json
 {
+    "ttl" : 32,
+    "flood" : false,
+    
     "msg_type" : "GETKEY",
     "msg_data" : 
     {
@@ -216,6 +253,9 @@ This message is sent to request a key to a closed channel.
 
 ```json
 {
+    "ttl" : 32,
+    "flood" : false,
+    
     "msg_type" : "KEY",
     "msg_data" : 
     {
@@ -243,6 +283,9 @@ This message transmits the key to the target node. The key **must** be encrypted
 
 ```json
 {
+    "ttl" : 32,
+    "flood" : false,
+    
     "msg_type" : "MESSAGE",
     "msg_data" : 
     {
@@ -273,6 +316,9 @@ This message is the actual text message to be sent between nodes. The `message` 
 
 ```json
 {
+    "ttl" : 32,
+    "flood" : false,
+    
     "msg_type" : "CONNECT",
     "msg_data" : 
     {
@@ -307,6 +353,9 @@ As an example, two nodes, *A* and *B*, want to talk to each other and will use n
 
 ```json
 {
+    "ttl" : 1,
+    "flood" : false,
+    
     "msg_type" : "ROUTING",
     "msg_data" : 
     {
