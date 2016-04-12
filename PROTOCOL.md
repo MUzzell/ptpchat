@@ -84,6 +84,10 @@ The `flood` attribute is only set to true on a subset of messages. See the messa
 
 The `node_id` attribute is used in multiple messages and acts as the identifier of nodes (and 'should' be unique). `node_id` Is single GUID identifier and must remain the same throughout the node's lifetime. Whilst this identifies the node in question, it does not validate the node. 
 
+####*sender_id* and *target_id*
+
+This contains the `node_id` of the node that created this message, and the `node_id` of the intended recipient. `sender_id` Is included in all messages, where `target_id` is not included in messages intended for direct neighbours. 
+
 ####*version*
 
 The `version` attribute is used in the **HELLO** message and is an optional string to identify the software that the node is running. There is no specific format for this, and is purely informational. 
@@ -100,11 +104,11 @@ The `address` attribute used in some messages specifies a socket to be used for 
 {
     "ttl" : 1,
     "flood" : false,
-    
+    "sender_id" : "<node_id>",
+
     "msg_type":"HELLO",
     "msg_data":
     {
-        "node_id" : "<node_id>",
         "version" : "<version>",
         "attributes" : 
         {
@@ -126,11 +130,11 @@ This message is an initial message that is first sent between nodes, performed i
 {
     "ttl" : 1,
     "flood" : false,
+    "sender_id" : "<node_id>",
     
     "msg_type":"ACK", 
     "msg_data": 
     {
-        "node_id" :
         "msg_id" : "<msg_id>" 
     }
 }
@@ -146,11 +150,12 @@ Sent after GETCERTIFICATE, CERTIFICATE, GETKEY, KEY, MESSAGE messages, used to n
 {
     "ttl" : 32,
     "flood" : false,
+    "sender_id" : "<node_id>",
+    "target_id" : "<node_id>",
     
     "msg_type":"NACK", 
     "msg_data": 
     {
-        "node_id" : "<node_id>"
         "msg_id" : "<msg_id>" 
     }
 }
@@ -167,12 +172,13 @@ A NACK message MUST be sent if the TTL of a message becomes zero on the way to t
 {
     "ttl" : 32,
     "flood" : true,
+    "sender_id" : "<node_id>",
+    "target_id" : "<node_id>",
     
     "msg_type":"JOIN", 
     "msg_data": 
     { 
         "msg_id" : "<msg_id>", 
-        "node_id" : "<node_id>",
         "channel" : "<channel>",
         "channel_id" : "<channel_id>" 
     }
@@ -194,12 +200,13 @@ JOIN Messages are sent to notify other users of a channel that a new node is joi
 {
     "ttl" : 32,
     "flood" : true,
+    "sender_id" : "<node_id>",
+    "target_id" : "<node_id>",
     
     "msg_type" : "CHANNEL", 
     "msg_data" : 
     { 
         "msg_id" : "<msg_id>", 
-        "node_id" : "<node_id>", 
         "channel" : "<channel>",  
         "channel_id" : "<channel_id>",
         "members" : [ {"node_id" : "<node_id>" } ],
@@ -216,9 +223,11 @@ JOIN Messages are sent to notify other users of a channel that a new node is joi
 * `closed` : an optional flag that marks this channel as closed (default false).  
 
 CHANNEL messages are used to maintain available channels between nodes. A CHANNEL message is sent when:
-* A node creates a channel, to all neighbouring nodes.
+* A node creates a public channel, to all neighbouring nodes.
 * To maintain channels by periodically sending a CHANNEL message if this node has not received/sent a CHANNEL message for a channel this node is subscribed to. 
-* Optionally, a node may send CHANNEL messages may be sent to newly connected nodes.
+* A node has been recently connected.
+
+If a channel is marked as 'public' then it is to be broadcast to all nodes across the network, with a flood value and no target_id. If a channel is marked as 'private' then it is only to be broadcast to current members, with no flood value and sent to each member individually.
 
 #####LEAVE
 
@@ -226,12 +235,12 @@ CHANNEL messages are used to maintain available channels between nodes. A CHANNE
 {
     "ttl" : 32,
     "flood" : true,
+    "sender_id" : "<node_id>",
     
     "msg_type":"JOIN", 
     "msg_data": 
     { 
         "msg_id" : "<msg_id>", 
-        "node_id" : "<node_id>",
         "channel" : "<channel>",
         "channel_id" : "<channel_id>" 
     }
@@ -253,20 +262,21 @@ Sent to all members of a channel that the sending user is leaving the channel. A
 {
     "ttl" : 32,
     "flood" : false,
+    "sender_id" : "<node_id>",
+    "target_id" : "<node_id>",
     
     "msg_type":"GETCERTIFICATE",
     "msg_data":
     {
-        "msg_id" : "<msg_id>",
-        "node_id" : "<node_id>"
+        "msg_id" : "<msg_id>"
     }
 }
 ```
 
 * `msg_id` : identifies this message,
-* `node_id` : contains the **sending** node id. 
+* `node_id` : contains the sending node id. 
 
-This message is used to request the certificate of the recipient, as to identify this node. The `msg_id` should also be the same in any responsive CERTIFICATE messages. Nodes *should* keep a record of certs against `node_id's` and store them locally if possible for future reference. 
+This message is used to request the certificate of the recipient, as to identify this node. The `msg_id` should also be the same in any responsive CERTIFICATE messages. Nodes should keep a persistent record of certs against `node_id's` and store them locally if possible for future reference. 
 
 #####CERTIFICATE
 
@@ -274,12 +284,13 @@ This message is used to request the certificate of the recipient, as to identify
 {
     "ttl" : 32,
     "flood" : false,
+    "sender_id" : "<node_id>",
+    "target_id" : "<node_id>",
     
     "msg_type" : "CERTIFICATE",
     "msg_data" :
     {
         "msg_id" : "<msg_id>",
-        "node_id" : "<msg_id>",
         "recipient_id" : "<recipient_id>",
         "certificate" : "<certificate>"
     }
@@ -300,12 +311,13 @@ Nodes *should* keep a record of certs against `node_id's` and store them locally
 {
     "ttl" : 32,
     "flood" : false,
+    "sender_id" : "<node_id>",
+    "target_id" : "<node_id>",
     
     "msg_type" : "GETKEY",
     "msg_data" : 
     {
         "msg_id" : "<msg_id>",
-        "node_id" : "<node_id>",
         "channel" : "<channel>",
         "channel_id" : "<channel_id>",
     }
@@ -313,7 +325,6 @@ Nodes *should* keep a record of certs against `node_id's` and store them locally
 ```
 
 * `msg_id` : identifies this message.
-* `node_id` : contains the sending node id.
 * `channel` : contains the channel name.
 * `channel_id` : contains the channel id.
 
@@ -325,12 +336,13 @@ This message is sent to request a key to a closed channel.
 {
     "ttl" : 32,
     "flood" : false,
+    "sender_id" : "<node_id>",
+    "target_id" : "<node_id>",
     
     "msg_type" : "KEY",
     "msg_data" : 
     {
         "msg_id" : "<msg_id>",
-        "node_id" : "<node_id>",
         "recipient_id" : "<recipient_id>",
         "channel" : "<channel>",
         "channel_id" : "<channel_id>",
@@ -341,7 +353,6 @@ This message is sent to request a key to a closed channel.
 ```
 
 * `msg_id` : identifies this message.
-* `node_id` : contains the sending node id.
 * `channel` : contains the channel name.
 * `channel_id` : contains the channel id.
 * `cipher` : defines the cipher used for the channel's encryption.
@@ -355,12 +366,13 @@ This message transmits the key to the target node. The key **must** be encrypted
 {
     "ttl" : 32,
     "flood" : false,
+    "sender_id" : "<node_id>",
+    "target_id" : "<node_id>",
     
     "msg_type" : "MESSAGE",
     "msg_data" : 
     {
         "msg_id" : "<msg_id>",
-        "node_id" : "<msg_id>",
         "recipient" : [ { "node_id" : "<node_id>" } ],
         "timestamp" : "<timestamp>",
         "channel" : "<channel>",
@@ -372,7 +384,6 @@ This message transmits the key to the target node. The key **must** be encrypted
 ```
 
 * `msg_id` : identifies this message.
-* `node_id` : contains the sending node id.
 * `channel` : contains the channel name.
 * `channel_id` : contains the channel id.
 * `recipient` : contains a list of recipients for this message.
@@ -388,7 +399,8 @@ This message is the actual text message to be sent between nodes. The `message` 
 {
     "ttl" : 1,
     "flood" : false,
-    
+    "sender_id" : "<node_id>",
+
     "msg_type" : "ROUTING",
     "msg_data" : 
     {
@@ -402,7 +414,6 @@ This message is the actual text message to be sent between nodes. The `message` 
 }
 ```
 
-* `node_id` : contains the sending node id.
 * `nodes` : A list of available nodes that this node is aware of. This contains that nodes `node_id` and it's `ttl`, representing the number of hops **from the sending node** to that node.
 
 A message sent by a node to all neighbouring nodes which lists nodes it can communicate to. ROUTING Messages should be sent to all nodes that this node can communicate with directly.
