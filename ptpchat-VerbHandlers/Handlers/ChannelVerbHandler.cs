@@ -97,21 +97,11 @@
 
                 foreach (var node in connectToNodes)
                 {
-                    var connect = new ConnectMessage
-                                      {
-                                          msg_data = new ConnectData
-                                                         {
-                                                             src_node_id = this.NodeManager.LocalNode.NodeId,
-                                                             dst_node_id = node.NodeId,
-                                                             //src = $"{this.SocketHandler.GetPortForNode(node.NodeId)}",
-                                                             dst = null
-                                                         }
-                                      };
-                    //this.SocketHandler.SendMessage(node.SeenThrough.Value, Encoding.ASCII.GetBytes(this.BuildMessage(connect)));
+					this.OutgoingMessageManager.SendConnect(node, node.NodeId);
                 }
             }
-
-            var ackMsg = new AckMessage { msg_data = new AckData { msg_id = message.msg_data.msg_id } };
+			
+			this.OutgoingMessageManager.SendAck(senderEndpoint, message.msg_data.msg_id);
 
             //this.SocketHandler.SendMessage(senderEndpoint, null, Encoding.ASCII.GetBytes(this.BuildMessage(ackMsg)));
 

@@ -340,11 +340,11 @@ Used to open a path between two nodes, whom have been made aware of each other t
 As an example, two nodes, *A* and *B*, want to talk to each other and will use node *S* to achieve it. 
     
 1. *A* opens an available socket and sends the following to *S*:
-    `{"msg_type":"CONNECT", "msg_data":{"src_node_id": "<src_node_id>", "dst_node_id": "<dst_node_id>", "dst":"<B's IP>", "src":"<A's Port>"}`
+    `{"msg_type":"CONNECT", "msg_data":{"src_node_id": "<src_node_id>", "dst_node_id": "<dst_node_id>", "dst":"", "src":"<A's Port>"}`
 2. *S* forwards the message to *B*, applying *A's* IP:
-    `{"msg_type":"CONNECT", "msg_data":{"src_node_id": "<src_node_id>", "dst_node_id": "<dst_node_id>", "dst":"<B's IP>", "src":"<A's IP>:<A's Port>"}`
+    `{"msg_type":"CONNECT", "msg_data":{"src_node_id": "<src_node_id>", "dst_node_id": "<dst_node_id>", "dst":"", "src":"<A's IP>:<A's Port>"}`
 3. *B* opens an available socket for communication, and returns the message to *S* adding the newly opened port (at this time, *B* should start trying to communicate with *A*, to begin getting through the NAT):
-    `{"msg_type":"CONNECT", "msg_data":{"src_node_id": "<src_node_id>", "dst_node_id": "<dst_node_id", "dst":"<B's IP>:<B's Port>", "src":"<A's IP>:<A's Port>"}`
+    `{"msg_type":"CONNECT", "msg_data":{"src_node_id": "<src_node_id>", "dst_node_id": "<dst_node_id>", "dst":"<B's Port>", "src":"<A's IP>:<A's Port>"}`
 4. *S* forwards the message, adding *B's* IP to the packet:
     `{"msg_type":"CONNECT", "msg_data":{"src_node_id": "<src_node_id>", "dst_node_id": "<dst_node_id>", "dst":"<B's IP>:<B's Port>", "src":"<A's IP>:<A's Port>"}`
 5. *A* now has a full CONNECT message and can now start communicating with B. 

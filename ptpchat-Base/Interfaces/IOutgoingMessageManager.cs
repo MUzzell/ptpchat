@@ -1,19 +1,20 @@
 ﻿namespace PtpChat.Base.Interfaces
 {
-    using System.Net;
+	using System;
+	using System.Net;
 
-    using PtpChat.Base.Classes;
-    using PtpChat.Base.Messages;
+	using PtpChat.Base.Classes;
+	using PtpChat.Base.Messages;
 
-    public interface IOutgoingMessageManager
+	public interface IOutgoingMessageManager
     {
         void SendHello(Node node, HelloMessage helloMessage);
 
         void SendHello(IPEndPoint endpoint, HelloMessage connectMessage);
 
-        void SendConnect(Node node, ConnectMessage connectMessage);
+        void SendConnect(Node node, Guid targetNodeId);
 
-        void SendConnect(IPEndPoint endpoint, ConnectMessage connectMessage);
+        void SendConnect(IPEndPoint endpoint, Guid targetNodeId);
 
         void SendMessage(Node node, MessageMessage messageMessage);
 
@@ -23,11 +24,11 @@
 
         void SendChannel(IPEndPoint endpoint, ChannelMessage messageMessage);
 
-        void SendAck(Node node, AckMessage ackMessage);
+        void SendAck(Node node, Guid msgId);
 
-        void SendAck(IPEndPoint endpoint, AckMessage ackMessage);
+        void SendAck(IPEndPoint endpoint, Guid msgId);
 
-        void SendHeartBeatHelloToNodes();
+		void Send(IPEndPoint endpoint, BaseMessage message);
 
         void DoHeartBeat(object state);
     }

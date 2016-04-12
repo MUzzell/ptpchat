@@ -42,12 +42,14 @@
         /// </summary>
         Node Delete(Guid nodeId);
 
+		/*
         /// <summary>
         /// Get a single node that would be suitable for sending a CONNECT Message 
         /// </summary>
         /// <param name="nodeId">The ID of the node we wish to send a CONNECT to.</param>
         /// <returns>The Node that is considered siutable.</returns>
         Node GetNodeForConnect(Guid nodeId);
+		*/
 
         /// <summary>
         /// Updates the node which has the given nodeId, using the funtion provided to edit its attributs.
