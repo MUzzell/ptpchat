@@ -45,7 +45,7 @@ This protocol has been designed to work on top of the TCP stack, and it is recom
 
 This protocol has been formulated to work within the internet, over TCP using SSL. For SSL communication, every Node should use its Node Certificate. 
 
-For certificate verification, All certs must be trusted in an accepted manner. In practice, a network could use a server node that to perform certificate signing of a commonly trusted certificate, and would maintain a common list of basic client information. Certificate signing is not part of this protocol.
+For certificate verification, All certs must be trusted in an accepted manner. In practice, a network could use a server node that will perform certificate signing of a commonly trusted certificate, and would maintain a common list of basic client information. Certificate signing is not part of this protocol.
 
 ####Routing
 
@@ -57,12 +57,16 @@ Messages should also be validated before transmission or being forwarded. This w
 
 ###Message Format 
 
-Messages will be transferred in JSON. At the head, a message will contain four keys, All other elements in the head should be ignored. These keys are:
+Messages are an Integer prefixed strings, A 4-byte integer and a string, where the integer defines the length of the string, and the string is an encoded JSON object that represents the message. 
 
-1. `msg_type`, containing the verb.
+This JSON object will contain five or six attributes, All other attributes in the head should be ignored. These attributes are:
+
+1. `msg_type`, containing this message verb.
 2. `msg_data`, containing a JSON object holding the data relevant to the message being sent. 
 3. `ttl`, containing the current time to live value as an integer for this message.
-4. `flood`, describing if this message should be flooded to the whole network (i.e. all other connected nodes)
+4. `flood`, describing if this message should be flooded to the whole network (I.e. all other connected nodes)
+5. `sender_id`, containing the node_id of the sender of this message.
+6. `target_id`, containing the node_id of the intended recipient. This can be omitted if the `flood` value is set to true.
 
 All keys, and all verb-specific keys inside `msg_data`, must be in lower-case.
 
@@ -70,19 +74,19 @@ All keys, and all verb-specific keys inside `msg_data`, must be in lower-case.
 
 ####*ttl*
 
-The `ttl` attribute is used to monitor how a message is broadcast around the network of nodes, its behaviour is similar to the TTL value in the Internet Protocol (IP). It is used to allow a node to re-transmit a received message to the intended node, or to the node that might be able to better handle this message (how this is decided is not figured out yet). `ttl` Is a single integer value set to define the number of permitted hops remaining for this message. The `ttl` should be reduced by one and then rebroadcast.
+The `ttl` attribute is used to monitor how a message is broadcast around the network of nodes, its behaviour is similar to the TTL value in the Internet Protocol (IP).`ttl` Is a single integer value set to define the number of permitted hops remaining for this message. The `ttl` should be reduced by one and then rebroadcast.
 
-Certain messages require a specific `ttl` to be applied, as the message's purpose may only be for the intended neighbouring node. In other cases, the TTL can be of any number, defaulting to **32**. See the message formats to view which messages use a TTL of 1 or a TTL of any (marked as 32 in this document).
+Certain messages require a specific `ttl` to be applied, as the message's purpose may only be for the intended neighbouring node. In other cases, the TTL can be of any number, defaulting to **32**. See the message formats to view which messages use a TTL of 1 or a TTL of any (which is marked with a TTL of 32 in this document).
 
 ####*flood*
 
 The `flood` attribute is used to broadcast this message to all connected nodes. It is a single boolean value of either *true* or *false* and should be used on a subset of messages. Upon receiving a message that has `flood` set to *true*, the message should be rebroadcast (and its `ttl` reduced by one) to all neighbouring nodes. 
 
-The `flood` attribute is only set to true on a subset of messages. See the message formats to veiw which messages has this attribute set to true.
+The `flood` attribute is only set to true on a subset of messages. See the message formats to view which messages has this attribute set to true.
 
 ####*node_id*
 
-The `node_id` attribute is used in multiple messages and acts as the identifier of nodes (and 'should' be unique). `node_id` Is single GUID identifier and must remain the same throughout the node's lifetime. Whilst this identifies the node in question, it does not validate the node. 
+The `node_id` attribute is used in multiple messages and acts as the identifier of nodes (and 'should' be unique). `node_id` Is a single GUID identifier and must remain the same throughout the node's lifetime. Whilst this identifies the node in question, it does not validate the node. 
 
 ####*sender_id* and *target_id*
 
@@ -122,7 +126,7 @@ The `address` attribute used in some messages specifies a socket to be used for 
 * `version` : An short string to identify the software and version of this node.
 * `attributes` : A list of key-value strings that represent the abilities of this node. Only one item is required in this list at this time, `node_type`, which identifies this node as a client or server node.
 
-This message is an initial message that is first sent between nodes, performed immediately after the SSL handshake is completed. Its purpose is to present the nodes attributes to the other receiving node. Upon receiving a HELLO message, it MUST be followed with another HELLO message to identify the receiving node. 
+This message is an initial message that is first sent between nodes, performed immediately after the SSL handshake is completed. Its purpose is to present the nodes presence and attributes to the receiving node. Upon receiving a HELLO message, it MUST be responded with using another HELLO message to identify the receiving node. After this initial exchange, a ROUTING message and any CHANNEL messages may follow. 
 
 #####ACK
 
