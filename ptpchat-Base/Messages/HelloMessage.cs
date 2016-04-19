@@ -2,6 +2,8 @@
 {
     public class HelloMessage : BaseMessage
     {
+		public new MessageType msg_type => MessageType.HELLO;
+
         public new HelloData msg_data { get; set; }
     }
 

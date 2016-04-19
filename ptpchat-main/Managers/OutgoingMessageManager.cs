@@ -45,9 +45,26 @@
             this.Send(endpoint, connectMessage);
         }
 
-        public void SendConnect(Node node, ConnectMessage connectMessage) => this.SendConnect(node.IpEndPoint, connectMessage);
+        public void SendConnect(Node node, Guid targetNodeId) => this.SendConnect(node.IpEndPoint, targetNodeId);
 
-        public void SendConnect(IPEndPoint endpoint, ConnectMessage connectMessage) => this.Send(endpoint, connectMessage);
+        public void SendConnect(IPEndPoint endpoint, Guid targetNodeId)
+        {
+            var connectMessage = new ConnectMessage
+            {
+                ttl = 32,
+                flood = false,
+
+                msg_data = new ConnectData
+                {
+                    src = $"{this.nodeManager.LocalNode.IpAddress}:{this.nodeManager.LocalNode.Port}",
+                    src_node_id = this.nodeManager.LocalNode.NodeId.Id,
+                    dst = null,
+                    dst_node_id = targetNodeId
+                }
+            };
+
+            this.Send(endpoint, connectMessage);
+        }
 
         public void SendMessage(Node node, MessageMessage messageMessage) => this.SendMessage(node.IpEndPoint, messageMessage);
 
@@ -65,25 +82,33 @@
             this.Send(endpoint, channelMessage);
         }
 
-        public void SendAck(Node node, AckMessage ackMessage) => this.SendAck(node.IpEndPoint, ackMessage);
+        public void SendAck(Node node, Guid msgId) => this.SendAck(node.IpEndPoint, msgId);
 
-        public void SendAck(IPEndPoint endpoint, AckMessage ackMessage)
+        public void SendAck(IPEndPoint endpoint, Guid msgId)
         {
-            this.MessageTTLOne(ackMessage);
+            var ackMessage = new AckMessage
+            {
+                ttl = 1,
+                flood = false,
+                msg_data = new AckData
+                {
+                    msg_id = msgId
+                }
+            };
+
             this.Send(endpoint, ackMessage);
         }
 
-        public void SendHeartBeatHelloToNodes()
+        private void SendHeartBeatHelloToNodes()
         {
             var nodes = this.nodeManager.GetNodes(node => node.Value.IsConnected || node.Value.IsStartUpNode).ToList();
 
             this.logger.Debug($"Sending Hellos to {nodes.Count} nodes");
 
             var msg = new HelloMessage
-                          {
-                              msg_type = MessageType.HELLO,
-                              msg_data = new HelloData { node_id = this.nodeManager.LocalNode.NodeId.GetWholeId(), version = this.nodeManager.LocalNode.Version }
-                          };
+            {
+                msg_data = new HelloData { node_id = this.nodeManager.LocalNode.NodeId.GetWholeId(), version = this.nodeManager.LocalNode.Version }
+            };
 
             foreach (var node in nodes)
             {
@@ -99,7 +124,7 @@
             this.ResendMessages();
         }
 
-        private void Send(IPEndPoint endpoint, BaseMessage message)
+        public void Send(IPEndPoint endpoint, BaseMessage message)
         {
             var msg = Encoding.ASCII.GetBytes(this.SerialiseObject(message));
             this.SocketHandler.SendMessage(endpoint, null, msg);
@@ -126,20 +151,19 @@
             foreach (var channel in channels)
             {
                 var chanMsg = new ChannelMessage
-                                  {
-                                      msg_data =
-                                          new ChannelData
-                                              {
-                                                  channel_id = channel.ChannelId,
-                                                  channel = channel.ChannelName,
-                                                  closed = channel.Closed,
-                                                  members = ExtensionMethods.BuildNodeIdList(channel.Nodes),
-                                                  msg_id = Guid.NewGuid(),
-                                                  node_id = this.nodeManager.LocalNode.NodeId.GetWholeId()
-                                              }
-                                  };
+                {
+                    msg_data = new ChannelData
+                                          {
+                                              channel_id = channel.ChannelId,
+                                              channel = channel.ChannelName,
+                                              closed = channel.Closed,
+                                              members = ExtensionMethods.BuildNodeIdList(channel.Nodes),
+                                              msg_id = Guid.NewGuid(),
+                                              node_id = this.nodeManager.LocalNode.NodeId.GetWholeId()
+                                          }
+                };
 
-                this.logger.Debug($"Broadcasting Channel Message ({channel.ChannelName} : {channel.ChannelId}) to {channel.Nodes.Count} nodes");
+                this.logger.Debug($"Broadcasting Channel Message ({channel.ChannelName} : {channel.ChannelId}) to connected nodes");
 
                 foreach (var node in this.nodeManager.GetNodes().Where(n => n.IsConnected))
                 {
@@ -153,6 +177,7 @@
 
         public int GetPortForNode(Guid unknownId)
         {
+            //42 TCP UDP (ARPA Host Name Server Protocol Official)
             return 42;
         }
 
