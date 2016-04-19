@@ -40,8 +40,11 @@
         }
 
         public event EventHandler ChannelAdd;
+
         public event EventHandler ChannelDelete;
+
         public event EventHandler ChannelUpdate;
+
         public event EventHandler MessageRecieved;
 
         public bool IsNodeInChannel(Guid channelId, Guid nodeId)

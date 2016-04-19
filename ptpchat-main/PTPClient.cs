@@ -40,7 +40,7 @@
                 new Node
                     {
                         IpAddress = config.InitialServerAddress,
-                        NodeId = config.InitialServerGuid,
+                        NodeId = new NodeId("Server", config.InitialServerGuid),
                         Port = config.InitialServerPort,
                         Added = DateTime.Now,
                         LastRecieve = DateTime.Now,
@@ -84,7 +84,7 @@
                         ChannelName = "Test Channel",
                         Closed = false,
                         LastTransmission = DateTime.Now,
-                        Nodes = new List<Guid> { this.nodeManager.LocalNode.NodeId },
+                        Nodes = new List<Guid> { this.nodeManager.LocalNode.NodeId.Id },
                         IsUpToDate = true
                     });
         }

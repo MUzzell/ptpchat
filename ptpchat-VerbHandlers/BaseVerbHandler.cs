@@ -68,7 +68,7 @@
                 return false;
             }
 
-            if (nodeId == this.NodeManager.LocalNode.NodeId)
+            if (nodeId == this.NodeManager.LocalNode.NodeId.Id)
             {
                 this.logger.Error(LogSameNodeId);
                 return false;

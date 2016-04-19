@@ -37,6 +37,7 @@
   <ItemGroup>
     <Compile Include="Classes\Channel.cs" />
     <Compile Include="Classes\ChatMessage.cs" />
+    <Compile Include="Classes\NodeId.cs" />
     <Compile Include="Classes\ResponseMessage.cs" />
     <Compile Include="EventArguements\ChannelEventArgs.cs" />
     <Compile Include="EventArguements\ChannelMessageEventArgs.cs" />

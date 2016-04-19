@@ -3,7 +3,6 @@
     using System;
     using System.Linq;
     using System.Net;
-    using System.Runtime.CompilerServices;
     using System.Text;
 
     using Newtonsoft.Json;
@@ -23,9 +22,9 @@
 
         private readonly IResponseManager responseManager;
 
-        private ISocketHandler SocketHandler { get; }
-
         public int DefaultTimeToLive { get; }
+
+        private ISocketHandler SocketHandler { get; }
 
         public OutgoingMessageManager(ILogManager logger, IDataManager dataManager, ISocketHandler socketHandler, int defaultTtl)
         {
@@ -62,7 +61,7 @@
 
         public void SendChannel(IPEndPoint endpoint, ChannelMessage channelMessage)
         {
-            this.SetMessageFlood(channelMessage);
+            this.MessageFlood(channelMessage);
             this.Send(endpoint, channelMessage);
         }
 
@@ -80,12 +79,16 @@
 
             this.logger.Debug($"Sending Hellos to {nodes.Count} nodes");
 
-            var msg = new HelloMessage { msg_type = MessageType.HELLO, msg_data = new HelloData { node_id = this.nodeManager.LocalNode.NodeId, version = this.nodeManager.LocalNode.Version } };
+            var msg = new HelloMessage
+                          {
+                              msg_type = MessageType.HELLO,
+                              msg_data = new HelloData { node_id = this.nodeManager.LocalNode.NodeId.GetWholeId(), version = this.nodeManager.LocalNode.Version }
+                          };
 
             foreach (var node in nodes)
             {
                 this.SendHello(node.IpEndPoint, msg);
-                this.nodeManager.Update(node.NodeId, n => n.LastSend = DateTime.Now);
+                this.nodeManager.Update(node.NodeId.Id, n => n.LastSend = DateTime.Now);
             }
         }
 
@@ -132,16 +135,16 @@
                                                   closed = channel.Closed,
                                                   members = ExtensionMethods.BuildNodeIdList(channel.Nodes),
                                                   msg_id = Guid.NewGuid(),
-                                                  node_id = this.nodeManager.LocalNode.NodeId
+                                                  node_id = this.nodeManager.LocalNode.NodeId.GetWholeId()
                                               }
                                   };
 
                 this.logger.Debug($"Broadcasting Channel Message ({channel.ChannelName} : {channel.ChannelId}) to {channel.Nodes.Count} nodes");
 
-                foreach (var node in this.nodeManager.GetNodes(n => channel.Nodes.Contains(n.Key)))
+                foreach (var node in this.nodeManager.GetNodes().Where(n => n.IsConnected))
                 {
                     this.SendChannel(node, chanMsg);
-                    this.nodeManager.Update(node.NodeId, n => n.LastSend = DateTime.Now);
+                    this.nodeManager.Update(node.NodeId.Id, n => n.LastSend = DateTime.Now);
                 }
 
                 this.channelManager.Update(channel.ChannelId, c => c.LastTransmission = DateTime.Now);
@@ -165,7 +168,7 @@
             message.flood = false;
         }
 
-        private void SetMessageFlood(BaseMessage message)
+        private void MessageFlood(BaseMessage message)
         {
             message.ttl = this.DefaultTimeToLive;
             message.flood = true;

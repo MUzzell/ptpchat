@@ -2,13 +2,13 @@
 {
     public class BaseMessage
     {
-        public object msg_data { get; set; }
-
-        public int ttl { get; set; }
-
         public bool flood { get; set; }
 
+        public object msg_data { get; set; }
+
         public MessageType msg_type { get; set; }
+
+        public int ttl { get; set; }
     }
 
     public enum MessageType

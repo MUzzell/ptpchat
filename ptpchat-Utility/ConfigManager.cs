@@ -13,6 +13,8 @@
 
         public string DefaultLoggingFile => Settings.Default.DefaultLoggingFile;
 
+        public int DefaultTTL => Settings.Default.DefaultTTL;
+
         public IPAddress InitialServerAddress => IPAddress.Parse(Settings.Default.DefaultServer_Host);
 
         public Guid InitialServerGuid => Guid.Parse(Settings.Default.DefaultServer_Guid);
@@ -25,7 +27,7 @@
         {
             get
             {
-                if (String.IsNullOrWhiteSpace(Settings.Default.LocalNodeId))
+                if (string.IsNullOrWhiteSpace(Settings.Default.LocalNodeId))
                 {
                     var localNodeId = Guid.NewGuid();
                     Settings.Default.LocalNodeId = localNodeId.ToString();
@@ -33,7 +35,6 @@
                     return localNodeId;
                 }
                 return Guid.Parse(Settings.Default.LocalNodeId);
-
             }
         }
 
@@ -41,8 +42,6 @@
 
         public int MaxMessageResendAttempts => Settings.Default.MaxMessageResendAttempts;
 
-        public int DefaultTTL => Settings.Default.DefaultTTL;
-    
         public TimeSpan MessageCutoff => new TimeSpan(0, 0, 0, Settings.Default.MessageCutoff);
 
         public TimeSpan NodeCutoff => new TimeSpan(0, 0, 0, Settings.Default.NodeCutoff);

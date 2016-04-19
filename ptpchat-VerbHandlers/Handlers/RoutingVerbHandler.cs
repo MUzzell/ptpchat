@@ -114,14 +114,18 @@
         {
             this.logger.Debug($"Routing message recieved from: {senderEndpoint}");
 
-            var senderId = message.msg_data.node_id;
+            var longId = message.msg_data.node_id;
 
-            var nodes = message.msg_data.nodes;
+            string senderName;
+            Guid senderId;
+            var successful = ExtensionMethods.SplitNodeId(longId, out senderName, out senderId);
 
-            if (!this.CheckNodeId(senderId))
+            if (!successful || !this.CheckNodeId(senderId))
             {
                 return false;
             }
+
+            var nodes = message.msg_data.nodes;
 
             if (nodes == null)
             {
@@ -134,11 +138,8 @@
                 var nodeAddress = node["address"].Trim();
 
                 Guid nodeId;
-                if (!Guid.TryParse(node["node_id"], out nodeId))
-                {
-                    this.logger.Warning(LogInvalidNodesEntry);
-                    continue;
-                }
+                string nodeName;
+                ExtensionMethods.SplitNodeId(node["node_id"], out nodeName, out nodeId);
 
                 if (nodeId == Guid.Empty)
                 {
@@ -146,7 +147,7 @@
                     continue;
                 }
 
-                if (nodeId == this.NodeManager.LocalNode.NodeId)
+                if (nodeId == this.NodeManager.LocalNode.NodeId.Id)
                 {
                     this.logger.Debug("Ignoring our entry in ROUTING message");
                     continue;
@@ -170,19 +171,20 @@
                     continue;
                 }
 
-                if (!this.NodeManager.GetNodes(d => d.Value.NodeId == nodeId).Any())
+                if (!this.NodeManager.GetNodes(d => d.Value.NodeId.Id == nodeId).Any())
                 {
                     // not seen, add. else, ignore
                     this.NodeManager.Add(
                         new Node
-						{
-							NodeId = nodeId,
-							SeenThrough = senderId,
-							IpAddress = address.Address,
-							Port = address.Port, Version = null,
-							Added = DateTime.Now,
-							LastRecieve = null
-						});
+                            {
+                                NodeId = new NodeId(nodeName, nodeId),
+                                SeenThrough = senderId,
+                                IpAddress = address.Address,
+                                Port = address.Port,
+                                Version = null,
+                                Added = DateTime.Now,
+                                LastRecieve = null
+                            });
                 }
             }
 

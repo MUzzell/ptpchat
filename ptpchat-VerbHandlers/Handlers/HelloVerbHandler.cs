@@ -7,6 +7,7 @@
     using PtpChat.Base.Classes;
     using PtpChat.Base.Interfaces;
     using PtpChat.Base.Messages;
+    using PtpChat.Utility;
 
     public class HelloVerbHandler : BaseVerbHandler<HelloMessage>
     {
@@ -23,19 +24,23 @@
         {
             this.logger.Debug("Hello message recieved from sender: " + senderEndpoint);
 
-            var nodeId = message.msg_data.node_id;
+            var longId = message.msg_data.node_id;
 
-            if (!this.CheckNodeId(nodeId))
+            string senderName;
+            Guid senderId;
+            var successful = ExtensionMethods.SplitNodeId(longId, out senderName, out senderId);
+
+            if (!successful || !this.CheckNodeId(senderId))
             {
                 return false;
             }
 
-            var node = this.NodeManager.GetNodes(d => d.Value.NodeId == nodeId).FirstOrDefault();
+            var node = this.NodeManager.GetNodes(d => d.Value.NodeId.Id == senderId).FirstOrDefault();
 
             if (node != null) // Existing Node
             {
                 this.NodeManager.Update(
-                    node.NodeId,
+                    node.NodeId.Id,
                     n =>
                         {
                             n.LastRecieve = DateTime.Now;
@@ -48,7 +53,7 @@
                 this.NodeManager.Add(
                     new Node
                         {
-                            NodeId = nodeId,
+                            NodeId = new NodeId(senderName, senderId),
                             Added = DateTime.Now,
                             LastRecieve = DateTime.Now,
                             IpAddress = senderEndpoint.Address,

@@ -8,6 +8,7 @@
     using PtpChat.Base.Classes;
     using PtpChat.Base.Interfaces;
     using PtpChat.Base.Messages;
+    using PtpChat.Utility;
 
     public class MessageVerbHandler : BaseVerbHandler<MessageMessage>
     {
@@ -32,7 +33,13 @@
 
             var data = message.msg_data;
 
-            if (!this.CheckNodeId(data.node_id))
+            var longId = data.node_id;
+
+            string senderName;
+            Guid senderId;
+            var successful = ExtensionMethods.SplitNodeId(longId, out senderName, out senderId);
+
+            if (!successful || !this.CheckNodeId(senderId))
             {
                 return false;
             }
@@ -69,10 +76,10 @@
 
             var recipientIds = this.ParseRecipientList(data.recipient);
 
-            var newMessage = new ChatMessage { ChannelId = data.channel_id, DateSent = data.timestamp, MessageContent = data.message, MessageId = data.msg_id, SenderId = data.node_id };
+            var newMessage = new ChatMessage { ChannelId = data.channel_id, DateSent = data.timestamp, MessageContent = data.message, MessageId = data.msg_id, SenderId = senderId };
 
             //is this message for us?
-            if (recipientIds.Contains(this.NodeManager.LocalNode.NodeId))
+            if (recipientIds.Contains(this.NodeManager.LocalNode.NodeId.Id))
             {
                 this.ChannelManager.HandleMessageForChannel(newMessage);
             }

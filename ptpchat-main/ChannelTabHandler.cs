@@ -40,18 +40,19 @@
 
         public void SendMessage(Guid channelId, string message)
         {
-            var chatMessage = new ChatMessage { ChannelId = channelId, DateSent = DateTime.Now, MessageContent = message, MessageId = Guid.NewGuid(), SenderId = this.NodeManager.LocalNode.NodeId };
+            var chatMessage = new ChatMessage { ChannelId = channelId, DateSent = DateTime.Now, MessageContent = message, MessageId = Guid.NewGuid(), SenderId = this.NodeManager.LocalNode.NodeId.Id };
 
             this.ChannelManager.HandleMessageForChannel(chatMessage);
 
             var channel = this.ChannelManager.GetChannels(c => c.Value.ChannelId == channelId).First();
 
+            //does recipient list and channelMessage.members need to be a dictionary when all the keys are just "node_id" ?
+            //todo, make it a list of Guids for simplicity, or a list of class objects for moving lots of data around
             var recipientList = new List<Dictionary<string, string>>();
 
             foreach (var nodeId in channel.Nodes)
             {
-                var recipient = new Dictionary<string, string>();
-                recipient.Add("node_id", nodeId.ToString());
+                var recipient = new Dictionary<string, string> { { "node_id", nodeId.ToString() } };
                 recipientList.Add(recipient);
             }
 
@@ -66,7 +67,7 @@
                                              message = chatMessage.MessageContent,
                                              timestamp = chatMessage.DateSent,
                                              msg_id = chatMessage.MessageId,
-                                             node_id = this.NodeManager.LocalNode.NodeId,
+                                             node_id = this.NodeManager.LocalNode.NodeId.GetWholeId(),
                                              recipient = recipientList
                                          }
                              };

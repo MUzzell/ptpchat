@@ -166,17 +166,17 @@
         {
         }
 
-        //}
-
-        ////#########
-        ////Event Handlers
-        ////#########
-        //private void ErrorMessages_OnAdd(object sender, string error)
-        //{
+        //private void ClientSocketManagers_OnAdd(object sender, SocketManager socketManager)
 
         //    UI.Invoke(() => this.listBox_ErrorLog.Items.Add(error));
+        //{
+        //private void ErrorMessages_OnAdd(object sender, string error)
+        ////#########
+        ////Event Handlers
 
-        //private void ClientSocketManagers_OnAdd(object sender, SocketManager socketManager)
+        ////#########
+
+        //}
         //{
         //    //once we've added them to our clients list, we set up the onchange event
         //    //so the UI will update with any changes to the socket manager

@@ -1,6 +1,5 @@
 ﻿namespace PtpChat.Base.Messages
 {
-    using System;
     using System.Collections.Generic;
 
     public class RoutingMessage : BaseMessage
@@ -10,7 +9,7 @@
 
     public class RoutingData
     {
-        public Guid node_id { get; set; }
+        public string node_id { get; set; }
 
         public List<Dictionary<string, string>> nodes { get; set; }
     }
