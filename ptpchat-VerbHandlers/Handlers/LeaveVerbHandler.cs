@@ -8,7 +8,9 @@
 	using PtpChat.Base.Messages;
 	using Base.Classes;
 
-	public class LeaveVerbHandler : BaseVerbHandler<LeaveMessage>
+	using PtpChat.Utility;
+
+    public class LeaveVerbHandler : BaseVerbHandler<LeaveMessage>
 	{
 		private const string LogInvalidChannelId = "LEAVE message contained invalid channel_id, ignoring";
 
@@ -25,14 +27,18 @@
 		{
 			this.logger.Debug($"LEAVE message recieved from sender: {senderEndpoint}");
 
-			var nodeId = message.msg_data.node_id;
+            var longId = message.msg_data.node_id;
 
-			if (!this.CheckNodeId(nodeId))
-			{
-				return false;
-			}
+            string senderName;
+            Guid senderId;
+            var successful = ExtensionMethods.SplitNodeId(longId, out senderName, out senderId);
 
-			var data = message.msg_data;
+            if (!successful || !this.CheckNodeId(senderId))
+            {
+                return false;
+            }
+
+            var data = message.msg_data;
 
 			if (data.channel_id == Guid.Empty)
 			{
@@ -65,7 +71,7 @@
 			var channel = channels.First();
 
 			//are we aware of this node?
-			var nodes = this.NodeManager.GetNodes(kv => kv.Key == nodeId);
+			var nodes = this.NodeManager.GetNodes(kv => kv.Key == senderId);
 
 			//no -> add
 			if (!nodes.Any())
@@ -75,17 +81,17 @@
 					Added = DateTime.Now,
 					SeenThrough = null,
 					IpAddress = null,
-					NodeId = nodeId,
+					NodeId = new NodeId(senderName, senderId),
 					LastRecieve = null,
 					LastSend = null
 				});
 			}
 
 			//is this node already part of the channel?
-			if (!channel.Nodes.Contains(data.node_id))
+			if (!channel.Nodes.Contains(senderId))
 			{
-				this.logger.Info(string.Format(LogAddingNodeToChannel, nodeId, channel.ChannelId));
-				this.ChannelManager.Update(channel.ChannelId, c => c.Nodes.Remove(data.node_id));
+				this.logger.Info(string.Format(LogAddingNodeToChannel, senderId, channel.ChannelId));
+				this.ChannelManager.Update(channel.ChannelId, c => c.Nodes.Remove(senderId));
 			}
 
 			return true;

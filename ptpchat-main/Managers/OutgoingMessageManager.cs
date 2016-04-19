@@ -3,7 +3,6 @@
     using System;
     using System.Linq;
     using System.Net;
-    using System.Runtime.CompilerServices;
     using System.Text;
 
     using Newtonsoft.Json;
@@ -23,9 +22,9 @@
 
         private readonly IResponseManager responseManager;
 
-        private ISocketHandler SocketHandler { get; }
-
         public int DefaultTimeToLive { get; }
+
+        private ISocketHandler SocketHandler { get; }
 
         public OutgoingMessageManager(ILogManager logger, IDataManager dataManager, ISocketHandler socketHandler, int defaultTtl)
         {
@@ -48,25 +47,24 @@
 
         public void SendConnect(Node node, Guid targetNodeId) => this.SendConnect(node.IpEndPoint, targetNodeId);
 
-		public void SendConnect(IPEndPoint endpoint, Guid targetNodeId)
-		{
-			ConnectMessage connectMessage = new ConnectMessage()
-			{
-				ttl = 32,
-				flood = false,
+        public void SendConnect(IPEndPoint endpoint, Guid targetNodeId)
+        {
+            var connectMessage = new ConnectMessage
+            {
+                ttl = 32,
+                flood = false,
 
-				msg_data = new ConnectData
-				{
-					src = $"{this.nodeManager.LocalNode.IpAddress}:{this.nodeManager.LocalNode.Port}",
-					src_node_id = this.nodeManager.LocalNode.NodeId,
-					dst = null,
-					dst_node_id = targetNodeId
-				}
-			};
+                msg_data = new ConnectData
+                {
+                    src = $"{this.nodeManager.LocalNode.IpAddress}:{this.nodeManager.LocalNode.Port}",
+                    src_node_id = this.nodeManager.LocalNode.NodeId.Id,
+                    dst = null,
+                    dst_node_id = targetNodeId
+                }
+            };
 
-			this.Send(endpoint, connectMessage)
-				
-		}
+            this.Send(endpoint, connectMessage);
+        }
 
         public void SendMessage(Node node, MessageMessage messageMessage) => this.SendMessage(node.IpEndPoint, messageMessage);
 
@@ -80,7 +78,7 @@
 
         public void SendChannel(IPEndPoint endpoint, ChannelMessage channelMessage)
         {
-            this.SetMessageFlood(channelMessage);
+            this.MessageFlood(channelMessage);
             this.Send(endpoint, channelMessage);
         }
 
@@ -88,15 +86,15 @@
 
         public void SendAck(IPEndPoint endpoint, Guid msgId)
         {
-			var ackMessage = new AckMessage
-			{
-				ttl = 1,
-				flood = false,
-				msg_data = new AckData
-				{
-					msg_id = msgId
-				}
-			};
+            var ackMessage = new AckMessage
+            {
+                ttl = 1,
+                flood = false,
+                msg_data = new AckData
+                {
+                    msg_id = msgId
+                }
+            };
 
             this.Send(endpoint, ackMessage);
         }
@@ -108,18 +106,14 @@
             this.logger.Debug($"Sending Hellos to {nodes.Count} nodes");
 
             var msg = new HelloMessage
-			{
-				msg_data = new HelloData
-				{
-					node_id = this.nodeManager.LocalNode.NodeId,
-					version = this.nodeManager.LocalNode.Version
-				}
-			};
+            {
+                msg_data = new HelloData { node_id = this.nodeManager.LocalNode.NodeId.GetWholeId(), version = this.nodeManager.LocalNode.Version }
+            };
 
             foreach (var node in nodes)
             {
                 this.SendHello(node.IpEndPoint, msg);
-                this.nodeManager.Update(node.NodeId, n => n.LastSend = DateTime.Now);
+                this.nodeManager.Update(node.NodeId.Id, n => n.LastSend = DateTime.Now);
             }
         }
 
@@ -157,25 +151,24 @@
             foreach (var channel in channels)
             {
                 var chanMsg = new ChannelMessage
-				{
-					msg_data =
-					new ChannelData
-					{
-						channel_id = channel.ChannelId,
-						channel = channel.ChannelName,
-						closed = channel.Closed,
-						members = ExtensionMethods.BuildNodeIdList(channel.Nodes),
-						msg_id = Guid.NewGuid(),
-						node_id = this.nodeManager.LocalNode.NodeId
-					}
-				};
+                {
+                    msg_data = new ChannelData
+                                          {
+                                              channel_id = channel.ChannelId,
+                                              channel = channel.ChannelName,
+                                              closed = channel.Closed,
+                                              members = ExtensionMethods.BuildNodeIdList(channel.Nodes),
+                                              msg_id = Guid.NewGuid(),
+                                              node_id = this.nodeManager.LocalNode.NodeId.GetWholeId()
+                                          }
+                };
 
                 this.logger.Debug($"Broadcasting Channel Message ({channel.ChannelName} : {channel.ChannelId}) to connected nodes");
 
-                foreach (var node in this.nodeManager.GetNodes(n => n.Value.IsConnected))
+                foreach (var node in this.nodeManager.GetNodes().Where(n => n.IsConnected))
                 {
                     this.SendChannel(node, chanMsg);
-                    this.nodeManager.Update(node.NodeId, n => n.LastSend = DateTime.Now);
+                    this.nodeManager.Update(node.NodeId.Id, n => n.LastSend = DateTime.Now);
                 }
 
                 this.channelManager.Update(channel.ChannelId, c => c.LastTransmission = DateTime.Now);
@@ -184,8 +177,8 @@
 
         public int GetPortForNode(Guid unknownId)
         {
-			//42 TCP UDP (ARPA Host Name Server Protocol Official)
-			return 42;
+            //42 TCP UDP (ARPA Host Name Server Protocol Official)
+            return 42;
         }
 
         private void MessageTTLOne(BaseMessage message)
@@ -200,7 +193,7 @@
             message.flood = false;
         }
 
-        private void SetMessageFlood(BaseMessage message)
+        private void MessageFlood(BaseMessage message)
         {
             message.ttl = this.DefaultTimeToLive;
             message.flood = true;

@@ -1,16 +1,16 @@
 ﻿namespace PtpChat.UI.Subforms
 {
-	using System;
-	using System.Collections.Generic;
-	using System.Drawing;
-	using System.Windows.Forms;
-	using System.Linq;
+    using System;
+    using System.Drawing;
+    using System.Linq;
+    using System.Windows.Forms;
 
-	using PtpChat.Base.EventArguements;
-	using PtpChat.Base.Interfaces;
-	using Base.Classes;
-	using BrightIdeasSoftware;
-	public partial class NodeListTab : UserControl, IEventManager
+    using BrightIdeasSoftware;
+
+    using PtpChat.Base.Classes;
+    using PtpChat.Base.Interfaces;
+
+    public partial class NodeListTab : UserControl, IEventManager
     {
         private readonly ILogManager Logger;
         private readonly ISocketHandler SocketHandler;
@@ -31,26 +31,25 @@
                 this.NodeManager.NodeUpdate += this.RefreshNodeList;
 
                 var nodes = this.NodeManager.GetNodes().ToList();
-                
+
                 UI.Invoke(() => this.NodeListTab_Nodes.SetObjects(nodes));
             }
         }
 
         private Node GetSelectedNode() => this.NodeListTab_Nodes?.FocusedObject as Node;
 
-		public void NewNode(object sender, EventArgs e)
-		{
-			var nodes = this.NodeManager.GetNodes().ToList();
+        public void NewNode(object sender, EventArgs e)
+        {
+            var nodes = this.NodeManager.GetNodes().ToList();
 
-			UI.Invoke(() => this.NodeListTab_Nodes.UpdateObjects(nodes));
-		}
+            UI.Invoke(() => this.NodeListTab_Nodes.UpdateObjects(nodes));
+        }
 
         public void RefreshNodeList(object sender, EventArgs e)
         {
-			var nodes = this.NodeManager.GetNodes().ToList();
+            var nodes = this.NodeManager.GetNodes().ToList();
 
-			UI.Invoke(() => this.NodeListTab_Nodes.UpdateObjects(nodes));
-
+            UI.Invoke(() => this.NodeListTab_Nodes.UpdateObjects(nodes));
         }
 
         //public object OnlineImageGetter(object rowObject)
@@ -62,7 +61,7 @@
 
         private void NodeListTab_Nodes_RightMouseClick(object sender, CellRightClickEventArgs e)
         {
-			this.RightClickContextMenu.Show(this.NodeListTab_Nodes, new Point(e.Location.X, e.Location.Y));
+            this.RightClickContextMenu.Show(this.NodeListTab_Nodes, new Point(e.Location.X, e.Location.Y));
         }
 
         private void NodeListTab_Nodes_DoubleMouseClick(object sender, EventArgs e)
@@ -85,10 +84,9 @@
         private void RightClickMenuClick_DeleteClick(object sender, EventArgs e)
         {
         }
+    }
 
-	}
-
-	internal class NodeView
+    internal class NodeView
     {
         public string Name;
 

@@ -39,7 +39,7 @@
 
             this.logger = logger;
 
-            this.LocalNode = new Node { NodeId = config.LocalNodeId, Version = config.LocalNodeVersion };
+            this.LocalNode = new Node { NodeId = new NodeId("LocalNode", config.LocalNodeId), Version = config.LocalNodeVersion };
 
             this.ProcessTimer = new Timer(this.ProcessNodes, null, 10000, 5000);
 
@@ -56,7 +56,7 @@
 
         public void Add(Node node)
         {
-            if (!this.nodes.TryAdd(node.NodeId, node))
+            if (!this.nodes.TryAdd(node.NodeId.Id, node))
             {
                 throw new InvalidOperationException("Add, Node is already present");
             }
@@ -73,7 +73,7 @@
                 throw new ArgumentNullException(nameof(node), @"node or its ID is null");
             }
 
-            return this.Delete(node.NodeId);
+            return this.Delete(node.NodeId.Id);
         }
 
         public Node Delete(Guid nodeId)

@@ -8,6 +8,7 @@
     using PtpChat.Base.Classes;
     using PtpChat.Base.Interfaces;
     using PtpChat.Base.Messages;
+    using PtpChat.Utility;
 
     public class MessageVerbHandler : BaseVerbHandler<MessageMessage>
     {
@@ -28,58 +29,64 @@
 
         protected override bool HandleVerb(MessageMessage message, IPEndPoint senderEndpoint)
         {
-            this.logger.Debug($"MESSAGE message recieved from sender: {senderEndpoint}");
+            //this.logger.Debug($"MESSAGE message recieved from sender: {senderEndpoint}");
 
-            var data = message.msg_data;
+            //var data = message.msg_data;
 
-            if (!this.CheckNodeId(data.node_id))
-            {
-                return false;
-            }
+            //var longId = data.node_id;
 
-            if (data.msg_id == Guid.Empty)
-            {
-                this.logger.Warning(LogInvalidMsgId);
-                return false;
-            }
+            //string senderName;
+            //Guid senderId;
+            //var successful = ExtensionMethods.SplitNodeId(longId, out senderName, out senderId);
 
-            if (data.channel_id == Guid.Empty)
-            {
-                this.logger.Warning(LogInvalidChannelId);
-                return false;
-            }
+            //if (!successful || !this.CheckNodeId(senderId))
+            //{
+            //    return false;
+            //}
 
-            if (string.IsNullOrWhiteSpace(data.channel))
-            {
-                this.logger.Warning(LogInvalidChannelName);
-                return false;
-            }
+            //if (data.msg_id == Guid.Empty)
+            //{
+            //    this.logger.Warning(LogInvalidMsgId);
+            //    return false;
+            //}
 
-            if (string.IsNullOrWhiteSpace(data.message))
-            {
-                this.logger.Warning(LogInvalidMessage);
-                return false;
-            }
+            //if (data.channel_id == Guid.Empty)
+            //{
+            //    this.logger.Warning(LogInvalidChannelId);
+            //    return false;
+            //}
 
-            if (data.recipient == null || !data.recipient.Any())
-            {
-                this.logger.Warning(LogInvalidNoMembers);
-                return false;
-            }
+            //if (string.IsNullOrWhiteSpace(data.channel))
+            //{
+            //    this.logger.Warning(LogInvalidChannelName);
+            //    return false;
+            //}
 
-            var recipientIds = this.ParseRecipientList(data.recipient);
+            //if (string.IsNullOrWhiteSpace(data.message))
+            //{
+            //    this.logger.Warning(LogInvalidMessage);
+            //    return false;
+            //}
 
-            var newMessage = new ChatMessage { ChannelId = data.channel_id, DateSent = data.timestamp, MessageContent = data.message, MessageId = data.msg_id, SenderId = data.node_id };
+            //if (data.recipient == null || !data.recipient.Any())
+            //{
+            //    this.logger.Warning(LogInvalidNoMembers);
+            //    return false;
+            //}
 
-            //is this message for us?
-            if (recipientIds.Contains(this.NodeManager.LocalNode.NodeId))
-            {
-                this.ChannelManager.HandleMessageForChannel(newMessage);
-            }
+            //var recipientIds = this.ParseRecipientList(data.recipient);
 
-            var ackMsg = new AckMessage { msg_data = new AckData { msg_id = message.msg_data.msg_id } };
+            //var newMessage = new ChatMessage { ChannelId = data.channel_id, DateSent = data.timestamp, MessageContent = data.message, MessageId = data.msg_id, SenderId = senderId };
 
-            this.OutgoingMessageManager.SendAck(senderEndpoint, ackMsg);
+            ////is this message for us?
+            //if (recipientIds.Contains(this.NodeManager.LocalNode.NodeId.Id))
+            //{
+            //    this.ChannelManager.HandleMessageForChannel(newMessage);
+            //}
+
+            //var ackMsg = new AckMessage { msg_data = new AckData { msg_id = message.msg_data.msg_id } };
+
+            //this.OutgoingMessageManager.SendAck(senderEndpoint, ackMsg);
 
             return true;
         }

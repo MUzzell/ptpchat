@@ -20,7 +20,7 @@
 
         public Guid msg_id { get; set; }
 
-        public Guid node_id { get; set; }
+        public string node_id { get; set; }
 
         public List<Dictionary<string, string>> recipient { get; set; }
 

@@ -2,12 +2,11 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Net;
 
-    using PtpChat.Base.Classes;
     using PtpChat.Base.Interfaces;
     using PtpChat.Base.Messages;
+    using PtpChat.Utility;
 
     public class ChannelVerbHandler : BaseVerbHandler<ChannelMessage>
     {
@@ -26,84 +25,105 @@
 
         protected override bool HandleVerb(ChannelMessage message, IPEndPoint senderEndpoint)
         {
-            this.logger.Debug($"CHANNEL message recieved from sender: {senderEndpoint}");
+            //    this.logger.Debug($"CHANNEL message recieved from sender: {senderEndpoint}");
 
-            var nodeId = message.msg_data.node_id;
+            //    var longId = message.msg_data.node_id;
 
-            if (!this.CheckNodeId(nodeId))
-            {
-                return false;
-            }
+            //    string senderName;
+            //    Guid senderId;
+            //    var successful = ExtensionMethods.SplitNodeId(longId, out senderName, out senderId);
 
-            var data = message.msg_data;
+            //    if (!successful || !this.CheckNodeId(senderId))
+            //    {
+            //        return false;
+            //    }
 
-            if (data.channel_id == Guid.Empty)
-            {
-                this.logger.Warning(LogInvalidChannelId);
-                return false;
-            }
+            //    var data = message.msg_data;
 
-            if (data.msg_id == Guid.Empty)
-            {
-                this.logger.Warning(LogInvalidMsgId);
-                return false;
-            }
+            //    if (data.channel_id == Guid.Empty)
+            //    {
+            //        this.logger.Warning(LogInvalidChannelId);
+            //        return false;
+            //    }
 
-            if (string.IsNullOrWhiteSpace(data.channel))
-            {
-                this.logger.Warning(LogInvalidChannelName);
-                return false;
-            }
+            //    if (data.msg_id == Guid.Empty)
+            //    {
+            //        this.logger.Warning(LogInvalidMsgId);
+            //        return false;
+            //    }
 
-            if (data.members == null)
-            {
-                this.logger.Warning(LogInvalidMemebersList);
-                return false;
-            }
+            //    if (string.IsNullOrWhiteSpace(data.channel))
+            //    {
+            //        this.logger.Warning(LogInvalidChannelName);
+            //        return false;
+            //    }
 
-            var memberIds = this.ParseMemberList(message.msg_data.members);
+            //    if (data.members == null)
+            //    {
+            //        this.logger.Warning(LogInvalidMemebersList);
+            //        return false;
+            //    }
 
-            //Add any unknown nodes to our list, but do not connect yet
-            var unknownIds = memberIds.Except(this.NodeManager.GetNodes(n => !memberIds.Contains(n.Key)).Select(n => n.NodeId));
+            //    var memberIds = this.ParseMemberList(message.msg_data.members);
 
-            foreach (var unknownId in unknownIds)
-            {
-                this.NodeManager.Add(new Node { NodeId = unknownId, LastRecieve = null, Added = DateTime.Now, SeenThrough = nodeId });
-            }
+            //    //Add any unknown nodes to our list, but do not connect yet
+            //    var unknownIds = memberIds.Except(this.NodeManager.GetNodes(n => !memberIds.Contains(n.Key)));
 
-            Channel channel;
+            //    foreach (var unknownId in unknownIds)
+            //    {
+            //        this.NodeManager.Add(new Node
+            //        {
+            //            NodeId = new NodeId("", unknownId),
+            //            LastRecieve = null,
+            //            Added = DateTime.Now,
+            //            SeenThrough = senderId
+            //        });
+            //    }
 
-            var channels = this.ChannelManager.GetChannels(c => c.Key == message.msg_data.channel_id);
+            //    Channel channel;
 
-            if (!channels.Any())
-            {
-                channel = new Channel { ChannelId = data.channel_id, ChannelName = data.channel, Closed = data.closed, IsUpToDate = true, LastTransmission = DateTime.Now, Nodes = memberIds.ToList() };
-                this.ChannelManager.Add(channel);
-            }
-            else
-            {
-                channel = channels.First();
-            }
+            //    var channels = this.ChannelManager.GetChannels(c => c.Key == message.msg_data.channel_id);
 
-            //Are we in this channel?
-            if (this.ChannelManager.IsNodeInChannel(this.NodeManager.LocalNode.NodeId, channel.ChannelId))
-            {
-                //Are we listed?
-                if (!memberIds.Contains(this.NodeManager.LocalNode.NodeId)) //send JOIN
-                {
-                    throw new NotImplementedException();
-                }
-                var connectToNodes = this.NodeManager.GetNodes(kv => memberIds.Contains(kv.Value.NodeId) && !kv.Value.IsConnected);
+            //    if (!channels.Any())
+            //    {
+            //        channel = new Channel { ChannelId = data.channel_id, ChannelName = data.channel, Closed = data.closed, IsUpToDate = true, LastTransmission = DateTime.Now, Nodes = memberIds.ToList() };
+            //        this.ChannelManager.Add(channel);
+            //    }
+            //    else
+            //    {
+            //        channel = channels.First();
+            //    }
 
-                foreach (var node in connectToNodes)
-                {
-					this.OutgoingMessageManager.SendConnect(node, node.NodeId);
-                }
-            }
-			
-			this.OutgoingMessageManager.SendAck(senderEndpoint, message.msg_data.msg_id);
+            //    //Are we in this channel?
+            //    if (this.ChannelManager.IsNodeInChannel(this.NodeManager.LocalNode.NodeId.Id, channel.ChannelId))
+            //    {
+            //        //Are we listed?
+            //        if (!memberIds.Contains(this.NodeManager.LocalNode.NodeId.Id)) //send JOIN
+            //        {
+            //            throw new NotImplementedException();
+            //        }
 
-            //this.SocketHandler.SendMessage(senderEndpoint, null, Encoding.ASCII.GetBytes(this.BuildMessage(ackMsg)));
+            //        var connectToNodes = this.NodeManager.GetNodes(kv => memberIds.Contains(kv.Value.NodeId.Id) && !kv.Value.IsConnected);
+
+            //        foreach (var node in connectToNodes)
+            //        {
+            //            var connect = new ConnectMessage
+            //            {
+            //                msg_data = new ConnectData
+            //                {
+            //                    src_node_id = this.NodeManager.LocalNode.NodeId.Id,
+            //                    dst_node_id = node.NodeId.Id,
+            //                    //src = $"{this.SocketHandler.GetPortForNode(node.NodeId)}",
+            //                    dst = null
+            //                }
+            //            };
+            //            //this.SocketHandler.SendMessage(node.SeenThrough.Value, Encoding.ASCII.GetBytes(this.BuildMessage(connect)));
+            //        }
+            //    }
+
+            //    var ackMsg = new AckMessage { msg_data = new AckData { msg_id = message.msg_data.msg_id } };
+
+            //    //this.SocketHandler.SendMessage(senderEndpoint, null, Encoding.ASCII.GetBytes(this.BuildMessage(ackMsg)));
 
             return true;
         }
@@ -114,15 +134,16 @@
 
             foreach (var member in members)
             {
+                var longId = member["node_id"];
+
+                string memberName;
                 Guid memberId;
-                if (!Guid.TryParse(member["node_id"], out memberId))
+                var successful = ExtensionMethods.SplitNodeId(longId, out memberName, out memberId);
+
+                if (!successful || !this.CheckNodeId(memberId))
                 {
                     this.logger.Warning(LogInvalidMembersEntry);
-                    continue;
-                }
 
-                if (!this.CheckNodeId(memberId))
-                {
                     continue;
                 }
 

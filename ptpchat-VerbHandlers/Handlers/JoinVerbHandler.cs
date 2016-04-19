@@ -8,7 +8,9 @@
 	using PtpChat.Base.Messages;
 	using Base.Classes;
 
-	public class JoinVerbHandler : BaseVerbHandler<JoinMessage>
+	using PtpChat.Utility;
+
+    public class JoinVerbHandler : BaseVerbHandler<JoinMessage>
     {
 		private const string LogInvalidChannelId = "JOIN message contained invalid channel_id, ignoring";
 		
@@ -25,14 +27,18 @@
         {
 			this.logger.Debug($"JOIN message recieved from sender: {senderEndpoint}");
 
-			var nodeId = message.msg_data.node_id;
+            var longId = message.msg_data.node_id;
 
-			if (!this.CheckNodeId(nodeId))
-			{
-				return false;
-			}
+            string senderName;
+            Guid senderId;
+            var successful = ExtensionMethods.SplitNodeId(longId, out senderName, out senderId);
 
-			var data = message.msg_data;
+            if (!successful || !this.CheckNodeId(senderId))
+            {
+                return false;
+            }
+
+            var data = message.msg_data;
 
 			if (data.channel_id == Guid.Empty)
 			{
@@ -65,7 +71,7 @@
 			var channel = channels.First();
 
 			//are we aware of this node?
-			var nodes = this.NodeManager.GetNodes(kv => kv.Key == nodeId);
+			var nodes = this.NodeManager.GetNodes(kv => kv.Key == senderId);
 			
 			//no -> add
 			if (!nodes.Any())
@@ -75,22 +81,22 @@
 					Added = DateTime.Now,
 					SeenThrough = null,
 					IpAddress = null,
-					NodeId = nodeId,
+					NodeId = new NodeId(senderName, senderId),
 					LastRecieve = null,
 					LastSend = null
 				});
 			}
 
 			//is this node already part of the channel?
-			if (!channel.Nodes.Contains(data.node_id))
+			if (!channel.Nodes.Contains(senderId))
 			{
-				this.logger.Info(string.Format(LogAddingNodeToChannel, nodeId, channel.ChannelId));
-				this.ChannelManager.Update(channel.ChannelId, c => c.Nodes.Add(data.node_id));
+				this.logger.Info(string.Format(LogAddingNodeToChannel, senderId, channel.ChannelId));
+				this.ChannelManager.Update(channel.ChannelId, c => c.Nodes.Add(senderId));
 
 				//connect to node
-				if (this.ChannelManager.IsNodeInChannel(this.NodeManager.LocalNode.NodeId, channel.ChannelId))
+				if (this.ChannelManager.IsNodeInChannel(this.NodeManager.LocalNode.NodeId.Id, channel.ChannelId))
 				{
-					this.OutgoingMessageManager.SendConnect(senderEndpoint, nodeId);
+					this.OutgoingMessageManager.SendConnect(senderEndpoint, senderId);
 				}
 			}
 

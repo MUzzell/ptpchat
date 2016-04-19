@@ -16,6 +16,8 @@
 
         public IList<ChatMessage> Messages { get; }
 
+        public string Status => this.IsConnected ? "Online" : "Offline";
+
         public DateTime? Added { get; set; }
 
         public IPAddress IpAddress { get; set; }
@@ -24,7 +26,8 @@
 
         public DateTime? LastSend { get; set; }
 
-        public Guid NodeId { get; set; }
+        //public Guid NodeId { get; set; }
+        public NodeId NodeId { get; set; }
 
         public int Port { get; set; }
 
@@ -37,7 +40,5 @@
             this.Channels = new List<Channel>();
             this.Messages = new List<ChatMessage>();
         }
-
-		public string Status { get { return this.IsConnected ? "Online" : "Offline"; } }
     }
 }

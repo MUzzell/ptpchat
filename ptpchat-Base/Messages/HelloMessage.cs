@@ -1,7 +1,5 @@
 ﻿namespace PtpChat.Base.Messages
 {
-    using System;
-
     public class HelloMessage : BaseMessage
     {
 		public new MessageType msg_type => MessageType.HELLO;
@@ -11,7 +9,7 @@
 
     public class HelloData
     {
-        public Guid node_id { get; set; }
+        public string node_id { get; set; }
 
         public string version { get; set; }
     }

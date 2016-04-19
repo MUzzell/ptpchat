@@ -22,6 +22,32 @@
             return list;
         }
 
+        public static bool SplitNodeId(string longId, out string name, out Guid Id)
+        {
+            //default values to check if they've changed
+            name = string.Empty;
+            Id = Guid.Empty;
+
+            //incorrect format checking
+            if (!longId.Contains("@"))
+            {
+                return false;
+            }
+
+            var splitId = longId.Split('@');
+
+            if (splitId.Length != 2)
+            {
+                return false;
+            }
+
+            name = splitId[0];
+            Guid.TryParse(splitId[1], out Id);
+
+            //did we parse the id correctly, and set the values?
+            return name != string.Empty && Id != Guid.Empty;
+        }
+
         public static IPEndPoint ParseEndpoint(string endpointstring)
         {
             if (string.IsNullOrWhiteSpace(endpointstring))
