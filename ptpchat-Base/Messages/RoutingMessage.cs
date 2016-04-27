@@ -9,8 +9,6 @@
 
     public class RoutingData
     {
-        public string node_id { get; set; }
-
         public List<Dictionary<string, string>> nodes { get; set; }
     }
 }

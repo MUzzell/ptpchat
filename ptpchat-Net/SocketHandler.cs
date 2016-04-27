@@ -24,14 +24,16 @@
         private readonly TcpListener localListener;
 
         //threads are organised by their port.
-        public IDictionary<int, SocketThread> InternalThreads { get; }
+        public IDictionary<string, SocketThread> InternalThreads { get; }
+
+        public IPEndPoint LocalEndpoint { get; }
 
         public SocketHandler(ILogManager logger, IDataManager dataManager, IMessageHandler messageHandler)
         {
             this.logger = logger;
             this.logger.Info(string.Format(LogPortBound, this.localPort));
 
-            this.InternalThreads = new Dictionary<int, SocketThread>();
+            this.InternalThreads = new Dictionary<string, SocketThread>();
 
             //What if it's in use??
             this.localPort = new Random().Next(10000, 65535);
@@ -40,11 +42,21 @@
             dataManager.NodeManager.LocalNode.Port = this.localPort;
             this.nodeManager = dataManager.NodeManager;
 
-            this.localListener = new TcpListener(IPAddress.Any, this.localPort) { ExclusiveAddressUse = false };
+            this.LocalEndpoint = new IPEndPoint(IPAddress.Any, this.localPort);
 
-            this.InternalThreads.Add(this.localPort, new SocketThread(this.localClient, this.localListener, messageHandler, this.logger));
+            this.localListener = new TcpListener(this.LocalEndpoint) { ExclusiveAddressUse = false };
 
-            this.StartListening();
+            //this.InternalThreads.Add(this.localPort, new SocketThread(this.localClient, this.localListener, messageHandler, this.logger));
+        }
+
+        public void AddSocketThread(IPEndPoint destination, IMessageHandler messageHandler, IPEndPoint localEndpoint = null)
+        {
+            this.InternalThreads.Add(destination.Address.ToString(), new SocketThread(destination, localEndpoint, this.localListener, messageHandler, this.logger));
+        }
+
+        public void AddSocketThread(IPEndPoint destination, IMessageHandler messageHandler)
+        {
+            this.AddSocketThread(destination, messageHandler, this.LocalEndpoint);
         }
 
         public bool SendMessage(Guid dstNodeId, byte[] message)
@@ -58,7 +70,7 @@
         {
             try
             {
-                this.InternalThreads[this.localPort].Send(dst, message);
+                this.InternalThreads[dst.Address.ToString()].Send(dst, message);
             }
             catch (SocketException ex)
             {
@@ -74,8 +86,7 @@
         {
             foreach (var thread in this.InternalThreads.Values)
             {
-                //start the listeners
-                new Task(() => thread.Listen()).Start();
+                Task.Run(() => thread.Listen());
             }
         }
 

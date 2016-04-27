@@ -114,7 +114,7 @@
         {
             this.logger.Debug($"Routing message recieved from: {senderEndpoint}");
 
-            var longId = message.msg_data.node_id;
+            var longId = message.sender_id;
 
             string senderName;
             Guid senderId;
