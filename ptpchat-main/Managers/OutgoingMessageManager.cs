@@ -1,6 +1,7 @@
 ﻿namespace PtpChat.Main.Managers
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Net;
     using System.Text;
@@ -107,7 +108,8 @@
 
             var msg = new HelloMessage
             {
-                msg_data = new HelloData { node_id = this.nodeManager.LocalNode.NodeId.GetWholeId(), version = this.nodeManager.LocalNode.Version }
+                sender_id = this.nodeManager.LocalNode.NodeId.GetWholeId(),
+                msg_data = new HelloData { version = this.nodeManager.LocalNode.Version, attributes = new Dictionary<string, string> { { "node_type", "client" } } }
             };
 
             foreach (var node in nodes)
@@ -120,13 +122,15 @@
         public void DoHeartBeat(object state)
         {
             this.SendHeartBeatHelloToNodes();
-            this.SendChannels();
-            this.ResendMessages();
+            //this.SendChannels();
+            //this.ResendMessages();
         }
 
         public void Send(IPEndPoint endpoint, BaseMessage message)
         {
-            var msg = Encoding.ASCII.GetBytes(this.SerialiseObject(message));
+            var vv = this.SerialiseObject(message);
+
+            var msg = Encoding.ASCII.GetBytes(vv);
             this.SocketHandler.SendMessage(endpoint, null, msg);
         }
 
@@ -151,17 +155,18 @@
             foreach (var channel in channels)
             {
                 var chanMsg = new ChannelMessage
-                {
-                    msg_data = new ChannelData
-                                          {
-                                              channel_id = channel.ChannelId,
-                                              channel = channel.ChannelName,
-                                              closed = channel.Closed,
-                                              members = ExtensionMethods.BuildNodeIdList(channel.Nodes),
-                                              msg_id = Guid.NewGuid(),
-                                              node_id = this.nodeManager.LocalNode.NodeId.GetWholeId()
-                                          }
-                };
+                                  {
+                                      sender_id = this.nodeManager.LocalNode.NodeId.GetWholeId(),
+                                      msg_data =
+                                          new ChannelData
+                                              {
+                                                  channel_id = channel.ChannelId,
+                                                  channel = channel.ChannelName,
+                                                  closed = channel.Closed,
+                                                  members = ExtensionMethods.BuildNodeIdList(channel.Nodes),
+                                                  msg_id = Guid.NewGuid(),
+                                              }
+                                  };
 
                 this.logger.Debug($"Broadcasting Channel Message ({channel.ChannelName} : {channel.ChannelId}) to connected nodes");
 

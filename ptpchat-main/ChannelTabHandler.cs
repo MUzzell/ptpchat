@@ -58,6 +58,7 @@
 
             var outMsg = new MessageMessage
                              {
+                                 sender_id = this.NodeManager.LocalNode.NodeId.GetWholeId(),
                                  msg_data =
                                      new MessageData
                                          {
@@ -67,7 +68,6 @@
                                              message = chatMessage.MessageContent,
                                              timestamp = chatMessage.DateSent,
                                              msg_id = chatMessage.MessageId,
-                                             node_id = this.NodeManager.LocalNode.NodeId.GetWholeId(),
                                              recipient = recipientList
                                          }
                              };

@@ -1,8 +1,11 @@
 ﻿namespace PtpChat.Net
 {
     using System;
+    using System.Linq;
     using System.Net;
     using System.Net.Sockets;
+    using System.Text;
+    using System.Threading;
 
     using PtpChat.Base.Interfaces;
 
@@ -18,30 +21,33 @@
 
         public TcpListener listener { get; }
 
-        private UdpClient Socket { get; }
+        private TcpClient Socket { get; set; }
+        private Socket listenerSocket { get; set; }
 
-        private TcpClient Socket_tcp { get; set; }
-
-        public SocketThread(UdpClient socket, TcpListener list, IMessageHandler messageHandler, ILogManager logger)
+        public SocketThread(IPEndPoint destination, IPEndPoint local, TcpListener list, IMessageHandler messageHandler, ILogManager logger)
         {
-            this.Socket = socket;
             this.messageHandler = messageHandler;
             this.logger = logger;
 
             this.listener = list;
+
+            this.Socket = new TcpClient { ExclusiveAddressUse = false };
+            this.Socket.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
+            this.Socket.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.DontLinger, true);
+            this.Socket.Connect(destination.Address.ToString(), destination.Port);
+
+            listenerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            listenerSocket.Bind(local);
         }
 
-        public SocketThread(IPEndPoint local, IMessageHandler messageHandler, ILogManager logger)
-        {
-            this.Socket = new UdpClient(local);
-            this.messageHandler = messageHandler;
-            this.logger = logger;
-        }
+        //public static ManualResetEvent allDone = new ManualResetEvent(false);
 
         public async void Listen()
         {
-            this.logger.Info($"New SocketThread listening on endpoint: {this.Socket.Client.LocalEndPoint}");
-            this.listener.Start();
+            this.logger.Info($"New SocketThread listening on endpoint: {this.listener.LocalEndpoint}");
+            //this.listener.Start();
+
+            listenerSocket.Listen(100);
 
             try
             {
@@ -49,44 +55,50 @@
                 {
                     try
                     {
-                        if (this.listener.Pending())
-                        {
-                            //return or queue
-                        }
+                        var messageLengthBytes = new byte[4];
 
-                        // Create a TCP socket. 
-                        // If you ran this server on the desktop, you could use 
-                        // Socket socket = tcpListener.AcceptSocket() 
-                        // for greater flexibility.
-                        var tcpClient = await this.listener.AcceptTcpClientAsync();
+                        //var tcpClient = await this.listener.AcceptTcpClientAsync();
 
-                        //SslStream sslStream = new SslStream(tcpClient.GetStream(), false);
+                        ////SslStream sslStream = new SslStream(tcpClient.GetStream(), false);
 
-                        var stream = tcpClient.GetStream();
+                        //================================================
 
-                        var messageLength = new byte[4];
-                        await stream.ReadAsync(messageLength, 0, messageLength.Length);
+                        //var recieveArgs = new SocketAsyncEventArgs();
+                        //recieveArgs.SetBuffer(messageLengthBytes, 0, 4);//Receive bytes from x to total - x, x is the number of bytes already recieved
 
-                        var messageData = new byte[BitConverter.ToInt32(messageLength, 0)];
+                        //this.Socket.Client.ReceiveAsync(recieveArgs);
+
+                        //messageLengthBytes = messageLengthBytes.Reverse().ToArray();
+                        //int messageLength = BitConverter.ToInt32(messageLengthBytes, 0);
+
+
+                        //var messageData = new byte[messageLength];
+
+                        //recieveArgs = new SocketAsyncEventArgs();
+                        //recieveArgs.SetBuffer(messageData, 4, messageLength);//Receive bytes from x to total - x, x is the number of bytes already recieved
+                        //this.Socket.Client.ReceiveAsync(recieveArgs);
+
+                        //==================================================
+
+                        var stream = this.Socket.GetStream();
+                        await stream.ReadAsync(messageLengthBytes, 0, 4);
+
+                        messageLengthBytes = messageLengthBytes.Reverse().ToArray();
+                        int messageLength = BitConverter.ToInt32(messageLengthBytes, 0);
+
+                        var messageData = new byte[messageLength];
+
+                        //var messageData = new byte[BitConverter.ToInt32(messageLength, 0)];
                         await stream.ReadAsync(messageData, 0, messageData.Length);
 
-                        //do stuff with message data hopefully!
+                        //==================================================
 
-                        //Socket client = listener.AcceptSocket();
 
-                        //int size = client.Receive(bytes);
+                        var message = Encoding.ASCII.GetString(messageData);
 
-                        //for (int i = 0; i < size; i++)
-                        //    Console.Write(Convert.ToChar(bytes[i]));
+                        this.logger.Debug($"endpoint:{this.listener.LocalEndpoint} > Incoming message ");
 
-                        //client.Close();
-
-                        //var asyncResult = await this.Socket.ReceiveAsync();
-                        //var message = Encoding.ASCII.GetString(asyncResult.Buffer);
-
-                        //this.logger.Debug($"endpoint:{this.Socket.Client.LocalEndPoint} > Incoming message ");
-
-                        //this.messageHandler.HandleMessage(message, asyncResult.RemoteEndPoint);
+                        this.messageHandler.HandleMessage(message, (IPEndPoint)this.Socket.Client.RemoteEndPoint);
                     }
                     catch (ArgumentException ae)
                     {
@@ -104,16 +116,51 @@
             }
         }
 
+        //private void AcceptCallback(IAsyncResult ar)
+        //{
+        //    // Signal the main thread to continue.
+        //    allDone.Set();
+
+        //    // Get the socket that handles the client request.
+        //    Socket listener = (Socket)ar.AsyncState;
+        //    Socket handler = listener.EndAccept(ar);
+
+        //    byte[] messageSize = new byte[4];
+
+
+        //    var recieveArgs = new SocketAsyncEventArgs();
+
+        //    recieveArgs.SetBuffer(messageSize, 0,4);//Receive bytes from x to total - x, x is the number of bytes already recieved
+
+        //    handler.ReceiveAsync(recieveArgs);
+
+
+
+        //    //byte[] finishedMessage = new byte[messageSize.Length + msg.Length];
+
+        //    //Buffer.BlockCopy(messageSize, 0, finishedMessage, 0, messageSize.Length);
+        //    //Buffer.BlockCopy(msg, 0, finishedMessage, messageSize.Length, msg.Length);
+
+            
+        //}
+
         public void Send(IPEndPoint dst, byte[] msg)
         {
-            this.Socket_tcp = new TcpClient(dst.Address.ToString(), dst.Port);
 
-            var sendArgs = new SocketAsyncEventArgs();
-            sendArgs.SetBuffer(msg, 0, msg.Length);
+            //reverse the array because reasons that are important and not to be underestimated
+            byte[] messageSize = BitConverter.GetBytes(msg.Length).Reverse().ToArray();
 
-            this.Socket_tcp.Client.SendAsync(sendArgs);
+            byte[] finishedMessage = new byte[messageSize.Length + msg.Length];
 
-            this.Socket.SendAsync(msg, msg.Length, dst.Address.ToString(), dst.Port);
+            Buffer.BlockCopy(messageSize, 0, finishedMessage, 0, messageSize.Length);
+            Buffer.BlockCopy(msg, 0, finishedMessage, messageSize.Length, msg.Length);
+
+            var sendArgs = new SocketAsyncEventArgs { RemoteEndPoint = dst };
+            sendArgs.SetBuffer(finishedMessage, 0, finishedMessage.Length);
+
+            this.Socket.Client.SendAsync(sendArgs);
+
+            //this.Socket.SendAsync(msg, msg.Length, dst.Address.ToString(), dst.Port);
         }
 
         public void Stop() => this.running = false;

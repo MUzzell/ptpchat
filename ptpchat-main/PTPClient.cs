@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Net;
     using System.Threading;
 
     using PtpChat.Base.Classes;
@@ -58,8 +59,9 @@
 
             var messageHandler = new MessageHandler(this.logger);
 
-            //socket handler here used to create its UDP socket thread handling in the ctor
             ISocketHandler socketHandler = new SocketHandler(this.logger, this.dataManager, messageHandler);
+            socketHandler.AddSocketThread( new IPEndPoint(config.InitialServerAddress, config.InitialServerPort), messageHandler);
+            socketHandler.StartListening();
 
             this.ChannelTabHandler = new ChannelTabHandler(this.logger, this.dataManager, messageHandler, socketHandler);
 

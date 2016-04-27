@@ -9,6 +9,11 @@
         public MessageType msg_type { get; set; }
 
         public int ttl { get; set; }
+
+        public string sender_id { get; set; }
+
+        public string target_id { get; set; }
+
     }
 
     public enum MessageType

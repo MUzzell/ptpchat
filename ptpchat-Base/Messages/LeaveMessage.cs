@@ -14,7 +14,5 @@
         public Guid channel_id { get; set; }
 
         public Guid msg_id { get; set; }
-
-        public string node_id { get; set; }
     }
 }
