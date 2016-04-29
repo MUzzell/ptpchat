@@ -14,7 +14,7 @@
         private const string LogPortBound = "SocketHandler has bound to 0.0.0.0:{0}";
         private const string EndpointRefused = "Could not connect to {0} because the target machine refused";
 
-        private readonly UdpClient localClient;
+        //private readonly UdpClient localClient;
 
         //im holding onto this until i figure out how to do the rest of the socket stuff.
         private readonly int localPort;
@@ -37,28 +37,24 @@
 
             //What if it's in use??
             this.localPort = new Random().Next(10000, 65535);
-            this.localClient = new UdpClient(this.localPort, AddressFamily.InterNetwork);
+            //this.localClient = new UdpClient(this.localPort, AddressFamily.InterNetwork);
 
             dataManager.NodeManager.LocalNode.Port = this.localPort;
             this.nodeManager = dataManager.NodeManager;
-
-            this.LocalEndpoint = new IPEndPoint(IPAddress.Any, this.localPort);
-
-            this.localListener = new TcpListener(this.LocalEndpoint) { ExclusiveAddressUse = false };
-
+			
             //this.InternalThreads.Add(this.localPort, new SocketThread(this.localClient, this.localListener, messageHandler, this.logger));
-        }
-
-        public void AddSocketThread(IPEndPoint destination, IMessageHandler messageHandler, IPEndPoint localEndpoint = null)
-        {
-            this.InternalThreads.Add(destination.Address.ToString(), new SocketThread(destination, localEndpoint, this.localListener, messageHandler, this.logger));
         }
 
         public void AddSocketThread(IPEndPoint destination, IMessageHandler messageHandler)
         {
-            this.AddSocketThread(destination, messageHandler, this.LocalEndpoint);
+            this.InternalThreads.Add(
+				destination.Address.ToString(), 
+				new SocketThread(
+					destination, 
+					messageHandler, 
+					this.logger));
         }
-
+		
         public bool SendMessage(Guid dstNodeId, byte[] message)
         {
             var node = this.nodeManager.GetNodes(a => a.Value.NodeId.Id == dstNodeId).FirstOrDefault();

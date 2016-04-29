@@ -5,7 +5,6 @@
     using System.Net;
     using System.Net.Sockets;
     using System.Text;
-    using System.Threading;
 
     using PtpChat.Base.Interfaces;
 
@@ -18,40 +17,37 @@
         private readonly IMessageHandler messageHandler;
 
         private volatile bool running = true;
-
-        public TcpListener listener { get; }
-
+		
         private TcpClient Socket { get; set; }
-        private Socket listenerSocket { get; set; }
 
-        public SocketThread(IPEndPoint destination, IPEndPoint local, TcpListener list, IMessageHandler messageHandler, ILogManager logger)
+		public IPEndPoint Destination { get; private set; }
+
+        public SocketThread(IPEndPoint destination, IMessageHandler messageHandler, ILogManager logger)
         {
             this.messageHandler = messageHandler;
             this.logger = logger;
-
-            this.listener = list;
+			
+			this.Destination = destination;
 
             this.Socket = new TcpClient { ExclusiveAddressUse = false };
             this.Socket.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
             this.Socket.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.DontLinger, true);
-            this.Socket.Connect(destination.Address.ToString(), destination.Port);
-
-            listenerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            listenerSocket.Bind(local);
+            
         }
 
         //public static ManualResetEvent allDone = new ManualResetEvent(false);
 
         public async void Listen()
         {
-            this.logger.Info($"New SocketThread listening on endpoint: {this.listener.LocalEndpoint}");
-            //this.listener.Start();
+            this.logger.Info($"New SocketThread connecting to target: {this.Destination}");
+			//this.listener.Start();
 
-            listenerSocket.Listen(100);
+			this.Socket.Connect(this.Destination.Address.ToString(), this.Destination.Port);
 
-            try
+			try
             {
-                while (this.running)
+				
+				while (this.running)
                 {
                     try
                     {
@@ -96,7 +92,7 @@
 
                         var message = Encoding.ASCII.GetString(messageData);
 
-                        this.logger.Debug($"endpoint:{this.listener.LocalEndpoint} > Incoming message ");
+                        this.logger.Debug($"endpoint:{this.Destination} > Incoming message ");
 
                         this.messageHandler.HandleMessage(message, (IPEndPoint)this.Socket.Client.RemoteEndPoint);
                     }
@@ -112,7 +108,7 @@
             }
             finally
             {
-                this.listener.Stop();
+				this.Socket.Close();
             }
         }
 
