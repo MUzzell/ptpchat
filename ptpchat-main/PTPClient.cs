@@ -38,10 +38,9 @@
 
             //TODO: remove this when we get a response from the server
             this.nodeManager.Add(
-                new Node
+                new Node(new NodeId("Server", config.InitialServerGuid))
                     {
                         IpAddress = config.InitialServerAddress,
-                        NodeId = new NodeId("Server", config.InitialServerGuid),
                         Port = config.InitialServerPort,
                         Added = DateTime.Now,
                         LastRecieve = DateTime.Now,
@@ -76,7 +75,7 @@
             messageHandler.AddHandler(MessageType.LEAVE, new LeaveVerbHandler(this.logger, this.dataManager, this.OutgoingMessageManager));
             messageHandler.AddHandler(MessageType.ACK, new AckVerbHandler(this.logger, this.dataManager, this.OutgoingMessageManager));
 
-            this.heartBeatTimer = new Timer(this.OutgoingMessageManager.DoHeartBeat, null, 0, 3000);
+            //this.heartBeatTimer = new Timer(this.OutgoingMessageManager.DoHeartBeat, null, 0, 3000);
 
             //This is a temporary change, for testing channels and messages
             this.channelManager.Add(
@@ -89,6 +88,8 @@
                         Nodes = new List<Guid> { this.nodeManager.LocalNode.NodeId.Id },
                         IsUpToDate = true
                     });
+
+			//this.OutgoingMessageManager.DoHeartBeat(new object());
         }
 
         public event EventHandler NodeChanged;

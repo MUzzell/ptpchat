@@ -76,12 +76,11 @@
 			//no -> add
 			if (!nodes.Any())
 			{
-				this.NodeManager.Add(new Node
+				this.NodeManager.Add(new Node(message.SenderId)
 				{
 					Added = DateTime.Now,
 					SeenThrough = null,
 					IpAddress = null,
-					NodeId = new NodeId(senderName, senderId),
 					LastRecieve = null,
 					LastSend = null
 				});

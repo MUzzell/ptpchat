@@ -39,7 +39,7 @@
 
             this.logger = logger;
 
-            this.LocalNode = new Node { NodeId = new NodeId("LocalNode", config.LocalNodeId), Version = config.LocalNodeVersion };
+            this.LocalNode = new Node(new NodeId("LocalNode", config.LocalNodeId)){ Version = config.LocalNodeVersion };
 
             this.ProcessTimer = new Timer(this.ProcessNodes, null, 10000, 5000);
 

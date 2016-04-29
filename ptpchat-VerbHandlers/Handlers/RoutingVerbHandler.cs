@@ -21,7 +21,9 @@
 
         private const string LogSameNodeId = "Recieved ROUTING sender's Node ID presented this Node's ID! ignoring";
 
-        public RoutingVerbHandler(ILogManager logger, IDataManager dataManager, IOutgoingMessageManager outgoingMessageManager)
+		private const string LogInvalidRouteAttributes = "Invalid ttl or flood for ROUTING message, ignoring";
+
+		public RoutingVerbHandler(ILogManager logger, IDataManager dataManager, IOutgoingMessageManager outgoingMessageManager)
             : base(logger, dataManager, outgoingMessageManager)
         {
         }
@@ -114,18 +116,13 @@
         {
             this.logger.Debug($"Routing message recieved from: {senderEndpoint}");
 
-            var longId = message.sender_id;
+			if (message.flood || message.ttl != 1) //ROUTING is strictly a 1 to 1 transmission.
+			{
+				this.logger.Warning(LogInvalidRouteAttributes);
+				return false;
+			}
 
-            string senderName;
-            Guid senderId;
-            var successful = ExtensionMethods.SplitNodeId(longId, out senderName, out senderId);
-
-            if (!successful || !this.CheckNodeId(senderId))
-            {
-                return false;
-            }
-
-            var nodes = message.msg_data.nodes;
+			var nodes = message.msg_data.nodes;
 
             if (nodes == null)
             {
@@ -133,62 +130,49 @@
                 return false;
             }
 
-            foreach (var node in nodes)
-            {
-                var nodeAddress = node["address"].Trim();
+			foreach (var node in nodes)
+			{
+				NodeId nodeId = null;
 
-                Guid nodeId;
-                string nodeName;
-                ExtensionMethods.SplitNodeId(node["node_id"], out nodeName, out nodeId);
-
-                if (nodeId == Guid.Empty)
-                {
-                    this.logger.Warning(LogInvalidNodesEntry);
-                    continue;
-                }
-
-                if (nodeId == this.NodeManager.LocalNode.NodeId.Id)
+				if (!ExtensionMethods.TryParseNodeId(node.node_id, out nodeId))
+				{ 
+					this.logger.Debug("Invalid node_id in ROUTING message, skipping");
+					continue;
+				}
+				
+                if (nodeId == this.NodeManager.LocalNode.NodeId)
                 {
                     this.logger.Debug("Ignoring our entry in ROUTING message");
                     continue;
                 }
 
-                if (string.IsNullOrWhiteSpace(nodeAddress))
-                {
-                    this.logger.Warning(LogInvalidNodesEntry);
-                    continue;
-                }
+				var currentNodes = this.NodeManager.GetNodes(d => d.Key == nodeId.Id);
 
-                IPEndPoint address;
-
-                try
+				if (!currentNodes.Any())
                 {
-                    address = ExtensionMethods.ParseEndpoint(nodeAddress);
-                }
-                catch (Exception e)
-                {
-                    this.logger.Warning(LogInvalidIP);
-                    continue;
-                }
-
-                if (!this.NodeManager.GetNodes(d => d.Value.NodeId.Id == nodeId).Any())
-                {
-                    // not seen, add. else, ignore
+                    // not seen, add.
                     this.NodeManager.Add(
-                        new Node
+                        new Node(nodeId)
                             {
-                                NodeId = new NodeId(nodeName, nodeId),
-                                SeenThrough = senderId,
-                                IpAddress = address.Address,
-                                Port = address.Port,
+                                SeenThrough = message.SenderId.Id,
+                                Ttl = node.ttl + 1,
                                 Version = null,
                                 Added = DateTime.Now,
                                 LastRecieve = null
                             });
-                }
-            }
+				}
+				else //update ttl
+				{
+					var currentNode = currentNodes.First();
+					if (node.ttl + 1 >= currentNode.Ttl) //ignore if we have a better or equal ttl
+						continue;
 
-            return true;
+					currentNode.SeenThrough = message.SenderId.Id;
+					currentNode.Ttl = node.ttl + 1;
+				}
+			}
+
+			return true;
         }
     }
 }

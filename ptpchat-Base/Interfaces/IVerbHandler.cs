@@ -1,9 +1,10 @@
 ﻿namespace PtpChat.Base.Interfaces
 {
-    using System.Net;
+	using Messages;
+	using System.Net;
 
-    public interface IVerbHandler
+	public interface IVerbHandler<T> where T : BaseMessage
     {
-        bool HandleMessage(string msgData, IPEndPoint senderEndpoint);
+        bool HandleMessage(T msgData, IPEndPoint senderEndpoint);
     }
 }

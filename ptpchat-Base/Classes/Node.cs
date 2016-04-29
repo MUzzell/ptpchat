@@ -12,7 +12,16 @@
 
         public IList<Channel> Channels { get; }
 
-        public IPEndPoint IpEndPoint => new IPEndPoint(this.IpAddress, this.Port);
+        public IPEndPoint IpEndPoint
+		{
+			get
+			{
+				if (this.IpAddress == null || !this.Port.HasValue)
+					throw new InvalidOperationException("Node: Unable to create enpoint; port or address is null");
+
+				return new IPEndPoint(this.IpAddress, this.Port.Value);
+			}
+		}
 
         public IList<ChatMessage> Messages { get; }
 
@@ -27,16 +36,25 @@
         public DateTime? LastSend { get; set; }
 
         //public Guid NodeId { get; set; }
-        public NodeId NodeId { get; set; }
+        public NodeId NodeId { get; private set; }
 
-        public int Port { get; set; }
+        public int? Port { get; set; }
+
+		public int Ttl { get; set; }
 
         public Guid? SeenThrough { get; set; }
 
         public string Version { get; set; }
 
-        public Node()
+		public IDictionary<string, string> Attributes { get; set; }
+
+        public Node(NodeId nodeId)
         {
+			if (nodeId == null)
+			{
+				throw new ArgumentNullException();
+			}
+			this.NodeId = nodeId;
             this.Channels = new List<Channel>();
             this.Messages = new List<ChatMessage>();
         }

@@ -11,15 +11,25 @@
 
         public NodeId(string longId)
         {
+			if (longId == null)
+			{
+				throw new ArgumentNullException("invalid longId");
+			}
+
             if (!longId.Contains('@'))
             {
-                return;
+				throw new ArgumentException("Invalid longId");
             }
 
-            var splitid = longId.Split('@');
+            var splitId = longId.Split('@');
 
-            this.Name = splitid[0];
-            this.Id = Guid.Parse(splitid[1]);
+			if(splitId.Length != 2)
+			{
+				throw new ArgumentException("Invalid longId");
+			}
+
+            this.Name = splitId[0];
+            this.Id = Guid.Parse(splitId[1]);
         }
 
         public NodeId(string name, Guid Id)
@@ -28,6 +38,16 @@
             this.Name = name;
         }
 
-        public string GetWholeId() => this.Name + "@" + this.Id;
+		public override bool Equals(object obj)
+		{
+			return obj is NodeId && ((NodeId)obj).Id == this.Id;
+		}
+
+		public override string ToString()
+		{
+			return GetWholeId();
+		}
+
+		public string GetWholeId() => this.Name + "@" + this.Id;
     }
 }

@@ -67,6 +67,7 @@ This JSON object will contain five or six attributes, All other attributes in th
 4. `flood`, describing if this message should be flooded to the whole network (I.e. all other connected nodes)
 5. `sender_id`, containing the node_id of the sender of this message.
 6. `target_id`, containing the node_id of the intended recipient. This can be omitted if the `flood` value is set to true.
+7. `msg_id`, containing an unique Guid representing this message.
 
 All keys, and all verb-specific keys inside `msg_data`, must be in lower-case.
 
@@ -108,6 +109,7 @@ The `address` attribute used in some messages specifies a socket to be used for 
 {
     "ttl" : 1,
     "flood" : false,
+    "msg_id" : "<msg_id>",
     "sender_id" : "<node_id>",
 
     "msg_type":"HELLO",
@@ -134,6 +136,7 @@ This message is an initial message that is first sent between nodes, performed i
 {
     "ttl" : 1,
     "flood" : false,
+    "msg_id" : "<msg_id>",
     "sender_id" : "<node_id>",
     
     "msg_type":"ACK", 
@@ -154,6 +157,7 @@ Sent after GETCERTIFICATE, CERTIFICATE, GETKEY, KEY, MESSAGE messages, used to n
 {
     "ttl" : 32,
     "flood" : false,
+    "msg_id" : "<msg_id>",
     "sender_id" : "<node_id>",
     "target_id" : "<node_id>",
     
@@ -176,13 +180,13 @@ A NACK message MUST be sent if the TTL of a message becomes zero on the way to t
 {
     "ttl" : 32,
     "flood" : true,
+    "msg_id" : "<msg_id>",
     "sender_id" : "<node_id>",
     "target_id" : "<node_id>",
     
     "msg_type":"JOIN", 
     "msg_data": 
     { 
-        "msg_id" : "<msg_id>", 
         "channel" : "<channel>",
         "channel_id" : "<channel_id>" 
     }
@@ -204,13 +208,13 @@ JOIN Messages are sent to notify other users of a channel that a new node is joi
 {
     "ttl" : 32,
     "flood" : true,
+    "msg_id" : "<msg_id>",
     "sender_id" : "<node_id>",
     "target_id" : "<node_id>",
     
     "msg_type" : "CHANNEL", 
     "msg_data" : 
     { 
-        "msg_id" : "<msg_id>", 
         "channel" : "<channel>",  
         "channel_id" : "<channel_id>",
         "members" : [ {"node_id" : "<node_id>" } ],
@@ -219,10 +223,8 @@ JOIN Messages are sent to notify other users of a channel that a new node is joi
 }
 ```
 
-* `msg_id` : identifies this message.
 * `channel` : contains the channel name.
 * `channel_id` : contains the channel id.
-* `node_id` : contains the sending node id.
 * `members` : a list of `node_id` elements.
 * `closed` : an optional flag that marks this channel as closed (default false).  
 
@@ -239,20 +241,18 @@ If a channel is marked as 'public' then it is to be broadcast to all nodes acros
 {
     "ttl" : 32,
     "flood" : true,
+    "msg_id" : "<msg_id>",
     "sender_id" : "<node_id>",
     
     "msg_type":"JOIN", 
     "msg_data": 
     { 
-        "msg_id" : "<msg_id>", 
         "channel" : "<channel>",
         "channel_id" : "<channel_id>" 
     }
 }
 ```
 
-* `msg_id` : identifies this message.
-* `node_id` : contains the sending node id.
 * `channel` : contains the channel name.
 * `channel_id` : contains the channel id.
     
@@ -266,19 +266,17 @@ Sent to all members of a channel that the sending user is leaving the channel. A
 {
     "ttl" : 32,
     "flood" : false,
+    "msg_id" : "<msg_id>",
     "sender_id" : "<node_id>",
     "target_id" : "<node_id>",
     
     "msg_type":"GETCERTIFICATE",
     "msg_data":
     {
-        "msg_id" : "<msg_id>"
+        
     }
 }
 ```
-
-* `msg_id` : identifies this message,
-* `node_id` : contains the sending node id. 
 
 This message is used to request the certificate of the recipient, as to identify this node. The `msg_id` should also be the same in any responsive CERTIFICATE messages. Nodes should keep a persistent record of certs against `node_id's` and store them locally if possible for future reference. 
 
@@ -288,21 +286,18 @@ This message is used to request the certificate of the recipient, as to identify
 {
     "ttl" : 32,
     "flood" : false,
+    "msg_id" : "<msg_id>",
     "sender_id" : "<node_id>",
     "target_id" : "<node_id>",
     
     "msg_type" : "CERTIFICATE",
     "msg_data" :
     {
-        "msg_id" : "<msg_id>",
         "recipient_id" : "<recipient_id>",
         "certificate" : "<certificate>"
     }
 }
 ```
-* `msg_id` : Identifies this message, must be the same as the `msg_id` from a GETCERTIFICATE message this message is responding to.
-* `node_id` : contains this node's id.
-* `recipient_id` : Contains the `node_id` that was present in the GETCERTIFICATE message this message is responding to.
 * `certificate` : Contains the certificate as a base64 encoded string.
 This message contains the certificate for a given node, used to identify this certificate. A CERTIFICATE message is sent when:
 * In response to a GETCERTIFICATE message. In this case, msg_id **must** be the same as the id in the received GETCERTIFICATE message.
@@ -315,20 +310,19 @@ Nodes *should* keep a record of certs against `node_id's` and store them locally
 {
     "ttl" : 32,
     "flood" : false,
+    "msg_id" : "<msg_id>",
     "sender_id" : "<node_id>",
     "target_id" : "<node_id>",
     
     "msg_type" : "GETKEY",
     "msg_data" : 
     {
-        "msg_id" : "<msg_id>",
         "channel" : "<channel>",
         "channel_id" : "<channel_id>",
     }
 }
 ```
 
-* `msg_id` : identifies this message.
 * `channel` : contains the channel name.
 * `channel_id` : contains the channel id.
 
@@ -340,14 +334,13 @@ This message is sent to request a key to a closed channel.
 {
     "ttl" : 32,
     "flood" : false,
+    "msg_id" : "<msg_id>",
     "sender_id" : "<node_id>",
     "target_id" : "<node_id>",
     
     "msg_type" : "KEY",
     "msg_data" : 
     {
-        "msg_id" : "<msg_id>",
-        "recipient_id" : "<recipient_id>",
         "channel" : "<channel>",
         "channel_id" : "<channel_id>",
         "cipher" : "<cipher>",
@@ -370,13 +363,13 @@ This message transmits the key to the target node. The key **must** be encrypted
 {
     "ttl" : 32,
     "flood" : false,
+    "msg_id" : "<msg_id>",
     "sender_id" : "<node_id>",
     "target_id" : "<node_id>",
     
     "msg_type" : "MESSAGE",
     "msg_data" : 
     {
-        "msg_id" : "<msg_id>",
         "recipient" : [ { "node_id" : "<node_id>" } ],
         "timestamp" : "<timestamp>",
         "channel" : "<channel>",
@@ -403,6 +396,7 @@ This message is the actual text message to be sent between nodes. The `message` 
 {
     "ttl" : 1,
     "flood" : false,
+    "msg_id" : "<msg_id>",
     "sender_id" : "<node_id>",
 
     "msg_type" : "ROUTING",

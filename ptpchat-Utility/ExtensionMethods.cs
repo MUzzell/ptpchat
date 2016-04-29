@@ -1,13 +1,16 @@
 ﻿namespace PtpChat.Utility
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Net;
-    using System.Text.RegularExpressions;
+	using Base.Classes;
+	using System;
+	using System.Collections.Generic;
+	using System.Net;
+	using System.Text.RegularExpressions;
 
-    public class ExtensionMethods
+	public class ExtensionMethods
     {
         //private const string IPv4Pattern = @"^((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))?(?:\:([0-9]{1,5}))?$";
+
+		private const string nodeIdRegex = "^([a-zA-Z0-9]+)@([a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12})$";
 
         public static List<Dictionary<string, string>> BuildNodeIdList(IList<Guid> nodeIds)
         {
@@ -21,6 +24,28 @@
             }
             return list;
         }
+
+		public static bool TryParseNodeId(string longId, out NodeId nodeId)
+		{
+			nodeId = null;
+			try
+			{
+				longId = longId.Trim();
+				var match = Regex.Match(longId, nodeIdRegex);
+
+				if (match == null || !match.Success)
+					return false;
+
+				string name = match.Groups[0].Value;
+				Guid baseId = Guid.Parse(match.Groups[1].Value);
+
+				nodeId = new NodeId(name, baseId);
+				return true;
+			}
+			catch (ArgumentException) { }
+			catch (FormatException) { }
+			return false;
+		}
 
         public static bool SplitNodeId(string longId, out string name, out Guid Id)
         {

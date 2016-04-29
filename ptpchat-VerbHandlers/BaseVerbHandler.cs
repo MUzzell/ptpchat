@@ -1,15 +1,16 @@
 ﻿namespace PtpChat.VerbHandlers
 {
-    using System;
-    using System.Net;
+	using System;
+	using System.Net;
 
-    using Newtonsoft.Json;
+	using Newtonsoft.Json;
 
-    using PtpChat.Base.Interfaces;
-    using PtpChat.Base.Messages;
-
-    public abstract class BaseVerbHandler<T> : IVerbHandler
-        where T : BaseMessage
+	using PtpChat.Base.Interfaces;
+	using PtpChat.Base.Messages;
+	using Utility;
+	using Base.Classes;
+	using Base.Exceptions;
+	public abstract class BaseVerbHandler<T> : IVerbHandler<T> where T : BaseMessage
     {
         protected const string LogInvalidMsgId = "Recieved message with invalid msg_id, ignoring";
 
@@ -38,12 +39,55 @@
             this.ResponseManager = dataManager.ResponseManager;
         }
 
-        public bool HandleMessage(string msgJson, IPEndPoint senderEndpoint)
+        public bool HandleMessage(T message, IPEndPoint senderEndpoint)
         {
             try
             {
-                var message = JsonConvert.DeserializeObject<T>(msgJson);
-                return this.HandleVerb(message, senderEndpoint);
+				if (message.msg_id == Guid.Empty)
+				{
+					return false;
+				}
+
+				if (message.ttl <= 0)
+				{
+					return false;
+				}
+
+				NodeId senderId = null;
+				var successful = ExtensionMethods.TryParseNodeId(message.sender_id, out senderId);
+
+				if (!successful || !this.CheckNodeId(senderId.Id))
+				{
+					return false;
+				}
+				message.SenderId = senderId;
+
+				NodeId targetId = null;
+				if (message.target_id != null && ExtensionMethods.TryParseNodeId(message.target_id, out targetId))
+				{
+					return false;
+				}
+				else
+				{
+					message.TargetId = targetId;
+				}
+
+				if (targetId == null && message.ttl == 1) // this node
+					return this.HandleVerb(message, senderEndpoint);
+
+				if (message.flood)
+					return this.HandleVerb(message, senderEndpoint);
+
+				if (targetId != null && targetId == this.NodeManager.LocalNode.NodeId) //targets us directly
+					return this.HandleVerb(message, senderEndpoint);
+
+				message.ttl -= 1;
+
+				if (message.ttl == 0) // not for us, but ttl as expired
+					throw new MessageTtlExpired(message.msg_type, senderId, message.msg_id);
+				
+
+				return this.HandleVerb(message, senderEndpoint);
             }
             catch (JsonException)
             {
@@ -60,7 +104,7 @@
         /// </summary>
         /// <param name="nodeId">The NodeId to check</param>
         /// <returns></returns>
-        protected bool CheckNodeId(Guid nodeId)
+        public bool CheckNodeId(Guid nodeId)
         {
             if (nodeId == Guid.Empty)
             {

@@ -9,6 +9,12 @@
 
     public class RoutingData
     {
-        public List<Dictionary<string, string>> nodes { get; set; }
+        public List<RoutingNodeData> nodes { get; set; }
     }
+
+	public class RoutingNodeData
+	{
+		public string node_id { get; set; }
+		public int ttl { get; set; }
+	}
 }

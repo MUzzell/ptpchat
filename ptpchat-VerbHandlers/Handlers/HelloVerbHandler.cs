@@ -11,31 +11,32 @@
 
     public class HelloVerbHandler : BaseVerbHandler<HelloMessage>
     {
+		private const string LogInvalidRouteAttributes = "Invalid ttl or flood for HELLO message, ignoring";
         private const string LogInvalidNodeId = "Invalid Node ID in HELLO message, ignoring";
 
         private const string LogSameNodeId = "Recieved Hello presented this Node's ID! ignoring";
 
         public HelloVerbHandler(ILogManager logger, IDataManager dataManager, IOutgoingMessageManager outgoingMessageManager)
             : base(logger, dataManager, outgoingMessageManager)
-        {
-        }
+        { }
 
         protected override bool HandleVerb(HelloMessage message, IPEndPoint senderEndpoint)
         {
             this.logger.Debug("Hello message recieved from sender: " + senderEndpoint);
 
-            var longId = message.sender_id;
+			if (message.flood || message.ttl != 1) //HELLO is strictly a 1 to 1 transmission.
+			{
+				this.logger.Warning(LogInvalidRouteAttributes);
+				return false;
+			}
+			
+            var node = this.NodeManager.GetNodes(d => d.Value.NodeId == message.SenderId).FirstOrDefault();
 
-            string senderName;
-            Guid senderId;
-            var successful = ExtensionMethods.SplitNodeId(longId, out senderName, out senderId);
+			var attributes = message.msg_data.attributes;
+			if (attributes != null)
+			{
 
-            if (!successful || !this.CheckNodeId(senderId))
-            {
-                return false;
-            }
-
-            var node = this.NodeManager.GetNodes(d => d.Value.NodeId.Id == senderId).FirstOrDefault();
+			}
 
             if (node != null) // Existing Node
             {
@@ -45,22 +46,24 @@
                         {
                             n.LastRecieve = DateTime.Now;
                             n.Version = node.Version ?? message.msg_data.version;
-                            node.IsConnected = true;
+                            n.IsConnected = true;
+							n.SeenThrough = null;
+							n.Ttl = 1;
                         });
             }
             else //New Node
             {
-                this.NodeManager.Add(
-                    new Node
-                        {
-                            NodeId = new NodeId(senderName, senderId),
-                            Added = DateTime.Now,
-                            LastRecieve = DateTime.Now,
-                            IpAddress = senderEndpoint.Address,
-                            Port = senderEndpoint.Port,
-                            Version = message.msg_data.version,
-                            IsConnected = true
-                        });
+				this.NodeManager.Add(
+					new Node(message.SenderId)
+					{
+							Added = DateTime.Now,
+							LastRecieve = DateTime.Now,
+							IpAddress = senderEndpoint.Address,
+							Port = senderEndpoint.Port,
+							Version = message.msg_data.version,
+							IsConnected = true,
+							Attributes = attributes
+                    });
             }
 
             return true;
