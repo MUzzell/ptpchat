@@ -10,20 +10,21 @@
 	using PtpChat.Base.Interfaces;
 	using PtpChat.Base.Messages;
 	using Base.Exceptions;
+
 	internal class MessageHandler : IMessageHandler
     {
         private static readonly string LogCannotParseJson = "Unable to deserialise Json message, ignoring";
 
         private static readonly string LogUnexpectedError = "Unexpected error";
 
-        private readonly Dictionary<MessageType, IVerbHandler<BaseMessage>> handlers;
+        private readonly Dictionary<MessageType, IVerbHandler> handlers;
 
         private readonly ILogManager logger;
 
         public MessageHandler(ILogManager logger)
         {
             this.logger = logger;
-            this.handlers = new Dictionary<MessageType, IVerbHandler<BaseMessage>>();
+            this.handlers = new Dictionary<MessageType, IVerbHandler>();
 
             //required to put the MessageType enum as a string and not a value.
             JsonConvert.DefaultSettings = () =>
@@ -40,7 +41,7 @@
             {
                 var baseMessage = JsonConvert.DeserializeObject<BaseMessage>(messageJson);
 				
-                this.handlers[baseMessage.msg_type].HandleMessage(baseMessage, senderEndpoint);
+                this.handlers[baseMessage.msg_type].HandleMessage(messageJson, senderEndpoint);
             }
 			catch (MessageTtlExpired mte)
 			{
@@ -54,14 +55,17 @@
             catch (Exception e) // global!!
             {
                 this.logger.Error(LogUnexpectedError, e);
-            }
+#if DEBUG
+				throw e;
+#endif
+			}
         }
 
         public string BuildMessage(BaseMessage message) => JsonConvert.SerializeObject(message);
 
-		public void AddHandler<T>(MessageType type, IVerbHandler<T> handler) where T : BaseMessage
-		{
-			this.handlers.Add(type, handler as IVerbHandler<BaseMessage>);
+		public void AddHandler(MessageType type, IVerbHandler handler)
+		{ 
+			this.handlers.Add(type, handler);
 		}
     }
 }

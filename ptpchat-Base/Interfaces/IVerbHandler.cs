@@ -3,8 +3,8 @@
 	using Messages;
 	using System.Net;
 
-	public interface IVerbHandler<T> where T : BaseMessage
+	public interface IVerbHandler
     {
-        bool HandleMessage(T msgData, IPEndPoint senderEndpoint);
+        bool HandleMessage(string msgData, IPEndPoint senderEndpoint);
     }
 }

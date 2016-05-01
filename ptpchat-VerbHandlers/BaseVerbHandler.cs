@@ -10,7 +10,7 @@
 	using Utility;
 	using Base.Classes;
 	using Base.Exceptions;
-	public abstract class BaseVerbHandler<T> : IVerbHandler<T> where T : BaseMessage
+	public abstract class BaseVerbHandler<T> : IVerbHandler where T : BaseMessage
     {
         protected const string LogInvalidMsgId = "Recieved message with invalid msg_id, ignoring";
 
@@ -39,10 +39,12 @@
             this.ResponseManager = dataManager.ResponseManager;
         }
 
-        public bool HandleMessage(T message, IPEndPoint senderEndpoint)
+        public bool HandleMessage(string msg, IPEndPoint senderEndpoint)
         {
             try
             {
+				var message = JsonConvert.DeserializeObject<T>(msg);
+
 				if (message.msg_id == Guid.Empty)
 				{
 					return false;

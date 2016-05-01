@@ -58,5 +58,10 @@
             this.Channels = new List<Channel>();
             this.Messages = new List<ChatMessage>();
         }
-    }
+
+		public void UpdateName(string name)
+		{
+			this.NodeId = new NodeId(name, this.NodeId.Id);
+		}
+	}
 }

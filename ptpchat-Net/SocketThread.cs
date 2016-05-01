@@ -42,7 +42,18 @@
             this.logger.Info($"New SocketThread connecting to target: {this.Destination}");
 			//this.listener.Start();
 
-			this.Socket.Connect(this.Destination.Address.ToString(), this.Destination.Port);
+			try
+			{
+				this.Socket.Connect(this.Destination.Address.ToString(), this.Destination.Port);
+				
+			}
+			catch(SocketException se)
+			{
+				this.logger.Error(string.Format(LogSocketException, se.Message), se);
+#if DEBUG
+				throw se;
+#endif
+			}
 
 			try
             {

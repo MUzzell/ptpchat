@@ -60,7 +60,7 @@
 
             ISocketHandler socketHandler = new SocketHandler(this.logger, this.dataManager, messageHandler);
             socketHandler.AddSocketThread( new IPEndPoint(config.InitialServerAddress, config.InitialServerPort), messageHandler);
-            socketHandler.StartListening();
+            
 
             this.ChannelTabHandler = new ChannelTabHandler(this.logger, this.dataManager, messageHandler, socketHandler);
 
@@ -89,8 +89,9 @@
                         IsUpToDate = true
                     });
 
+			socketHandler.StartListening();
 			//this.OutgoingMessageManager.DoHeartBeat(new object());
-        }
+		}
 
         public event EventHandler NodeChanged;
 

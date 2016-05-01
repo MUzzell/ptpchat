@@ -30,7 +30,7 @@
 				return false;
 			}
 			
-            var node = this.NodeManager.GetNodes(d => d.Value.NodeId == message.SenderId).FirstOrDefault();
+            var node = this.NodeManager.GetNodes(d => d.Key == message.SenderId.Id).FirstOrDefault();
 
 			var attributes = message.msg_data.attributes;
 			if (attributes != null)
@@ -44,6 +44,7 @@
                     node.NodeId.Id,
                     n =>
                         {
+							n.UpdateName(node.NodeId.Name);
                             n.LastRecieve = DateTime.Now;
                             n.Version = node.Version ?? message.msg_data.version;
                             n.IsConnected = true;

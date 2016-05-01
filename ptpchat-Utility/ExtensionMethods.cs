@@ -36,8 +36,8 @@
 				if (match == null || !match.Success)
 					return false;
 
-				string name = match.Groups[0].Value;
-				Guid baseId = Guid.Parse(match.Groups[1].Value);
+				string name = match.Groups[1].Value;
+				Guid baseId = Guid.Parse(match.Groups[2].Value);
 
 				nodeId = new NodeId(name, baseId);
 				return true;

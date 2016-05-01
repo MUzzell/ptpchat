@@ -43,6 +43,11 @@
 			return obj is NodeId && ((NodeId)obj).Id == this.Id;
 		}
 
+		public bool Equals(NodeId node)
+		{
+			return this.Id == node.Id;
+		}
+
 		public override string ToString()
 		{
 			return GetWholeId();
