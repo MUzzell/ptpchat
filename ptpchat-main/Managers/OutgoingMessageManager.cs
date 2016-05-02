@@ -38,12 +38,35 @@
             this.DefaultTimeToLive = defaultTtl > 0 ? defaultTtl : 32;
         }
 
-        public void SendHello(Node node, HelloMessage helloMessage) => this.SendHello(node.IpEndPoint, helloMessage);
+		public void SendHello(Node node)
+		{
+			if (node.Ttl > 1)
+			{
+				throw new InvalidOperationException("Cannot send a HELLO to a node with a TTL greater than 1");
+			}
+			if (node.IpEndPoint == null)
+			{
+				throw new InvalidOperationException("Cannot send a HELLO to a node with no Endpoint assigned");
+			}
 
-        public void SendHello(IPEndPoint endpoint, HelloMessage connectMessage)
+			SendHello(node.IpEndPoint);
+		}
+
+        public void SendHello(IPEndPoint endpoint)
         {
-            this.MessageTTLOne(connectMessage);
-            this.Send(endpoint, connectMessage);
+            var msg = new HelloMessage
+			{
+				sender_id = this.nodeManager.LocalNode.NodeId.GetWholeId(),
+				ttl = 1,
+				flood = false,
+				msg_id = Guid.NewGuid(),
+				msg_data = new HelloData
+				{
+					version = this.nodeManager.LocalNode.Version,
+					attributes = this.nodeManager.LocalNode.Attributes
+				}
+			};
+			this.Send(endpoint, msg);
         }
 
         public void SendConnect(Node node, Guid targetNodeId) => this.SendConnect(node.IpEndPoint, targetNodeId);
@@ -105,16 +128,10 @@
             var nodes = this.nodeManager.GetNodes(node => node.Value.IsConnected || node.Value.IsStartUpNode).ToList();
 
             this.logger.Debug($"Sending Hellos to {nodes.Count} nodes");
-
-            var msg = new HelloMessage
-            {
-                sender_id = this.nodeManager.LocalNode.NodeId.GetWholeId(),
-                msg_data = new HelloData { version = this.nodeManager.LocalNode.Version, attributes = new Dictionary<string, string> { { "node_type", "client" } } }
-            };
-
+			
             foreach (var node in nodes)
             {
-                this.SendHello(node.IpEndPoint, msg);
+                this.SendHello(node.IpEndPoint);
                 this.nodeManager.Update(node.NodeId.Id, n => n.LastSend = DateTime.Now);
             }
         }

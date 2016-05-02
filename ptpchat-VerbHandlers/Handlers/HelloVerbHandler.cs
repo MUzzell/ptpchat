@@ -45,6 +45,8 @@
                     n =>
                         {
 							n.UpdateName(node.NodeId.Name);
+							n.IpAddress = senderEndpoint.Address;
+							n.Port = senderEndpoint.Port;
                             n.LastRecieve = DateTime.Now;
                             n.Version = node.Version ?? message.msg_data.version;
                             n.IsConnected = true;

@@ -8,9 +8,9 @@
 
 	public interface IOutgoingMessageManager
     {
-        void SendHello(Node node, HelloMessage helloMessage);
+        void SendHello(Node node);
 
-        void SendHello(IPEndPoint endpoint, HelloMessage connectMessage);
+        void SendHello(IPEndPoint endpoint);
 
         void SendConnect(Node node, Guid targetNodeId);
 

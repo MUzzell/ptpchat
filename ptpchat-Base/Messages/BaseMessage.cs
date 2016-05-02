@@ -2,6 +2,7 @@
 {
 	using Classes;
 	using System;
+	using Newtonsoft.Json;
 
 	public class BaseMessage
     {
@@ -17,10 +18,12 @@
 
         public string sender_id { get; set; }
 
-		public NodeId SenderId { get; set; }
-
         public string target_id { get; set; }
 
+		[JsonIgnore]
+		public NodeId SenderId { get; set; }
+
+		[JsonIgnore]
 		public NodeId TargetId { get; set; }
 
     }

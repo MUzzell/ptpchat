@@ -5,6 +5,10 @@
 
     public interface ISocketHandler
     {
+		event EventHandler SocketConnected;
+		event EventHandler SocketDisconnected;
+		event EventHandler SocketReset;
+
         bool SendMessage(IPEndPoint dst, IPEndPoint src, byte[] message);
 
         bool SendMessage(Guid dstNodeId, byte[] messsage);

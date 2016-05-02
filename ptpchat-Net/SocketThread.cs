@@ -1,14 +1,14 @@
 ﻿namespace PtpChat.Net
 {
-    using System;
-    using System.Linq;
-    using System.Net;
-    using System.Net.Sockets;
-    using System.Text;
+	using System;
+	using System.Linq;
+	using System.Net;
+	using System.Net.Sockets;
+	using System.Text;
 
-    using PtpChat.Base.Interfaces;
-
-    public class SocketThread
+	using PtpChat.Base.Interfaces;
+	using Base.EventArguements;
+	public class SocketThread
     {
         private const string LogArgumentException = "Argument Exception recieved whilst parsing recieved data: {0}";
         private const string LogSocketException = "Socket Exception recieved whilst operating on socket: {0}";
@@ -21,6 +21,10 @@
         private TcpClient Socket { get; set; }
 
 		public IPEndPoint Destination { get; private set; }
+
+		public event EventHandler SocketConnected;
+		public event EventHandler SocketDisconnected;
+		public event EventHandler SocketReset;
 
         public SocketThread(IPEndPoint destination, IMessageHandler messageHandler, ILogManager logger)
         {
@@ -45,11 +49,12 @@
 			try
 			{
 				this.Socket.Connect(this.Destination.Address.ToString(), this.Destination.Port);
-				
+				this.SocketConnected?.Invoke(this, new SocketThreadEventArgs { Destination = this.Destination });
 			}
 			catch(SocketException se)
 			{
 				this.logger.Error(string.Format(LogSocketException, se.Message), se);
+				this.SocketReset?.Invoke(this, new SocketThreadEventArgs { Destination = this.Destination, Exception = se, ErrorCode = se.ErrorCode });
 #if DEBUG
 				throw se;
 #endif
@@ -115,11 +120,13 @@
             }
             catch (SocketException se)
             {
-                this.logger.Error(string.Format(LogArgumentException, se.Message));
-            }
-            finally
+				this.logger.Error(string.Format(LogArgumentException, se.Message));
+				this.SocketReset?.Invoke(this, new SocketThreadEventArgs { Destination = this.Destination, Exception = se, ErrorCode = se.ErrorCode });
+			}
+			finally
             {
 				this.Socket.Close();
+				this.SocketDisconnected?.Invoke(this, new SocketThreadEventArgs() { Destination = this.Destination });
             }
         }
 

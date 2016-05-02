@@ -23,6 +23,10 @@
         private readonly INodeManager nodeManager;
         private readonly TcpListener localListener;
 
+		public event EventHandler SocketConnected;
+		public event EventHandler SocketDisconnected;
+		public event EventHandler SocketReset;
+		
         //threads are organised by their port.
         public IDictionary<string, SocketThread> InternalThreads { get; }
 
@@ -47,12 +51,16 @@
 
         public void AddSocketThread(IPEndPoint destination, IMessageHandler messageHandler)
         {
-            this.InternalThreads.Add(
-				destination.Address.ToString(), 
-				new SocketThread(
-					destination, 
-					messageHandler, 
-					this.logger));
+			var thread = new SocketThread(
+					destination,
+					messageHandler,
+					this.logger);
+
+			thread.SocketConnected += this.SocketConnected;
+			thread.SocketDisconnected += this.SocketDisconnected;
+			thread.SocketReset += this.SocketReset;
+
+			this.InternalThreads.Add(destination.Address.ToString(), thread);
         }
 		
         public bool SendMessage(Guid dstNodeId, byte[] message)

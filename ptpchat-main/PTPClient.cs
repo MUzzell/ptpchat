@@ -59,9 +59,13 @@
             var messageHandler = new MessageHandler(this.logger);
 
             ISocketHandler socketHandler = new SocketHandler(this.logger, this.dataManager, messageHandler);
-            socketHandler.AddSocketThread( new IPEndPoint(config.InitialServerAddress, config.InitialServerPort), messageHandler);
-            
 
+			socketHandler.SocketConnected += this.SocketHandler_SocketConnected;
+			socketHandler.SocketDisconnected += this.SocketHandler_SocketDisconnected;
+			socketHandler.SocketReset += this.SocketHandler_SocketReset;
+
+            socketHandler.AddSocketThread( new IPEndPoint(config.InitialServerAddress, config.InitialServerPort), messageHandler);
+			
             this.ChannelTabHandler = new ChannelTabHandler(this.logger, this.dataManager, messageHandler, socketHandler);
 
             this.OutgoingMessageManager = new OutgoingMessageManager(this.logger, this.dataManager, socketHandler, config.DefaultTTL);
@@ -98,6 +102,22 @@
         public event EventHandler ChannelAdded;
 
         public event EventHandler ChannelUpdate;
+
+		public void SocketHandler_SocketConnected(object sender, EventArgs args)
+		{
+			var socketArgs = (SocketThreadEventArgs)args;
+			this.OutgoingMessageManager.SendHello(socketArgs.Destination);
+		}
+
+		public void SocketHandler_SocketDisconnected(object sender, EventArgs args)
+		{
+
+		}
+
+		public void SocketHandler_SocketReset(object sender, EventArgs args)
+		{
+
+		}
 
         public IEnumerable<Node> GetNodes(Func<KeyValuePair<Guid, Node>, bool> filter) => this.nodeManager.GetNodes(filter);
 

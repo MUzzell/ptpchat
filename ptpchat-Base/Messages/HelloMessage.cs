@@ -12,6 +12,6 @@
     public class HelloData
     {
         public string version { get; set; }
-        public Dictionary<string, string> attributes { get; set; }
+        public IDictionary<string, string> attributes { get; set; }
     }
 }
