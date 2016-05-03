@@ -107,6 +107,7 @@
 		{
 			var socketArgs = (SocketThreadEventArgs)args;
 			this.OutgoingMessageManager.SendHello(socketArgs.Destination);
+
 		}
 
 		public void SocketHandler_SocketDisconnected(object sender, EventArgs args)

@@ -35,7 +35,7 @@
 
             this.Socket = new TcpClient { ExclusiveAddressUse = false };
             this.Socket.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
-            this.Socket.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.DontLinger, true);
+            //this.Socket.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.DontLinger, true);
             
         }
 
@@ -60,43 +60,25 @@
 #endif
 			}
 
+			var stream = this.Socket.GetStream();
+			var messageLengthBytes = new byte[4];
+
 			try
             {
 				
-				while (this.running)
+				while (this.running && stream.CanRead)
                 {
                     try
                     {
-                        var messageLengthBytes = new byte[4];
-
-                        //var tcpClient = await this.listener.AcceptTcpClientAsync();
-
-                        ////SslStream sslStream = new SslStream(tcpClient.GetStream(), false);
-
-                        //================================================
-
-                        //var recieveArgs = new SocketAsyncEventArgs();
-                        //recieveArgs.SetBuffer(messageLengthBytes, 0, 4);//Receive bytes from x to total - x, x is the number of bytes already recieved
-
-                        //this.Socket.Client.ReceiveAsync(recieveArgs);
-
-                        //messageLengthBytes = messageLengthBytes.Reverse().ToArray();
-                        //int messageLength = BitConverter.ToInt32(messageLengthBytes, 0);
-
-
-                        //var messageData = new byte[messageLength];
-
-                        //recieveArgs = new SocketAsyncEventArgs();
-                        //recieveArgs.SetBuffer(messageData, 4, messageLength);//Receive bytes from x to total - x, x is the number of bytes already recieved
-                        //this.Socket.Client.ReceiveAsync(recieveArgs);
-
-                        //==================================================
-
-                        var stream = this.Socket.GetStream();
+                        
                         await stream.ReadAsync(messageLengthBytes, 0, 4);
+
 
                         messageLengthBytes = messageLengthBytes.Reverse().ToArray();
                         int messageLength = BitConverter.ToInt32(messageLengthBytes, 0);
+
+						if (messageLength <= 0 || messageLength > this.Socket.ReceiveBufferSize)
+							continue;
 
                         var messageData = new byte[messageLength];
 

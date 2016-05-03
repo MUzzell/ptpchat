@@ -37,6 +37,11 @@
 
         public void HandleMessage(string messageJson, IPEndPoint senderEndpoint)
         {
+			if (string.IsNullOrWhiteSpace(messageJson))
+			{
+				return;
+			}
+
             try
             {
                 var baseMessage = JsonConvert.DeserializeObject<BaseMessage>(messageJson);

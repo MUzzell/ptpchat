@@ -39,7 +39,8 @@
 
             this.logger = logger;
 
-            this.LocalNode = new Node(new NodeId("LocalNode", config.LocalNodeId)){ Version = config.LocalNodeVersion };
+            this.LocalNode = new Node(new NodeId("LocalNode", config.LocalNodeId)){ Version = config.LocalNodeVersion, Attributes = new Dictionary<string, string>() };
+			this.LocalNode.Attributes.Add("node_type", "string");
 
             this.ProcessTimer = new Timer(this.ProcessNodes, null, 10000, 5000);
 

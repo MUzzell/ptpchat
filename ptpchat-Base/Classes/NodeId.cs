@@ -42,9 +42,9 @@
 		{
 			return obj is NodeId && ((NodeId)obj).Id == this.Id;
 		}
-
+		
 		public bool Equals(NodeId node)
-		{
+		{ 
 			return this.Id == node.Id;
 		}
 
@@ -54,5 +54,18 @@
 		}
 
 		public string GetWholeId() => this.Name + "@" + this.Id;
-    }
+
+		public static bool operator ==(NodeId a, NodeId b)
+		{
+			if(System.Object.ReferenceEquals(a, b))
+				return true;
+			if (((object)a == null) || ((object)b == null))
+				return false;
+
+			return a.Equals(b);
+		}
+		
+		public static bool operator !=(NodeId a, NodeId b) => !(a == b);
+
+	}
 }
