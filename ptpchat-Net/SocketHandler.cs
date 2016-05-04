@@ -74,7 +74,7 @@
         {
             try
             {
-                this.InternalThreads[dst.Address.ToString()].Send(dst, message);
+                this.InternalThreads[dst.Address.ToString()].Send(message);
             }
             catch (SocketException ex)
             {
